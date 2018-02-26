@@ -30,4 +30,8 @@ public class DicUtil {
 		return map.get(id).get("name").toString();
 	}
 	
+	public static String getItemCode(String dicId, String id) {
+		Map<String,Record> map = (HashMap<String,Record>)dicMap.get(dicId);
+		return map.get(id).get("code").toString();
+	}
 }
