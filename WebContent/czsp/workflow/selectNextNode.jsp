@@ -6,6 +6,7 @@
 <%@ page import="java.util.HashMap"%>
 <%@ page import="czsp.workflow.model.WfRoute"%>
 <%@ page import="czsp.workflow.model.view.VwfNodeDetail"%>
+<%@ page import="czsp.workflow.model.WfHisInstance"%>
 <%@ page import="czsp.common.util.DicUtil"%>
 <%@ page import="czsp.common.Constants"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -19,24 +20,39 @@
 <%
 Map map = (HashMap)request.getAttribute("obj");
 VwfNodeDetail nodeDetail = (VwfNodeDetail)map.get("nodeDetail");
+WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 %>
 <body>
 	<input id="instanceId" type="hidden" value="${obj.instance.instanceId}"/>
-	当前环节：<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_PHASE_NO,nodeDetail.getPhaseId())%>
+	当前环节：<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_PHASE_NO,nodeDetail.getPhaseId())%>&nbsp&nbsp
+	当前节点：<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO,nodeDetail.getNodeId())%>
 	<br /> 下一节点：
 	<select name="nextNode">
 		<option value="">请选择</option>
 		<%
-		List<WfRoute> routes = (List<WfRoute>)map.get("routes");
-		for(WfRoute route : routes){ 
-			String nextNodeId = route.getRouteId().substring(0,4) + route.getNextNode();
+			List<WfRoute> routes = (List<WfRoute>) map.get("routes");
+			for (WfRoute route : routes) {
+				String nextNodeId = route.getRouteId().substring(0, 4) + route.getNextNode();
 		%>
-		<option value="<%=route.getRouteId() %>">
-		<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO,nextNodeId)%>
-		<%if("1".equals(route.getIsTesong())){ %>(特送)
-		<%}else{ %>(默认)
+		<option value="<%=route.getRouteId()%>">
+			<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, nextNodeId)%>
+			<%
+				if ("1".equals(route.getIsTesong())) {
+			%>(特送)
+			<%
+				} else {
+			%>(默认)
 		</option>
-		<%}}%>
+		<%
+			}
+			}
+			if (hisInstance != null && !hisInstance.getNodeId().endsWith("00")) {
+		%>
+		<option id="retreat" value="<%=hisInstance.getInstanceId() %>"><%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, hisInstance.getNodeId())%>(回退)
+		</option>
+		<%
+			}
+		%>
 	</select> 办理人员：
 	<select><option>请选择</option></select>
 	<br />
@@ -48,12 +64,17 @@ VwfNodeDetail nodeDetail = (VwfNodeDetail)map.get("nodeDetail");
 			if (!validate())
 				return;
 
-			var routeId = $("select[name='nextNode']").val();
+			var param = $("select[name='nextNode']").val();
 			var instanceId = $("#instanceId").val();
+			var target = "";
+			
+			if($("select[name='nextNode']").find("option:selected").attr("id")=="retreat")
+				target = "/czsp/retreat?hisInstanceId=" + param + "&instanceId=" + instanceId;
+			else
+				target = "/czsp/submit?routeId=" + param + "&instanceId=" + instanceId;
 
 			$.ajax({
-				url : '/czsp/submit?routeId=' + routeId
-						+ "&instanceId=" + instanceId,
+				url : target,
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {
@@ -64,7 +85,7 @@ VwfNodeDetail nodeDetail = (VwfNodeDetail)map.get("nodeDetail");
 						alert("message:" + re.message);
 					window.opener.location.reload(); 
 					window.close();
-				}
+				} 
 			});
 
 		})

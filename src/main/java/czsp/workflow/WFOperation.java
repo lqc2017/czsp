@@ -2,6 +2,8 @@ package czsp.workflow;
 
 import java.util.Date;
 
+import org.nutz.dao.Chain;
+import org.nutz.dao.Cnd;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.log.Log;
@@ -10,8 +12,8 @@ import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
 
 import czsp.MainSetup;
-import czsp.common.util.DicUtil;
-import czsp.common.Constants;
+import czsp.user.dao.UserOperationDao;
+import czsp.user.model.UserOperation;
 import czsp.workflow.dao.WfInstanceDao;
 import czsp.workflow.dao.WfNodeDao;
 import czsp.workflow.dao.WfRouteDao;
@@ -28,6 +30,9 @@ public class WFOperation extends WfInstanceDao {
 
 	@Inject
 	private WfNodeDao wfNodeDao;
+
+	@Inject
+	private UserOperationDao userOperationDao;
 
 	final Log log = Logs.getLog(MainSetup.class);
 
@@ -50,11 +55,8 @@ public class WFOperation extends WfInstanceDao {
 
 		Trans.exec(new Atom() {
 			public void run() {
-				// 删除当前instance
-				dao.delete(curInstance);
-				// 保存一条记录到hisinstance
-				WfHisInstance hisInstance = new WfHisInstance(curInstance);
-				dao.insert(hisInstance);
+				archive(curInstance);
+				String newInstanceId = null;
 
 				WfCurInstance newInstance = new WfCurInstance();
 				newInstance.setCreateTime(new Date());
@@ -62,10 +64,11 @@ public class WFOperation extends WfInstanceDao {
 				newInstance.setIfRetrieve("1");
 				newInstance.setIfValid("1");
 				newInstance.setNodeId(nextNodeId);
+				// newInstance.setUserId(userId);
 				// 如果下一节点不是该环节最后一个节点
 				if (!"1".equals(nextNode.getIsEnd())) {
 					// 初始化一条新记录并保存到curinstance
-					dao.insert(newInstance);
+					newInstanceId = dao.insert(newInstance).getInstanceId();
 					// 更新newInstance的编号
 					newInstance.setInstanceNo(curInstance.getInstanceNo());
 					dao.update(newInstance);
@@ -74,12 +77,8 @@ public class WFOperation extends WfInstanceDao {
 						// 如果当前阶段不是最后一个阶段则初始化一个新的流程编号并指向下一阶段的第一个节点
 						String nextPhaseId = getNextPhase(phases, curPhaseId);
 						WfNode startNode = wfNodeDao.getStartNode(nextPhaseId);
-						String wfCode = DicUtil.getItemCode(Constants.DIC_WF_PHASE_NO, nextPhaseId);
-						log.debug("getDefaultRoute():"+wfRouteDao.getDefaultRoute(wfCode, startNode.getWfCurNode()));
 						String nextNodeId = nextPhaseId
-								+ wfRouteDao.getDefaultRoute(wfCode, startNode.getWfCurNode()).getNextNode();
-						log.debug("wfCode:"+wfCode);
-						log.debug("getWfCurNode():"+startNode.getWfCurNode());
+								+ wfRouteDao.getDefaultRoute(nextPhaseId, startNode.getWfCurNode()).getNextNode();
 						newInstance.setNodeId(nextNodeId);
 						// 初始化一条新记录并保存到curinstance
 						dao.insert(newInstance);
@@ -87,6 +86,11 @@ public class WFOperation extends WfInstanceDao {
 						// 将app的状态置为办结
 					}
 				}
+
+				// 保存记录到user_op
+				UserOperation operation = new UserOperation(opType, new Date(), null, curInstance.getNodeId(),
+						curInstance.getInstanceId(), newInstanceId);
+				userOperationDao.addOperation(operation);
 			}
 
 			// 遍历查找下一环节
@@ -102,16 +106,60 @@ public class WFOperation extends WfInstanceDao {
 			}
 		});
 
-		// 保存记录到user_op
-		// todo..
 		// 修改app表
 		// todo..
 	}
 
 	/**
 	 * 全琛 2018年2月25日 回退
+	 * 
+	 * @throws Exception
 	 */
-	public void retreatWF(WfRoute route) {
+	public void retreatWF(WfHisInstance hisInstance, WfCurInstance curInstance, String opType) throws Exception {
+		if (hisInstance.getNodeId().endsWith("00"))
+			throw new Exception("cant't retreat to start node.");
+
+		Trans.exec(new Atom() {
+			public void run() {
+				archive(curInstance);
+
+				WfCurInstance newInstance = new WfCurInstance();
+				newInstance.setCreateTime(new Date());
+				newInstance.setIfSign("1");
+				newInstance.setIfRetrieve("0");
+				newInstance.setIfValid("1");
+				newInstance.setNodeId(hisInstance.getNodeId());
+				// newInstance.setUserId(userId);
+				String newInstanceId = dao.insert(newInstance).getInstanceId();
+
+				dao.update(WfCurInstance.class, Chain.make("instanceId", hisInstance.getInstanceId()).add("instanceNo",
+						hisInstance.getInstanceNo()), Cnd.where("instanceId", "=", newInstanceId));
+
+				// 保存记录到user_op
+				UserOperation operation = new UserOperation(opType, new Date(), null, curInstance.getNodeId(),
+						curInstance.getInstanceId(), hisInstance.getInstanceId());
+				userOperationDao.addOperation(operation);
+			}
+		});
+
+		// 修改app表
+		// todo..
 	}
 
+	/**
+	 * 全琛 2018年2月26日 归档
+	 */
+	public void archive(WfCurInstance curInstance) {
+		Trans.exec(new Atom() {
+			@Override
+			public void run() {
+				// 删除当前instance
+				dao.delete(curInstance);
+				// 保存当前实例到hisinstance
+				WfHisInstance newHisInstance = new WfHisInstance(curInstance);
+				dao.insert(newHisInstance);
+
+			}
+		});
+	}
 }

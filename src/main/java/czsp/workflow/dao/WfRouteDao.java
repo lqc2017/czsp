@@ -19,11 +19,11 @@ public class WfRouteDao {
 	/**
 	 * 全琛 2018年2月25日 根据当前环节代码和当前节点获得路由表
 	 */
-	public List getListByCurNode(String curNode, String wfCode) {
+	public List getListByCurNode(String curNode, String phaseId) {
 		Criteria cri = Cnd.cri();
 		cri.getOrderBy().asc("displayOrder");
 		cri.where().andEquals("curNode", curNode);
-		cri.where().andEquals("wfCode", wfCode);
+		cri.where().andEquals("phaseId", phaseId);
 		List list = dao.query(WfRoute.class, cri);
 		return list;
 	}
@@ -35,12 +35,15 @@ public class WfRouteDao {
 		return dao.fetch(WfRoute.class, routeId);
 	}
 
-	public WfRoute getDefaultRoute(String wfCode, String curNode) {
+	/**
+	 * 全琛 2018年2月26日 获得默认路由
+	 */
+	public WfRoute getDefaultRoute(String phaseId, String curNode) {
 		Criteria cri = Cnd.cri();
 		cri.getOrderBy().asc("displayOrder");
-		cri.where().andEquals("wfCode", wfCode);
+		cri.where().andEquals("phaseId", phaseId);
 		cri.where().andEquals("curNode", curNode);
 		cri.where().andIsNull("isTesong");
-		return dao.fetch(WfRoute.class,cri);
+		return dao.fetch(WfRoute.class, cri);
 	}
 }

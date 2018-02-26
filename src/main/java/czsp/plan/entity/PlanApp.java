@@ -8,21 +8,24 @@ import org.nutz.dao.entity.annotation.Table;
 
 @Table("PLAN_APP")
 public class PlanApp {
-	@Name 
-	@Prev(els=@EL("uuid(32)"))
+	@Name
+	@Prev(els = @EL("uuid(32)"))
 	private String appId;
-	
+
 	@Column(hump = true)
 	private String instanceNo;
-	
+
 	@Column(hump = true)
 	private String curNode;
-	
+
 	@Column(hump = true)
 	private String curPhase;
-	
+
 	@Column(hump = true)
 	private String status;
+
+	@Column(hump = true)
+	private String lastOpUser;
 
 	public String getAppId() {
 		return appId;
@@ -63,5 +66,13 @@ public class PlanApp {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+
+	public String getLastOpUser() {
+		return lastOpUser;
+	}
+
+	public void setLastOpUser(String lastOpUser) {
+		this.lastOpUser = lastOpUser;
+	}
+
 }

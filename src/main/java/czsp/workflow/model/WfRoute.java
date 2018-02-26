@@ -8,25 +8,25 @@ import org.nutz.dao.entity.annotation.Table;
 public class WfRoute {
 
 	@Name
-	@Column(value="ROUTE_ID")
+	@Column(value = "ROUTE_ID")
 	private String routeId;
 
-	@Column(value="WF_CODE")
-	private String wfCode;
+	@Column(value = "PHASE_ID")
+	private String phaseId;
 
-	@Column(value="CUR_NODE")
+	@Column(value = "CUR_NODE")
 	private String curNode;
 
-	@Column(value="NEXT_NODE")
+	@Column(value = "NEXT_NODE")
 	private String nextNode;
 
-	@Column(value="PRE_NODE")
+	@Column(value = "PRE_NODE")
 	private String preNode;
 
-	@Column(value="IS_TESONG")
+	@Column(value = "IS_TESONG")
 	private String isTesong;
 
-	@Column(value="DISPLAY_ORDER")
+	@Column(value = "DISPLAY_ORDER")
 	private String displayOrder;
 
 	public String getRouteId() {
@@ -37,12 +37,12 @@ public class WfRoute {
 		this.routeId = routeId;
 	}
 
-	public String getwfCode() {
-		return wfCode;
+	public String getPhaseId() {
+		return phaseId;
 	}
 
-	public void setwfCode(String wfCode) {
-		this.wfCode = wfCode;
+	public void setPhaseId(String phaseId) {
+		this.phaseId = phaseId;
 	}
 
 	public String getCurNode() {

@@ -13,6 +13,9 @@ import org.nutz.mvc.annotation.Ok;
 
 import czsp.MainSetup;
 import czsp.common.util.MessageUtil;
+import czsp.user.dao.UserOperationDao;
+import czsp.user.model.UserOperation;
+import czsp.workflow.dao.WfInstanceDao;
 import czsp.workflow.dao.WfNodeDao;
 import czsp.workflow.dao.WfRouteDao;
 import czsp.workflow.model.WfCurInstance;
@@ -32,6 +35,12 @@ public class WFModule {
 
 	@Inject
 	private WFOperation wfOperation;
+	
+	@Inject
+	private WfInstanceDao wfInstanceDao;
+	
+	@Inject
+	private UserOperationDao userOperationDao;
 	
 	final Log log = Logs.getLog(MainSetup.class);
 
@@ -93,12 +102,19 @@ public class WFModule {
 		WfCurInstance instance = wfOperation.getInstanceByInstanceId(instanceId);
 		// 查询节点信息
 		VwfNodeDetail nodeDetail = wfNodeDao.getNodeDetailByNodeId(instance.getNodeId());
-		// 查询路本届点路由
-		List<WfRoute> routes = wfRouteDao.getListByCurNode(nodeDetail.getWfCurNode(), nodeDetail.getWfCode());
+		// 查询路本节点路由
+		List routes = wfRouteDao.getListByCurNode(nodeDetail.getWfCurNode(), nodeDetail.getPhaseId());
+		// 查询最近一条历史提交操作记录
+		UserOperation operation = userOperationDao.getLatestOperation(instanceId, "'提交','特送'");
+		WfHisInstance hisInstance = null;
+		if(operation!=null)
+			hisInstance = wfInstanceDao.getHisInstanceByInstanceId(operation.getPreInstanceId());
+		
 
 		// 查询节点信息
 		map.put("instance", instance);
 		map.put("nodeDetail", nodeDetail);
+		map.put("hisInstance", hisInstance);
 		map.put("routes", routes);
 		return map;
 	}
@@ -115,15 +131,14 @@ public class WFModule {
 			WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(instanceId);
 			if ("1".equals(route.getIsTesong())) {
 				System.out.println("特送节点");
-				wfOperation.submitWF(route,curInstance,"1");
+				wfOperation.submitWF(route,curInstance,"特送");
 			} else {
 				System.out.println("默认节点");
-				wfOperation.submitWF(route,curInstance,"0");
+				wfOperation.submitWF(route,curInstance,"提交");
 			}
 			map.put("result", "success");
 		} catch (Exception e) {
 			map.put("result", "fail");
-			e.printStackTrace();
 			map.put("message", MessageUtil.getStackTraceInfo(e));
 		}
 		return map;
@@ -134,12 +149,16 @@ public class WFModule {
 	 */
 	@At("/retreat")
 	@Ok("json")
-	public Map<String, Object> retreat() {
+	public Map<String, Object> retreat(String hisInstanceId,String instanceId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			System.out.print("回退");
+			WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(instanceId);
+			WfHisInstance hisInstance = wfOperation.getHisInstanceByInstanceId(hisInstanceId);
+			//wfOperation.retreatWF(preNodes,curInstance,"回退");
+			wfOperation.retreatWF(hisInstance,curInstance,"回退");
 		} catch (Exception e) {
 			map.put("result", "fail");
+			map.put("message", MessageUtil.getStackTraceInfo(e));
 		}
 		map.put("result", "success");
 		return map;

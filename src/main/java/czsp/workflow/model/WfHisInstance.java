@@ -9,7 +9,6 @@ import org.nutz.dao.entity.annotation.Table;
 @Table("WF_HIS_INSTANCE")
 public class WfHisInstance {
 
-	@Name
 	@Column(hump = true)
 	private String instanceId;
 
