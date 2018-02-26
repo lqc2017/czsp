@@ -1,25 +1,32 @@
-package czsp.workflow.model;
+package czsp.workflow.model.view;
 
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Name;
-import org.nutz.dao.entity.annotation.Table;
+import org.nutz.dao.entity.annotation.Readonly;
+import org.nutz.dao.entity.annotation.View;
 
-@Table("WF_NODE")
-public class WfNode {
+@View("V_WF_NODE_DETAIL")
+public class VwfNodeDetail {
 
 	@Name
-	@Column(value = "NODE_ID")
+	@Column(hump = true)
+	@Readonly
 	private String nodeId;
-	@Column(value = "NODE_NAME")
+	@Column(hump = true)
+	@Readonly
 	private String nodeName;
-	@Column(value = "PHASE_ID")
+	@Column(hump = true)
+	@Readonly
 	private String phaseId;
-	@Column(value = "WF_CUR_NODE")
+	@Column(hump = true)
+	@Readonly
+	private String phaseName;
+	@Column(hump = true)
+	@Readonly
 	private String wfCurNode;
-	@Column(value = "IS_START")
-	private String isStart;
-	@Column(value = "IS_END")
-	private String isEnd;
+	@Column(hump = true)
+	@Readonly
+	private String wfCode;
 
 	public String getNodeId() {
 		return nodeId;
@@ -53,20 +60,20 @@ public class WfNode {
 		this.wfCurNode = wfCurNode;
 	}
 
-	public String getIsStart() {
-		return isStart;
+	public String getPhaseName() {
+		return phaseName;
 	}
 
-	public void setIsStart(String isStart) {
-		this.isStart = isStart;
+	public void setPhaseName(String phaseName) {
+		this.phaseName = phaseName;
 	}
 
-	public String getIsEnd() {
-		return isEnd;
+	public String getWfCode() {
+		return wfCode;
 	}
 
-	public void setIsEnd(String isEnd) {
-		this.isEnd = isEnd;
+	public void setWfCode(String wfCode) {
+		this.wfCode = wfCode;
 	}
 
 }

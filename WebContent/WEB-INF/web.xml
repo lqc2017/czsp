@@ -13,10 +13,6 @@
 		
 		<init-param>
 			<param-name>exclusions</param-name>
-			<!-- *.XXX 忽略后缀 -->
-			<!-- /XX/* 忽略前缀 -->
-			<!-- /cc 忽略固定路径 -->
-			<!-- 下面的例子忽略了html和ftl后缀, 忽略了/rs/和/druid/前缀,和忽略了固定路径/abc/notaction -->
 			<param-value>/static/*</param-value>
 		</init-param>
 	</filter>

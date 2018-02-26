@@ -17,6 +17,12 @@ public class PlanApp {
 	
 	@Column(hump = true)
 	private String curNode;
+	
+	@Column(hump = true)
+	private String curPhase;
+	
+	@Column(hump = true)
+	private String status;
 
 	public String getAppId() {
 		return appId;
@@ -40,6 +46,22 @@ public class PlanApp {
 
 	public void setCurNode(String curNode) {
 		this.curNode = curNode;
+	}
+
+	public String getCurPhase() {
+		return curPhase;
+	}
+
+	public void setCurPhase(String curPhase) {
+		this.curPhase = curPhase;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 }
