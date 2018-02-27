@@ -4,4 +4,8 @@ public class Constants {
 	public static final String DIC_WF_PHASE_NO = "18100";
 	
 	public static final String DIC_WF_NODE_NO = "18110";
+	
+	public static final String DIC_AHTU_DEPT_NO = "19100";
+	
+	public static final String DIC_AHTU_ROLE_NO = "19110";
 }
