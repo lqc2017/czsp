@@ -8,22 +8,38 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>流程</title>
 <script src="/czsp/static/js/jquery.js"></script>
+<script src="/czsp/static/js/common.js"></script>
 </head>
 <%@ page import="czsp.common.util.DicUtil"%>
 <%@ page import="czsp.common.Constants"%>
+<%@ page import="java.util.Enumeration"%>
+<%@ page import="czsp.user.model.UserInfo"%>
 <body>
 	<ul>
 		<c:forEach var="node" items="${obj.wfNodes}">
 			<li>${node.nodeName}</li>
 		</c:forEach>
 	</ul>
+	<br/>
+	<%
+	UserInfo userInfo = (UserInfo)session.getAttribute("userInfo");
+	if(userInfo!=null){ %>
+	当前人员：<%=userInfo.getName() %><br/>
+	<%} %>
 	<button name="new">新建流程</button>
+	&nbsp
+	<button name="ativate">激活</button>
+	&nbsp
+	<button name="clear">清除(session)</button>
+	&nbsp
+	<button name="change">变更用户</button>
 
 	<table border="1">
 		<tr>
 			<th>流程ID</th>
 			<th>流程编号</th>
 			<th>节点ID</th>
+			<th>办理人ID</th>
 			<th>是否可回收</th>
 			<th>是否已签收</th>
 			<th>是否有效</th>
@@ -35,21 +51,23 @@
 				<td>${instance.instanceId}</td>
 				<td>${instance.instanceNo}</td>
 				<td>${instance.nodeId}</td>
+				<td>${instance.userId}</td>
 				<td>${instance.ifRetrieve}</td>
 				<td>${instance.ifSign}</td>
 				<td>${instance.ifValid}</td>
-				<td><fmt:formatDate value="${instance.createTime}" type="both"/></td>
+				<td><fmt:formatDate value="${instance.createTime}" type="both" /></td>
 				<td><button name="submit">提交</button>
 					<button name="del">删除</button></td>
 			</tr>
 		</c:forEach>
 	</table>
-	<br/>
+	<br />
 	<table border="1">
 		<tr>
 			<th>流程ID</th>
 			<th>流程编号</th>
 			<th>节点ID</th>
+			<th>办理人ID</th>
 			<th>创建时间</th>
 			<th>结束时间</th>
 			<th>操作</th>
@@ -59,10 +77,12 @@
 				<td>${instance.instanceId}</td>
 				<td>${instance.instanceNo}</td>
 				<td>${instance.nodeId}</td>
-				<td><fmt:formatDate value="${instance.createTime}" type="both"/></td>
-				<td><fmt:formatDate value="${instance.finishTime}" type="both"/></td>
+				<td>${instance.userId}</td>
+				<td><fmt:formatDate value="${instance.createTime}" type="both" /></td>
+				<td><fmt:formatDate value="${instance.finishTime}" type="both" /></td>
 				<td>
-					<button name="delHis">删除</button></td>
+					<button name="delHis">删除</button>
+				</td>
 			</tr>
 		</c:forEach>
 	</table>
@@ -75,19 +95,45 @@
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {
-					console.log(re.result);
-					if (re.result == 'success')
-						location.reload();
+					resultPrompt(re,false);
 				}
 			});
 		})
 
-		$("button[name='submit']").bind("click", function() {
+		$("button[name='ativate']").bind("click", function() {
+			$.ajax({
+				url : '/czsp/user/ativate',
+				dataType : 'json',
+				type : 'GET',
+				success : function(re) {
+					resultPrompt(re);
+				}
+			});
+		})
+		
+		$("button[name='clear']").bind("click", function() {
+			$.ajax({
+				url : '/czsp/user/clear',
+				dataType : 'json',
+				type : 'GET',
+				success : function(re) {
+					resultPrompt(re,false);
+				}
+			});
+		})
+		
+		$("button[name='change']").bind("click", function() {
+			window.open('/czsp/user/change',"选择人员",
+					"top=100,left=400,width=500,height=400,resizable=no");
+		})
+
+		$("button[name='submit']").bind("click",function() {
 			var tr = $(this).parents("tr");
 			var instanceNo = tr.children("td:eq(1)").text();
 			var instanceId = tr.children("td:first").text();
 
-			window.open("/czsp/selectNextNode?instanceId=" + instanceId,"","top=100,left=100,width=500,height=200");
+			window.open("/czsp/selectNextNode?instanceId=" + instanceId,
+						"提交页面", "top=100,left=100,width=500,height=200,resizable=no");
 		})
 
 		$("button[name='del']").bind("click", function() {
@@ -99,71 +145,10 @@
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {
-					console.log(re.result);
-					if (re.result == 'success')
-						location.reload();
+					resultPrompt(re,false);
 				}
 			});
 		})
-
-		$("button[name='edt']")
-				.bind(
-						"click",
-						function() {
-							var tr = $(this).parents("tr");
-							var uId = tr.children("td:first").text();
-							var uName = tr.children("td:eq(1)").text();
-							tr.children("td").remove();
-							tr.append("<td>" + uId + "</td>");
-							tr
-									.append("<td><input type='text' name='name' value='"+uName+"'/></td>");
-							tr
-									.append("<td><button name='upd' uId='"+uId+"'>update</button></td>");
-
-							tr.find("button").bind("click", {
-								id : uId
-							}, update)
-						})
-
-		$("button[name='add']").bind("click", function() {
-			var uName = $("input[name='newName']").val();
-			var data = {
-				name : uName
-			}
-			$.ajax({
-				url : '/insert',
-				"data" : data,
-				dataType : 'json',
-				type : 'POST',
-				success : function(re) {
-					console.log(re.result);
-					if (re.result == 'success')
-						location.reload();
-				}
-			});
-		})
-
-		function update(event) {
-			var tr = $(this).parents("tr");
-			var uName = tr.find("input[name='name']").val();
-			var data = {
-				id : event.data.id,
-				name : uName
-			}
-			console.log(data);
-
-			$.ajax({
-				url : '/update',
-				"data" : data,
-				dataType : 'json',
-				type : 'POST',
-				success : function(re) {
-					console.log(re.result);
-					if (re.result == 'success')
-						location.reload();
-				}
-			});
-		}
 	</script>
 </body>
 </html>

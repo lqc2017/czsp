@@ -13,6 +13,7 @@ import org.nutz.mvc.annotation.Ok;
 
 import czsp.MainSetup;
 import czsp.common.util.MessageUtil;
+import czsp.user.UserModule;
 import czsp.user.dao.UserOperationDao;
 import czsp.user.model.UserOperation;
 import czsp.workflow.dao.WfInstanceDao;
@@ -35,13 +36,13 @@ public class WFModule {
 
 	@Inject
 	private WFOperation wfOperation;
-	
+
 	@Inject
 	private WfInstanceDao wfInstanceDao;
-	
+
 	@Inject
 	private UserOperationDao userOperationDao;
-	
+
 	final Log log = Logs.getLog(MainSetup.class);
 
 	@At("/showList")
@@ -66,14 +67,16 @@ public class WFModule {
 	public Map<String, Object> createInstance() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			wfOperation.initInstance();
+			String userId = UserModule.loginAuth(map);
+			if (userId != null) {
+				wfOperation.initInstance(userId);
+				map.put("result", "success");
+			}
 		} catch (Exception e) {
 			map.put("result", "fail");
 		}
-		map.put("result", "success");
 		return map;
 	}
-
 
 	/**
 	 * 全琛 2018年2月24日 删除流程
@@ -107,9 +110,8 @@ public class WFModule {
 		// 查询最近一条历史提交操作记录
 		UserOperation operation = userOperationDao.getLatestOperation(instanceId, "'提交','特送'");
 		WfHisInstance hisInstance = null;
-		if(operation!=null)
+		if (operation != null)
 			hisInstance = wfInstanceDao.getHisInstanceByInstanceId(operation.getPreInstanceId());
-		
 
 		// 查询节点信息
 		map.put("instance", instance);
@@ -118,49 +120,52 @@ public class WFModule {
 		map.put("routes", routes);
 		return map;
 	}
-	
+
 	/**
 	 * 全琛 2018年2月25日 提交操作
 	 */
 	@At("/submit")
 	@Ok("json")
-	public Map<String, Object> submit(String routeId,String instanceId) {
+	public Map<String, Object> submit(String routeId, String instanceId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			WfRoute route = wfRouteDao.getRouteByRouteId(routeId);
-			WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(instanceId);
-			if ("1".equals(route.getIsTesong())) {
-				System.out.println("特送节点");
-				wfOperation.submitWF(route,curInstance,"特送");
-			} else {
-				System.out.println("默认节点");
-				wfOperation.submitWF(route,curInstance,"提交");
+			String userId = UserModule.loginAuth(map);
+			if (userId != null) {
+				WfRoute route = wfRouteDao.getRouteByRouteId(routeId);
+				WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(instanceId);
+				if ("1".equals(route.getIsTesong())) {
+					wfOperation.submitWF(route, curInstance, "特送", userId);
+				} else {
+					wfOperation.submitWF(route, curInstance, "提交", userId);
+				}
+				map.put("result", "success");
 			}
-			map.put("result", "success");
 		} catch (Exception e) {
 			map.put("result", "fail");
 			map.put("message", MessageUtil.getStackTraceInfo(e));
 		}
 		return map;
 	}
-	
+
 	/**
 	 * 全琛 2018年2月25日 回退操作
 	 */
 	@At("/retreat")
 	@Ok("json")
-	public Map<String, Object> retreat(String hisInstanceId,String instanceId) {
+	public Map<String, Object> retreat(String hisInstanceId, String instanceId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(instanceId);
-			WfHisInstance hisInstance = wfOperation.getHisInstanceByInstanceId(hisInstanceId);
-			//wfOperation.retreatWF(preNodes,curInstance,"回退");
-			wfOperation.retreatWF(hisInstance,curInstance,"回退");
+			String userId = UserModule.loginAuth(map);
+			if (userId != null) {
+				WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(instanceId);
+				WfHisInstance hisInstance = wfOperation.getHisInstanceByInstanceId(hisInstanceId);
+				wfOperation.retreatWF(hisInstance, curInstance, "回退",userId);
+				map.put("result", "success");
+			}
 		} catch (Exception e) {
 			map.put("result", "fail");
 			map.put("message", MessageUtil.getStackTraceInfo(e));
 		}
-		map.put("result", "success");
 		return map;
 	}
 }

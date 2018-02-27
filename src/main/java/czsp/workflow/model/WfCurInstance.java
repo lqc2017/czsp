@@ -38,6 +38,40 @@ public class WfCurInstance {
 	@Column(hump = true)
 	private String userId;
 
+	public WfCurInstance() {
+	}
+
+	/**
+	 * @param instanceId
+	 *            实例id
+	 * @param instanceNo
+	 *            实例编号一个编号对应一个环节
+	 * @param nodeId
+	 *            节点id
+	 * @param ifRetrieve
+	 *            是否可回收
+	 * @param ifSign
+	 *            是否已签收
+	 * @param ifValid
+	 *            是否合法
+	 * @param createTime
+	 *            创建时间
+	 * @param userId
+	 *            操作人id
+	 */
+	public WfCurInstance(String instanceId, String instanceNo, String nodeId, String ifRetrieve, String ifSign,
+			String ifValid, Date createTime, String userId) {
+		super();
+		this.instanceId = instanceId;
+		this.instanceNo = instanceNo;
+		this.nodeId = nodeId;
+		this.ifRetrieve = ifRetrieve;
+		this.ifSign = ifSign;
+		this.ifValid = ifValid;
+		this.createTime = createTime;
+		this.userId = userId;
+	}
+
 	public String getInstanceId() {
 		return instanceId;
 	}

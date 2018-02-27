@@ -37,11 +37,11 @@ public class WFOperation extends WfInstanceDao {
 	final Log log = Logs.getLog(MainSetup.class);
 
 	/**
-	 * 全琛 2018年2月24日 提交
+	 * 全琛 2018年2月24日 提交&特送
 	 * 
 	 * @throws Exception
 	 */
-	public void submitWF(WfRoute route, WfCurInstance curInstance, String opType) throws Exception {
+	public void submitWF(WfRoute route, WfCurInstance curInstance, String opType, String userId) throws Exception {
 		// 当前instance无效
 		if ("0".equals(curInstance.getIfValid())) {
 			throw new Exception("this instance is not valid,please deal it.");
@@ -57,20 +57,16 @@ public class WFOperation extends WfInstanceDao {
 			public void run() {
 				archive(curInstance);
 				String newInstanceId = null;
+				String instanceNo = curInstance.getInstanceNo();
 
-				WfCurInstance newInstance = new WfCurInstance();
-				newInstance.setCreateTime(new Date());
-				newInstance.setIfSign("0");
-				newInstance.setIfRetrieve("1");
-				newInstance.setIfValid("1");
-				newInstance.setNodeId(nextNodeId);
-				// newInstance.setUserId(userId);
+				WfCurInstance newInstance = new WfCurInstance(null, null, nextNodeId, "1", "0", "1", new Date(),
+						userId);
 				// 如果下一节点不是该环节最后一个节点
 				if (!"1".equals(nextNode.getIsEnd())) {
 					// 初始化一条新记录并保存到curinstance
 					newInstanceId = dao.insert(newInstance).getInstanceId();
-					// 更新newInstance的编号
-					newInstance.setInstanceNo(curInstance.getInstanceNo());
+					// 同一环节保持编号一致
+					newInstance.setInstanceNo(instanceNo);
 					dao.update(newInstance);
 				} else {
 					if (hasNextPhase) {
@@ -81,16 +77,13 @@ public class WFOperation extends WfInstanceDao {
 								+ wfRouteDao.getDefaultRoute(nextPhaseId, startNode.getWfCurNode()).getNextNode();
 						newInstance.setNodeId(nextNodeId);
 						// 初始化一条新记录并保存到curinstance
-						dao.insert(newInstance);
+						instanceNo = dao.insert(newInstance).getInstanceNo();
 					} else {
 						// 将app的状态置为办结
 					}
 				}
 
-				// 保存记录到user_op
-				UserOperation operation = new UserOperation(opType, new Date(), null, curInstance.getNodeId(),
-						curInstance.getInstanceId(), newInstanceId);
-				userOperationDao.addOperation(operation);
+				cascade(opType, userId, curInstance, newInstanceId, instanceNo);
 			}
 
 			// 遍历查找下一环节
@@ -106,16 +99,17 @@ public class WFOperation extends WfInstanceDao {
 			}
 		});
 
-		// 修改app表
-		// todo..
 	}
 
 	/**
 	 * 全琛 2018年2月25日 回退
 	 * 
+	 * @param userId
+	 * 
 	 * @throws Exception
 	 */
-	public void retreatWF(WfHisInstance hisInstance, WfCurInstance curInstance, String opType) throws Exception {
+	public void retreatWF(WfHisInstance hisInstance, WfCurInstance curInstance, String opType, String userId)
+			throws Exception {
 		if (hisInstance.getNodeId().endsWith("00"))
 			throw new Exception("cant't retreat to start node.");
 
@@ -123,27 +117,17 @@ public class WFOperation extends WfInstanceDao {
 			public void run() {
 				archive(curInstance);
 
-				WfCurInstance newInstance = new WfCurInstance();
-				newInstance.setCreateTime(new Date());
-				newInstance.setIfSign("1");
-				newInstance.setIfRetrieve("0");
-				newInstance.setIfValid("1");
-				newInstance.setNodeId(hisInstance.getNodeId());
-				// newInstance.setUserId(userId);
+				WfCurInstance newInstance = new WfCurInstance(null, null, hisInstance.getNodeId(), "0", "1", "1",
+						new Date(), userId);
 				String newInstanceId = dao.insert(newInstance).getInstanceId();
 
 				dao.update(WfCurInstance.class, Chain.make("instanceId", hisInstance.getInstanceId()).add("instanceNo",
 						hisInstance.getInstanceNo()), Cnd.where("instanceId", "=", newInstanceId));
 
-				// 保存记录到user_op
-				UserOperation operation = new UserOperation(opType, new Date(), null, curInstance.getNodeId(),
-						curInstance.getInstanceId(), hisInstance.getInstanceId());
-				userOperationDao.addOperation(operation);
+				cascade(opType, userId, curInstance, hisInstance.getInstanceId(), hisInstance.getInstanceNo());
 			}
 		});
 
-		// 修改app表
-		// todo..
 	}
 
 	/**
@@ -161,5 +145,25 @@ public class WFOperation extends WfInstanceDao {
 
 			}
 		});
+	}
+
+	/**
+	 * 全琛 2018年2月27日 串联操作其他表
+	 * 
+	 * @param opType
+	 * @param userId
+	 * @param curInstance
+	 * @param newInstanceId
+	 * @param instanceNo
+	 */
+	public void cascade(String opType, String userId, WfCurInstance curInstance, String newInstanceId,
+			String instanceNo) {
+		// 保存记录到user_op
+		UserOperation operation = new UserOperation(opType, new Date(), userId, curInstance.getNodeId(),
+				curInstance.getInstanceId(), newInstanceId);
+		userOperationDao.addOperation(operation);
+
+		// 修改app表
+		// todo..
 	}
 }

@@ -13,38 +13,41 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>人员</title>
+<title>人员列表</title>
 <script src="/czsp/static/js/jquery.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <%
 	Map map = (HashMap) request.getAttribute("obj");
+	UserInfo userInfo = (UserInfo) map.get("userInfo");
+	if (userInfo == null)
+		userInfo = new UserInfo();
 %>
 <body>
-	<form action="/czsp/user/create">
-		<label for="departmentId">部门</label>：
-		 <select id="departmentId" name="departmentId" class="required">
-		 	<option value="">请选择</option>
+	<form action="/czsp/user/change">
+		<label for="departmentId">部门</label>： <select id="departmentId" name="departmentId" class="required">
+			<option value="">请选择</option>
 			<%
 				List<Record> departments = (List<Record>) map.get("departments");
 				for (Record department : departments) {
 			%>
-			<option value="<%=department.get("id")%>"><%=department.get("name")%></option>
+			<option value="<%=department.get("id")%>"
+				<%if (userInfo.getDepartmentId() != null && department.get("id").equals(userInfo.getDepartmentId())) {%>
+				selected="selected" <%}%>><%=department.get("name")%></option>
 			<%
 				}
 			%>
-		</select> &nbsp <label for="name">姓名</label>： <input type="text" id="name" name="name" class="required"/> &nbsp <input
-			type="submit" value="新建用户">
+		</select> &nbsp <label for="name">姓名</label>： 
+		<input type="text" id="name" name="name" class="required" value="${obj.userInfo.name}" /> 
+			&nbsp <input type="submit"value="查询">
 	</form>
 	<br />
 	<br />
 	<br />
 	<table border="1">
 		<tr>
-			<th>用户ID</th>
 			<th>姓名</th>
 			<th>部门名称</th>
-			<th>角色名称</th>
 			<th>操作</th>
 		</tr>
 		<%
@@ -52,12 +55,9 @@
 			for (UserInfo user : users) {
 		%>
 		<tr>
-			<td><%=user.getUserId()%></td>
-			<td><%=user.getName()%></td>
+			<td title="<%=user.getUserId() %>"><%=user.getName()%></td>
 			<td><%=DicUtil.getInstance().getItemName(Constants.DIC_AHTU_DEPT_NO, user.getDepartmentId())%></td>
-			<td><%=user.getRoleId()%></td>
-			<td><button name="grant">授予角色</button>
-				<button name="del">删除</button></td>
+			<td><button name="select">选择</button></td>
 		</tr>
 		<%
 			}
@@ -66,25 +66,25 @@
 
 
 	<script type="text/javascript">
-		$("button[name='new']").bind("click", function() {
+		$("button[name='select']").bind("click", function() {
+			var tr = $(this).parents("tr");
+			var userId = tr.children("td:first").attr("title");
 
 			$.ajax({
-				url : '/czsp/user/create',
+				url : '/czsp/user/select?userId='+userId,
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {
 					console.log(re.result);
 					if (re.result == 'success')
-						location.reload();
+						window.opener.location.reload();
+					else
+						alert(re.message);
+					window.close();
 				}
 			});
 		})
 		
-		$("form").submit(function(e) {
-			if (!validate()) {
-				e.preventDefault();
-			}
-		});
 	</script>
 </body>
 </html>

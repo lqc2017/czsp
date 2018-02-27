@@ -9,12 +9,15 @@
 <%@ page import="czsp.workflow.model.WfHisInstance"%>
 <%@ page import="czsp.common.util.DicUtil"%>
 <%@ page import="czsp.common.Constants"%>
+<%@ page import="czsp.user.model.UserInfo"%>
+<%@ page import="org.nutz.dao.entity.Record"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>选节点</title>
 <script src="/czsp/static/js/jquery.js"></script>
+<script src="/czsp/static/js/common.js"></script>
 </head>
 
 <%
@@ -24,10 +27,15 @@ WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 %>
 <body>
 	<input id="instanceId" type="hidden" value="${obj.instance.instanceId}"/>
+	<%
+	UserInfo userInfo = (UserInfo)session.getAttribute("userInfo");
+	if(userInfo!=null){ %>
+	当前人员：<%=userInfo.getName() %><br/>
+	<%} %>
 	当前环节：<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_PHASE_NO,nodeDetail.getPhaseId())%>&nbsp&nbsp
 	当前节点：<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO,nodeDetail.getNodeId())%>
-	<br /> 下一节点：
-	<select name="nextNode">
+	<br /> <label for="nextNode">下一节点</label>：
+	<select id="nextNode" name="nextNode" class="required">
 		<option value="">请选择</option>
 		<%
 			List<WfRoute> routes = (List<WfRoute>) map.get("routes");
@@ -53,7 +61,7 @@ WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 		<%
 			}
 		%>
-	</select> 办理人员：
+	</select> <label>办理人员：</label>
 	<select><option>请选择</option></select>
 	<br />
 	<button name="confirm">确定</button>
@@ -80,10 +88,9 @@ WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 				success : function(re) {
 					console.log(re.result);
 					if (re.result == 'success')
-						alert("success!");
+						window.opener.location.reload();
 					else
-						alert("message:" + re.message);
-					window.opener.location.reload(); 
+						alert("message : " + re.message);
 					window.close();
 				} 
 			});
@@ -94,16 +101,6 @@ WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 
 			window.close()
 		})
-
-		function validate() {
-			var nextNode = $("select[name='nextNode']").val();
-			if (nextNode != "")
-				return true;
-			else{
-				alert("请选择下一环节")
-				return false;
-			}
-		}
 	</script>
 </body>
 </html>

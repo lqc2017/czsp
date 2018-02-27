@@ -32,4 +32,26 @@ public class UserInfoDao {
 		List list = dao.query(UserInfo.class, cri);
 		return list;
 	}
+
+	/**
+	 * 全琛 2018年2月27日 根据主键获取用户
+	 */
+	public UserInfo getUserInfoByUserId(String userId) {
+		return dao.fetch(UserInfo.class, userId);
+	}
+
+	/**
+	 * 全琛 2018年2月27日 根据条件获取用户列表
+	 */
+	public List getListByCondition(UserInfo user) {
+		Criteria cri = Cnd.cri();
+
+		if (user.getName() != null)
+			cri.where().andLike("name", user.getName());
+
+		if (user.getDepartmentId() != null && !"".equals(user.getDepartmentId().trim()))
+			cri.where().andEquals("departmentId", user.getDepartmentId().trim());
+
+		return dao.query(UserInfo.class, cri);
+	}
 }
