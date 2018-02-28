@@ -101,27 +101,18 @@ public class UserModule {
 
 	@At("/select")
 	@Ok("json")
-	public Map<String, Object> select(@Param("userId")String userId) {
+	public Map<String, Object> select(@Param("userId") String userId) {
 		System.out.println(userId);
 		Map<String, Object> map = new HashMap<String, Object>();
-			UserInfo userInfo = userInfoDao.getUserInfoByUserId(userId);
-			if(userInfo == null){
+		UserInfo userInfo = userInfoDao.getUserInfoByUserId(userId);
+		if (userInfo == null) {
 			map.put("result", "fail");
 			map.put("message", "找不到该用户");
-			}else{
-				Mvcs.getHttpSession().setAttribute("userInfo",userInfo);
-				map.put("result", "success");
-			}
+		} else {
+			Mvcs.getHttpSession().setAttribute("userInfo", userInfo);
+			map.put("result", "success");
+		}
 		return map;
 	}
 
-	public static String loginAuth(Map map) {
-		UserInfo userInfo = (UserInfo) Mvcs.getHttpSession().getAttribute("userInfo");
-		if (userInfo == null) {
-			map.put("result", "fail");
-			map.put("message", "没有用户信息！请先登录或激活。");
-			return null;
-		}
-		return userInfo.getUserId();
-	}
 }

@@ -1,9 +1,11 @@
 package czsp.workflow;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.log.Log;
@@ -12,9 +14,13 @@ import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Ok;
 
 import czsp.MainSetup;
+import czsp.common.Constants;
+import czsp.common.util.DicUtil;
 import czsp.common.util.MessageUtil;
 import czsp.common.util.SessionUtil;
+import czsp.user.dao.UserInfoDao;
 import czsp.user.dao.UserOperationDao;
+import czsp.user.model.UserInfo;
 import czsp.user.model.UserOperation;
 import czsp.workflow.dao.WfInstanceDao;
 import czsp.workflow.dao.WfNodeDao;
@@ -43,6 +49,9 @@ public class WFModule {
 	@Inject
 	private UserOperationDao userOperationDao;
 
+	@Inject
+	private UserInfoDao userInfoDao;
+
 	final Log log = Logs.getLog(MainSetup.class);
 
 	@At("/showList")
@@ -53,6 +62,8 @@ public class WFModule {
 		List<WfNode> wfNodes = wfNodeDao.getList();
 		List<WfCurInstance> wfCurInstances = wfOperation.getCurInstanceList();
 		List<WfHisInstance> wfHisInstances = wfOperation.getHisInstanceList();
+
+		map.put("dicWfNode", DicUtil.getInstance().getDicMap().get(Constants.DIC_WF_NODE_NO));
 		map.put("wfNodes", wfNodes);
 		map.put("wfCurInstances", wfCurInstances);
 		map.put("wfHisInstances", wfHisInstances);
@@ -103,6 +114,10 @@ public class WFModule {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 获得实例
 		WfCurInstance instance = wfOperation.getInstanceByInstanceId(instanceId);
+		// 检查签收状态(service)
+		if (instance != null && "0".equals(instance.getIfSign())) {
+			wfOperation.signWf(SessionUtil.getCurrenUserId(), instance);
+		}
 		// 查询节点信息
 		VwfNodeDetail nodeDetail = wfNodeDao.getNodeDetailByNodeId(instance.getNodeId());
 		// 查询路本节点路由
@@ -126,11 +141,12 @@ public class WFModule {
 	 */
 	@At("/submit")
 	@Ok("json")
-	public Map<String, Object> submit(String routeId, String instanceId,String todoUserId) {
+	public Map<String, Object> submit(String routeId, String instanceId, String todoUserId) {
+		System.out.println("todoUserId" + todoUserId);
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String curUserId = SessionUtil.loginAuth(map);
-			if (curUserId != null) {
+			if (curUserId != null ) {
 				WfRoute route = wfRouteDao.getRouteByRouteId(routeId);
 				WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(instanceId);
 				if ("1".equals(route.getIsTesong())) {
@@ -165,6 +181,40 @@ public class WFModule {
 		} catch (Exception e) {
 			map.put("result", "fail");
 			map.put("message", MessageUtil.getStackTraceInfo(e));
+		}
+		return map;
+	}
+
+	@At("/getNextUserList")
+	@Ok("json")
+	public Map<String, Object> getNextUserList(String routeId, String hisInstanceId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			List<UserInfo> userInfos = new ArrayList<UserInfo>();
+			// 正常&特送提交人员列表
+			log.debug("routeId:" + routeId);
+			log.debug("hisInstanceId:" + hisInstanceId);
+			if (routeId != null && !"".equals(routeId)) {
+				// 根据路由获得下一节点名称
+				WfRoute route = wfRouteDao.getRouteByRouteId(routeId);
+				String nodeId = route.getPhaseId() + route.getNextNode();
+
+				// 根据节点查询该节点的操作人员
+				WfNode node = wfNodeDao.getNodeByNodeId(nodeId);
+				userInfos.addAll(userInfoDao.getListByRoleId(node.getRoleId()));
+			}
+			// 回退提交人员
+			if (hisInstanceId != null && !"".equals(routeId)) {
+				WfHisInstance hisInstance = wfOperation.getHisInstanceByInstanceId(hisInstanceId);
+				userInfos.add(userInfoDao.getUserInfoByUserId(hisInstance.getSignUserId()));
+			}
+			System.out.println("szie" + userInfos.size());
+			map.put("userInfos", userInfos);
+			map.put("result", "success");
+
+		} catch (Exception e) {
+			map.put("result", "fail");
+			map.put("message", map.put("message", MessageUtil.getStackTraceInfo(e)));
 		}
 		return map;
 	}

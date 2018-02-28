@@ -3,7 +3,6 @@ package czsp.workflow.model;
 import java.util.Date;
 
 import org.nutz.dao.entity.annotation.Column;
-import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.entity.annotation.Table;
 
 @Table("WF_HIS_INSTANCE")

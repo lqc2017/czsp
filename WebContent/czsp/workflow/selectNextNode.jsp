@@ -62,7 +62,7 @@ WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 			}
 		%>
 	</select> <label for="nextUser">办理人员：</label>
-	<select id="nextUser" name="nextUser" class="required"><option>请选择</option></select>
+	<select id="nextUser" name="nextUser"><option value=''>请选择</option></select>
 	<br />
 	<button name="confirm">确定</button>
 	<button name="cancel">取消</button>
@@ -99,9 +99,35 @@ WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 		})
 
 		$("button[name='cancel']").bind("click", function() {
-
+			window.opener.location.reload();
 			window.close()
 		})
+		
+		$("select[name='nextNode']").bind("change",function() {
+			$("select[name='nextUser']").children().remove();
+			if($("select[name='nextNode']").find("option:selected").attr("id")=="retreat")
+				target = "/czsp/getNextUserList?hisInstanceId=" + $("select[name='nextNode']").val();
+			else{
+				target = "/czsp/getNextUserList?routeId=" + $("select[name='nextNode']").val();
+				$("select[name='nextUser']").append("<option value=''>请选择</option>");
+			}
+			
+			$.ajax({
+				url : target,
+				dataType : 'json',
+				type : 'GET',
+				success : function(re) {
+					console.log(re.result);
+					if (re.result == 'success'){
+						var userInfoList = re.userInfos;
+						for(var i=0;i<userInfoList.length;i++){
+							$("select[name='nextUser']").append("<option value='"+userInfoList[i].userId+"'>"
+									+userInfoList[i].name+"</option>");
+						}
+					}
+				} 
+			});
+		});
 	</script>
 </body>
 </html>

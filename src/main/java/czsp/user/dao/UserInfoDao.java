@@ -54,4 +54,17 @@ public class UserInfoDao {
 
 		return dao.query(UserInfo.class, cri);
 	}
+
+	/**
+	 * 全琛 2018年2月28日 根据角色获取用户列表
+	 */
+	public List getListByRoleId(String roleId) {
+		String[] roleArr = roleId.split(",");
+		Criteria cri = Cnd.cri();
+		for (String role : roleArr) {
+			cri.where().orLike("roleId", role);
+		}
+		return dao.query(UserInfo.class, cri);
+	}
+
 }
