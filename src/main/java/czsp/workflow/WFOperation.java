@@ -12,6 +12,7 @@ import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
 
 import czsp.MainSetup;
+import czsp.common.util.SessionUtil;
 import czsp.user.dao.UserOperationDao;
 import czsp.user.model.UserOperation;
 import czsp.workflow.dao.WfInstanceDao;
@@ -41,7 +42,7 @@ public class WFOperation extends WfInstanceDao {
 	 * 
 	 * @throws Exception
 	 */
-	public void submitWF(WfRoute route, WfCurInstance curInstance, String opType, String userId) throws Exception {
+	public void submitWF(WfRoute route, WfCurInstance curInstance, String opType, String todoUserId) throws Exception {
 		// 当前instance无效
 		if ("0".equals(curInstance.getIfValid())) {
 			throw new Exception("this instance is not valid,please deal it.");
@@ -60,7 +61,7 @@ public class WFOperation extends WfInstanceDao {
 				String instanceNo = curInstance.getInstanceNo();
 
 				WfCurInstance newInstance = new WfCurInstance(null, null, nextNodeId, "1", "0", "1", new Date(),
-						userId);
+						todoUserId, null);
 				// 如果下一节点不是该环节最后一个节点
 				if (!"1".equals(nextNode.getIsEnd())) {
 					// 初始化一条新记录并保存到curinstance
@@ -83,7 +84,7 @@ public class WFOperation extends WfInstanceDao {
 					}
 				}
 
-				cascade(opType, userId, curInstance, newInstanceId, instanceNo);
+				cascade(opType, SessionUtil.getCurrenUserId(), curInstance, newInstanceId, instanceNo);
 			}
 
 			// 遍历查找下一环节
@@ -108,7 +109,7 @@ public class WFOperation extends WfInstanceDao {
 	 * 
 	 * @throws Exception
 	 */
-	public void retreatWF(WfHisInstance hisInstance, WfCurInstance curInstance, String opType, String userId)
+	public void retreatWF(WfHisInstance hisInstance, WfCurInstance curInstance, String opType)
 			throws Exception {
 		if (hisInstance.getNodeId().endsWith("00"))
 			throw new Exception("cant't retreat to start node.");
@@ -118,13 +119,13 @@ public class WFOperation extends WfInstanceDao {
 				archive(curInstance);
 
 				WfCurInstance newInstance = new WfCurInstance(null, null, hisInstance.getNodeId(), "0", "1", "1",
-						new Date(), userId);
+						new Date(), hisInstance.getSignUserId(), hisInstance.getSignUserId());
 				String newInstanceId = dao.insert(newInstance).getInstanceId();
 
 				dao.update(WfCurInstance.class, Chain.make("instanceId", hisInstance.getInstanceId()).add("instanceNo",
 						hisInstance.getInstanceNo()), Cnd.where("instanceId", "=", newInstanceId));
 
-				cascade(opType, userId, curInstance, hisInstance.getInstanceId(), hisInstance.getInstanceNo());
+				cascade(opType, SessionUtil.getCurrenUserId(), curInstance, hisInstance.getInstanceId(), hisInstance.getInstanceNo());
 			}
 		});
 

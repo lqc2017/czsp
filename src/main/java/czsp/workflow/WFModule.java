@@ -13,7 +13,7 @@ import org.nutz.mvc.annotation.Ok;
 
 import czsp.MainSetup;
 import czsp.common.util.MessageUtil;
-import czsp.user.UserModule;
+import czsp.common.util.SessionUtil;
 import czsp.user.dao.UserOperationDao;
 import czsp.user.model.UserOperation;
 import czsp.workflow.dao.WfInstanceDao;
@@ -67,7 +67,7 @@ public class WFModule {
 	public Map<String, Object> createInstance() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			String userId = UserModule.loginAuth(map);
+			String userId = SessionUtil.loginAuth(map);
 			if (userId != null) {
 				wfOperation.initInstance(userId);
 				map.put("result", "success");
@@ -126,17 +126,17 @@ public class WFModule {
 	 */
 	@At("/submit")
 	@Ok("json")
-	public Map<String, Object> submit(String routeId, String instanceId) {
+	public Map<String, Object> submit(String routeId, String instanceId,String todoUserId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			String userId = UserModule.loginAuth(map);
-			if (userId != null) {
+			String curUserId = SessionUtil.loginAuth(map);
+			if (curUserId != null) {
 				WfRoute route = wfRouteDao.getRouteByRouteId(routeId);
 				WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(instanceId);
 				if ("1".equals(route.getIsTesong())) {
-					wfOperation.submitWF(route, curInstance, "特送", userId);
+					wfOperation.submitWF(route, curInstance, "特送", todoUserId);
 				} else {
-					wfOperation.submitWF(route, curInstance, "提交", userId);
+					wfOperation.submitWF(route, curInstance, "提交", todoUserId);
 				}
 				map.put("result", "success");
 			}
@@ -155,11 +155,11 @@ public class WFModule {
 	public Map<String, Object> retreat(String hisInstanceId, String instanceId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			String userId = UserModule.loginAuth(map);
-			if (userId != null) {
+			String curUserId = SessionUtil.loginAuth(map);
+			if (curUserId != null) {
 				WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(instanceId);
 				WfHisInstance hisInstance = wfOperation.getHisInstanceByInstanceId(hisInstanceId);
-				wfOperation.retreatWF(hisInstance, curInstance, "回退",userId);
+				wfOperation.retreatWF(hisInstance, curInstance, "回退");
 				map.put("result", "success");
 			}
 		} catch (Exception e) {

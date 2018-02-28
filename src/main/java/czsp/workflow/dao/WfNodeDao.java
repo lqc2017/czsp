@@ -3,9 +3,7 @@ package czsp.workflow.dao;
 import java.util.List;
 
 import org.nutz.dao.Cnd;
-import org.nutz.dao.Condition;
 import org.nutz.dao.Dao;
-import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.loader.annotation.IocBean;

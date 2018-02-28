@@ -36,7 +36,10 @@ public class WfCurInstance {
 	private Date createTime;
 
 	@Column(hump = true)
-	private String userId;
+	private String todoUserId;
+
+	@Column(hump = true)
+	private String signUserId;
 
 	public WfCurInstance() {
 	}
@@ -56,11 +59,13 @@ public class WfCurInstance {
 	 *            是否合法
 	 * @param createTime
 	 *            创建时间
-	 * @param userId
-	 *            操作人id
+	 * @param todoUserId
+	 *            待办人id
+	 * @param signUserId
+	 *            签收人id
 	 */
 	public WfCurInstance(String instanceId, String instanceNo, String nodeId, String ifRetrieve, String ifSign,
-			String ifValid, Date createTime, String userId) {
+			String ifValid, Date createTime, String todoUserId, String signUserId) {
 		super();
 		this.instanceId = instanceId;
 		this.instanceNo = instanceNo;
@@ -69,7 +74,8 @@ public class WfCurInstance {
 		this.ifSign = ifSign;
 		this.ifValid = ifValid;
 		this.createTime = createTime;
-		this.userId = userId;
+		this.todoUserId = todoUserId;
+		this.signUserId = signUserId;
 	}
 
 	public String getInstanceId() {
@@ -128,12 +134,20 @@ public class WfCurInstance {
 		this.createTime = createTime;
 	}
 
-	public String getUserId() {
-		return userId;
+	public String getTodoUserId() {
+		return todoUserId;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setTodoUserId(String todoUserId) {
+		this.todoUserId = todoUserId;
+	}
+
+	public String getSignUserId() {
+		return signUserId;
+	}
+
+	public void setSignUserId(String signUserId) {
+		this.signUserId = signUserId;
 	}
 
 }

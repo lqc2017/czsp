@@ -19,6 +19,9 @@ public class UserInfo {
 	@Column(value = "ROLE_ID")
 	private String roleId;
 
+	@Column(value = "QX_ID")
+	private String qxId;
+
 	public String getUserId() {
 		return userId;
 	}
@@ -49,6 +52,14 @@ public class UserInfo {
 
 	public void setRoleId(String roleId) {
 		this.roleId = roleId;
+	}
+
+	public String getQxId() {
+		return qxId;
+	}
+
+	public void setQxId(String qxId) {
+		this.qxId = qxId;
 	}
 
 }

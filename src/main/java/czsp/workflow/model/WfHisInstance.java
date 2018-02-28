@@ -25,7 +25,7 @@ public class WfHisInstance {
 	private Date finishTime;
 
 	@Column(hump = true)
-	private String userId;
+	private String signUserId;
 
 	public WfHisInstance(WfCurInstance instance) {
 		this.instanceId = instance.getInstanceId();
@@ -33,7 +33,7 @@ public class WfHisInstance {
 		this.nodeId = instance.getNodeId();
 		this.createTime = instance.getCreateTime();
 		this.finishTime = new Date();
-		this.userId = instance.getUserId();
+		this.signUserId = instance.getSignUserId();
 	}
 
 	public WfHisInstance() {
@@ -80,12 +80,12 @@ public class WfHisInstance {
 		this.finishTime = finishTime;
 	}
 
-	public String getUserId() {
-		return userId;
+	public String getSignUserId() {
+		return signUserId;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setSignUserId(String signUserId) {
+		this.signUserId = signUserId;
 	}
 
 }

@@ -61,8 +61,8 @@ WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 		<%
 			}
 		%>
-	</select> <label>办理人员：</label>
-	<select><option>请选择</option></select>
+	</select> <label for="nextUser">办理人员：</label>
+	<select id="nextUser" name="nextUser" class="required"><option>请选择</option></select>
 	<br />
 	<button name="confirm">确定</button>
 	<button name="cancel">取消</button>
@@ -74,12 +74,13 @@ WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 
 			var param = $("select[name='nextNode']").val();
 			var instanceId = $("#instanceId").val();
+			var nextUserId = $("select[name='nextUser']").val();
 			var target = "";
 			
 			if($("select[name='nextNode']").find("option:selected").attr("id")=="retreat")
-				target = "/czsp/retreat?hisInstanceId=" + param + "&instanceId=" + instanceId;
+				target = "/czsp/retreat?hisInstanceId=" + param + "&instanceId=" + instanceId + "&todoUserId=" + nextUserId;
 			else
-				target = "/czsp/submit?routeId=" + param + "&instanceId=" + instanceId;
+				target = "/czsp/submit?routeId=" + param + "&instanceId=" + instanceId + "&todoUserId=" + nextUserId;
 
 			$.ajax({
 				url : target,

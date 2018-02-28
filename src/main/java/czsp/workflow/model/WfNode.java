@@ -20,6 +20,8 @@ public class WfNode {
 	private String isStart;
 	@Column(value = "IS_END")
 	private String isEnd;
+	@Column(value = "ROLE_ID")
+	private String roleId;
 
 	public String getNodeId() {
 		return nodeId;
@@ -67,6 +69,14 @@ public class WfNode {
 
 	public void setIsEnd(String isEnd) {
 		this.isEnd = isEnd;
+	}
+
+	public String getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
 	}
 
 }

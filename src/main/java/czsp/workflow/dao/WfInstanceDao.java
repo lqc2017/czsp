@@ -28,7 +28,6 @@ public class WfInstanceDao {
 		curInstance.setIfValid("1");
 		curInstance.setCreateTime(new Date());
 		curInstance.setNodeId("110100");
-		curInstance.setUserId(userId);
 		dao.insert(curInstance);
 	}
 
