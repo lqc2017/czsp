@@ -119,7 +119,27 @@ public class WFOperation extends WfInstanceDao {
 						hisInstance.getInstanceNo());
 			}
 		});
+	}
 
+	/**
+	 * 全琛 2018年3月1日 流转
+	 */
+	public void circltWF(WfCurInstance curInstance, String opType, String todoUserId) throws Exception {
+		if (todoUserId == null || todoUserId.trim().isEmpty()) {
+			throw new Exception("circulate failed,can not find this user");
+		}
+		Trans.exec(new Atom() {
+			public void run() {
+				curInstance.setTodoUserId(todoUserId);
+				curInstance.setSignUserId(null);
+				curInstance.setIfSign("0");
+				curInstance.setIfRetrieve("1");
+				dao.update(curInstance);
+
+				cascade(opType, SessionUtil.getCurrenUserId(), curInstance, curInstance.getInstanceId(),
+						curInstance.getInstanceNo());
+			}
+		});
 	}
 
 	/**
@@ -195,7 +215,6 @@ public class WFOperation extends WfInstanceDao {
 						+ wfRouteDao.getDefaultRoute(nextPhaseId, startNode.getWfCurNode()).getNextNode();
 			}
 		}
-
 		return nextNodeId;
 	}
 

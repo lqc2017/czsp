@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.log.Log;
@@ -141,14 +140,14 @@ public class WFModule {
 	 */
 	@At("/submit")
 	@Ok("json")
-	public Map<String, Object> submit(String routeId, String instanceId, String todoUserId) {
-		System.out.println("todoUserId" + todoUserId);
+	public Map<String, Object> submit(String routeId, String curInstanceId, String todoUserId) {
+		log.debug("todoUserId" + todoUserId);
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String curUserId = SessionUtil.loginAuth(map);
 			if (curUserId != null ) {
 				WfRoute route = wfRouteDao.getRouteByRouteId(routeId);
-				WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(instanceId);
+				WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(curInstanceId);
 				if ("1".equals(route.getIsTesong())) {
 					wfOperation.submitWF(route, curInstance, "特送", todoUserId);
 				} else {
@@ -168,12 +167,12 @@ public class WFModule {
 	 */
 	@At("/retreat")
 	@Ok("json")
-	public Map<String, Object> retreat(String hisInstanceId, String instanceId) {
+	public Map<String, Object> retreat(String hisInstanceId, String curInstanceId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String curUserId = SessionUtil.loginAuth(map);
 			if (curUserId != null) {
-				WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(instanceId);
+				WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(curInstanceId);
 				WfHisInstance hisInstance = wfOperation.getHisInstanceByInstanceId(hisInstanceId);
 				wfOperation.retreatWF(hisInstance, curInstance, "回退");
 				map.put("result", "success");
@@ -184,16 +183,39 @@ public class WFModule {
 		}
 		return map;
 	}
-
+	
+	/**
+	 * 全琛 2018年2月25日 流转操作
+	 */
+	@At("/circulate")
+	@Ok("json")
+	public Map<String, Object> circulate(String curInstanceId, String todoUserId) {
+		log.debug("todoUserId" + todoUserId);
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			String curUserId = SessionUtil.loginAuth(map);
+			if (curUserId != null ) {
+				WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(curInstanceId);
+				wfOperation.circltWF(curInstance, "流转", todoUserId);
+				map.put("result", "success");
+			}
+		} catch (Exception e) {
+			map.put("result", "fail");
+			map.put("message", MessageUtil.getStackTraceInfo(e));
+		}
+		return map;
+	}
+	
 	@At("/getNextUserList")
 	@Ok("json")
-	public Map<String, Object> getNextUserList(String routeId, String hisInstanceId) {
+	public Map<String, Object> getNextUserList(String routeId, String hisInstanceId, String curInstanceId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			List<UserInfo> userInfos = new ArrayList<UserInfo>();
-			// 正常&特送提交人员列表
+			// 正常&特送人员列表
 			log.debug("routeId:" + routeId);
 			log.debug("hisInstanceId:" + hisInstanceId);
+			log.debug("curInstanceId:" + curInstanceId);
 			if (routeId != null && !"".equals(routeId)) {
 				// 根据路由获得下一节点名称
 				WfRoute route = wfRouteDao.getRouteByRouteId(routeId);
@@ -203,10 +225,19 @@ public class WFModule {
 				WfNode node = wfNodeDao.getNodeByNodeId(nodeId);
 				userInfos.addAll(userInfoDao.getListByRoleId(node.getRoleId()));
 			}
-			// 回退提交人员
+			// 回退人员
 			if (hisInstanceId != null && !"".equals(routeId)) {
 				WfHisInstance hisInstance = wfOperation.getHisInstanceByInstanceId(hisInstanceId);
 				userInfos.add(userInfoDao.getUserInfoByUserId(hisInstance.getSignUserId()));
+			}
+			// 流转人员列表
+			if(curInstanceId !=null && !"".equals(curInstanceId)){
+				WfCurInstance curInstence = wfOperation.getInstanceByInstanceId(curInstanceId);
+				// 根据节点查询该节点的操作人员
+				WfNode node = wfNodeDao.getNodeByNodeId(curInstence.getNodeId());
+				List<String> userIds = new ArrayList<String>(){{add(curInstence.getSignUserId());}};
+				userInfos.addAll(userInfoDao.getListByRoleId(node.getRoleId(),userIds));
+				
 			}
 			System.out.println("szie" + userInfos.size());
 			map.put("userInfos", userInfos);

@@ -64,15 +64,12 @@ public class WfInstanceDao {
 	public WfCurInstance getInstanceByInstanceId(String instanceId) {
 		return dao.fetch(WfCurInstance.class, instanceId);
 	}
-	
-	
+
 	/**
-	 * 全琛
-	 * 2018年2月26日
-	 * 根据主键获得历史流程记录
+	 * 全琛 2018年2月26日 根据主键获得历史流程记录
 	 */
 	public WfHisInstance getHisInstanceByInstanceId(String instanceId) {
-		return dao.fetch(WfHisInstance.class, Cnd.where("instanceId","=",instanceId));
+		return dao.fetch(WfHisInstance.class, Cnd.where("instanceId", "=", instanceId));
 	}
 
 	/**

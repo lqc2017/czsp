@@ -26,7 +26,7 @@ VwfNodeDetail nodeDetail = (VwfNodeDetail)map.get("nodeDetail");
 WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 %>
 <body>
-	<input id="instanceId" type="hidden" value="${obj.instance.instanceId}"/>
+	<input id="curInstanceId" type="hidden" value="${obj.instance.instanceId}"/>
 	<%
 	UserInfo userInfo = (UserInfo)session.getAttribute("userInfo");
 	if(userInfo!=null){ %>
@@ -60,6 +60,11 @@ WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 		</option>
 		<%
 			}
+			if(nodeDetail != null && !nodeDetail.getNodeId().endsWith("00")){
+		%>
+		<option id="circulate" value="<%=nodeDetail.getNodeId() %>"><%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, nodeDetail.getNodeId())%>(流转)
+		<%
+			}
 		%>
 	</select> <label for="nextUser">办理人员：</label>
 	<select id="nextUser" name="nextUser"><option value=''>请选择</option></select>
@@ -73,14 +78,18 @@ WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 				return;
 
 			var param = $("select[name='nextNode']").val();
-			var instanceId = $("#instanceId").val();
+			var curInstanceId = $("#curInstanceId").val();
 			var nextUserId = $("select[name='nextUser']").val();
 			var target = "";
 			
-			if($("select[name='nextNode']").find("option:selected").attr("id")=="retreat")
-				target = "/czsp/retreat?hisInstanceId=" + param + "&instanceId=" + instanceId + "&todoUserId=" + nextUserId;
+			var opType = $("select[name='nextNode']").find("option:selected").attr("id");
+			
+			if(opType=="retreat")
+				target = "/czsp/retreat?hisInstanceId=" + param + "&curInstanceId=" + curInstanceId + "&todoUserId=" + nextUserId;
+			else if(opType=="circulate")
+				target = "/czsp/circulate?curInstanceId=" + curInstanceId + "&todoUserId=" + nextUserId;
 			else
-				target = "/czsp/submit?routeId=" + param + "&instanceId=" + instanceId + "&todoUserId=" + nextUserId;
+				target = "/czsp/submit?routeId=" + param + "&curInstanceId=" + curInstanceId + "&todoUserId=" + nextUserId;
 
 			$.ajax({
 				url : target,
@@ -105,9 +114,14 @@ WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 		
 		$("select[name='nextNode']").bind("change",function() {
 			$("select[name='nextUser']").children().remove();
-			if($("select[name='nextNode']").find("option:selected").attr("id")=="retreat")
+			
+			var opType = $("select[name='nextNode']").find("option:selected").attr("id");
+			
+			if(opType=="retreat")
 				target = "/czsp/getNextUserList?hisInstanceId=" + $("select[name='nextNode']").val();
-			else{
+			else if(opType=="circulate"){
+				target = "/czsp/getNextUserList?curInstanceId=" + $("#curInstanceId").val();;
+			}else{
 				target = "/czsp/getNextUserList?routeId=" + $("select[name='nextNode']").val();
 				$("select[name='nextUser']").append("<option value=''>请选择</option>");
 			}

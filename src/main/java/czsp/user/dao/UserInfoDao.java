@@ -9,6 +9,7 @@ import org.nutz.ioc.Ioc;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.mvc.Mvcs;
 
+import czsp.common.util.StringWrapUtil;
 import czsp.user.model.UserInfo;
 
 @IocBean
@@ -64,6 +65,19 @@ public class UserInfoDao {
 		for (String role : roleArr) {
 			cri.where().orLike("roleId", role);
 		}
+		return dao.query(UserInfo.class, cri);
+	}
+
+	/**
+	 * 全琛 2018年3月1日 根据角色获取和排除条件筛选人员
+	 */
+	public List getListByRoleId(String roleId, List<String> notInUserIds) {
+		String[] roleArr = roleId.split(",");
+		Criteria cri = Cnd.cri();
+		for (String role : roleArr) {
+			cri.where().orLike("roleId", role);
+		}
+		cri.where().andNotIn("userId", StringWrapUtil.getSQLParamList(notInUserIds, null, null));
 		return dao.query(UserInfo.class, cri);
 	}
 
