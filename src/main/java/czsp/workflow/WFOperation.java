@@ -44,6 +44,20 @@ public class WFOperation extends WfInstanceDao {
 	private UserInfoDao userInfoDao;
 
 	final Log log = Logs.getLog(MainSetup.class);
+	
+	/**
+	 * 全琛 2018年2月24日 创建流程
+	 */
+	public WfCurInstance initInstance(String phases) {
+		WfCurInstance curInstance = new WfCurInstance();
+		curInstance.setIfSign("0");
+		curInstance.setIfRetrieve("1");
+		curInstance.setIfValid("1");
+		curInstance.setCreateTime(new Date());
+		//nodeId根据phases自己找
+		curInstance.setNodeId("110100");
+		return dao.insert(curInstance);
+	}
 
 	/**
 	 * 全琛 2018年2月24日 提交&特送

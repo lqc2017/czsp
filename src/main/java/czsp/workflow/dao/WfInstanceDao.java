@@ -19,19 +19,6 @@ public class WfInstanceDao {
 	protected Dao dao = ioc.get(Dao.class, "dao");
 
 	/**
-	 * 全琛 2018年2月24日 创建流程
-	 */
-	public void initInstance(String userId) {
-		WfCurInstance curInstance = new WfCurInstance();
-		curInstance.setIfSign("0");
-		curInstance.setIfRetrieve("1");
-		curInstance.setIfValid("1");
-		curInstance.setCreateTime(new Date());
-		curInstance.setNodeId("110100");
-		dao.insert(curInstance);
-	}
-
-	/**
 	 * 全琛 2018年2月24日 获取流转中实例列表
 	 */
 	public List getCurInstanceList() {

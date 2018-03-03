@@ -79,7 +79,7 @@ public class WFModule {
 		try {
 			String userId = SessionUtil.loginAuth(map);
 			if (userId != null) {
-				wfOperation.initInstance(userId);
+				wfOperation.initInstance(null);
 				map.put("result", "success");
 			}
 		} catch (Exception e) {

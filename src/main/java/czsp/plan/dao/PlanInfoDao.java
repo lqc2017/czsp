@@ -18,6 +18,9 @@ public class PlanInfoDao {
 	Ioc ioc = Mvcs.getIoc();
 	Dao dao = ioc.get(Dao.class, "dao");
 
+	/**
+	 * 全琛 2018年3月3日 获取计划列表
+	 */
 	public List getList() {
 		Criteria cri = Cnd.cri();
 		cri.getOrderBy().desc("CREATE_TIME");
@@ -25,10 +28,19 @@ public class PlanInfoDao {
 		return list;
 	}
 
+	/**
+	 * 全琛 2018年3月3日 新增计划
+	 */
 	public PlanInfo add(PlanInfo planInfo) {
-		// 初始化创建信息
 		planInfo.setCreateTime(new Date());
 		return dao.insert(planInfo);
+	}
+
+	/**
+	 * 全琛 2018年3月3日 修改计划
+	 */
+	public void update(PlanInfo planInfo) {
+		dao.update(planInfo);
 	}
 
 }

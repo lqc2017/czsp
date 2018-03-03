@@ -1,31 +1,41 @@
 package czsp.plan.entity;
 
-import org.nutz.dao.entity.annotation.Name;
-import org.nutz.dao.entity.annotation.Prev;
+
+import java.util.Date;
+
 import org.nutz.dao.entity.annotation.Column;
-import org.nutz.dao.entity.annotation.EL;
+import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.entity.annotation.Table;
 
 @Table("PLAN_APP")
 public class PlanApp {
 	@Name
-	@Prev(els = @EL("uuid(32)"))
+	@Column(value = "APP_ID")
 	private String appId;
 
-	@Column(hump = true)
+	@Column(value = "INSTANCE_NO")
 	private String instanceNo;
 
-	@Column(hump = true)
+	@Column(value = "CUR_NODE")
 	private String curNode;
 
-	@Column(hump = true)
+	@Column(value = "CUR_PHASE")
 	private String curPhase;
 
-	@Column(hump = true)
+	@Column(value = "STATUS")
 	private String status;
 
-	@Column(hump = true)
+	@Column(value = "LAST_OP_USER")
 	private String lastOpUser;
+
+	@Column(value = "LAST_OP_TIME")
+	private Date lastOpTime;
+
+	@Column(value = "OPED_USERS")
+	private String opedUsers;
+
+	@Column(value = "PHASES")
+	private String phases;
 
 	public String getAppId() {
 		return appId;
@@ -73,6 +83,30 @@ public class PlanApp {
 
 	public void setLastOpUser(String lastOpUser) {
 		this.lastOpUser = lastOpUser;
+	}
+
+	public Date getLastOpTime() {
+		return lastOpTime;
+	}
+
+	public void setLastOpTime(Date lastOpTime) {
+		this.lastOpTime = lastOpTime;
+	}
+
+	public String getOpedUsers() {
+		return opedUsers;
+	}
+
+	public void setOpedUsers(String opedUsers) {
+		this.opedUsers = opedUsers;
+	}
+
+	public String getPhases() {
+		return phases;
+	}
+
+	public void setPhases(String phases) {
+		this.phases = phases;
 	}
 
 }

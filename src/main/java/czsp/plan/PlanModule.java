@@ -1,6 +1,5 @@
 package czsp.plan;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +14,8 @@ import org.nutz.mvc.annotation.Param;
 
 import czsp.MainSetup;
 import czsp.common.util.MessageUtil;
-import czsp.common.util.SessionUtil;
-import czsp.plan.dao.PlanInfoDao;
 import czsp.plan.entity.PlanInfo;
+import czsp.plan.service.PlanInfoService;
 import czsp.user.model.UserInfo;
 
 @IocBean
@@ -25,7 +23,7 @@ import czsp.user.model.UserInfo;
 public class PlanModule {
 
 	@Inject
-	private PlanInfoDao planInfoDao;
+	private PlanInfoService planInfoService;
 
 	final Log log = Logs.getLog(MainSetup.class);
 
@@ -36,7 +34,7 @@ public class PlanModule {
 	@Ok("jsp:/czsp/plan/showList")
 	public Map<String, Object> showList() {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<UserInfo> infoList = planInfoDao.getList();
+		List<UserInfo> infoList = planInfoService.getList();
 
 		map.put("infoList", infoList);
 		return map;
@@ -50,7 +48,7 @@ public class PlanModule {
 	public Map<String, Object> create(@Param("..") PlanInfo newPlan) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			PlanInfo planInfo = planInfoDao.add(newPlan);
+			planInfoService.add(newPlan,null);
 		} catch (Exception e) {
 			log.error(MessageUtil.getStackTraceInfo(e));
 		}
