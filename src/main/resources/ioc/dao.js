@@ -6,7 +6,7 @@ var ioc = {
         type : "com.mchange.v2.c3p0.ComboPooledDataSource",
         fields : {
             driverClass : "oracle.jdbc.driver.OracleDriver",
-            jdbcUrl : "jdbc:oracle:thin:@192.168.1.102:1521:orcl",
+            jdbcUrl : "jdbc:oracle:thin:@localhost:1521:orcl",
             user : "czsp",
             password : "czsp"
         }   

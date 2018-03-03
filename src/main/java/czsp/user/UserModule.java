@@ -30,7 +30,7 @@ public class UserModule {
 
 	final Log log = Logs.getLog(MainSetup.class);
 
-	@At("/showList")
+	@At("/list")
 	@Ok("jsp:/czsp/user/showList")
 	public Map<String, Object> showList() {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -44,12 +44,13 @@ public class UserModule {
 	}
 
 	@At("/create")
-	@Ok(">>:/user/showList")
+	@Ok(">>:/user/list")
 	public Map<String, Object> create(@Param("..") UserInfo user) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			log.debug("new instanceId:" + userInfoDao.addUser(user));
+			log.debug("new userId:" + userInfoDao.addUser(user));
 		} catch (Exception e) {
+			log.error(MessageUtil.getStackTraceInfo(e));
 		}
 		return map;
 	}

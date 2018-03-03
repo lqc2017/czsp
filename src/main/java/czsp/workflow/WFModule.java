@@ -53,7 +53,7 @@ public class WFModule {
 
 	final Log log = Logs.getLog(MainSetup.class);
 
-	@At("/showList")
+	@At("/list")
 	@Ok("jsp:/czsp/workflow/showList")
 	public Map<String, Object> showList() {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -84,6 +84,7 @@ public class WFModule {
 			}
 		} catch (Exception e) {
 			map.put("result", "fail");
+			map.put("message", map.put("message", MessageUtil.getStackTraceInfo(e)));
 		}
 		return map;
 	}
@@ -145,7 +146,7 @@ public class WFModule {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String curUserId = SessionUtil.loginAuth(map);
-			if (curUserId != null ) {
+			if (curUserId != null) {
 				WfRoute route = wfRouteDao.getRouteByRouteId(routeId);
 				WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(curInstanceId);
 				if ("1".equals(route.getIsTesong())) {
@@ -183,7 +184,7 @@ public class WFModule {
 		}
 		return map;
 	}
-	
+
 	/**
 	 * 全琛 2018年2月25日 流转操作
 	 */
@@ -194,7 +195,7 @@ public class WFModule {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String curUserId = SessionUtil.loginAuth(map);
-			if (curUserId != null ) {
+			if (curUserId != null) {
 				WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(curInstanceId);
 				wfOperation.circltWF(curInstance, "流转", todoUserId);
 				map.put("result", "success");
@@ -205,7 +206,7 @@ public class WFModule {
 		}
 		return map;
 	}
-	
+
 	@At("/getNextUserList")
 	@Ok("json")
 	public Map<String, Object> getNextUserList(String routeId, String hisInstanceId, String curInstanceId) {
@@ -231,13 +232,17 @@ public class WFModule {
 				userInfos.add(userInfoDao.getUserInfoByUserId(hisInstance.getSignUserId()));
 			}
 			// 流转人员列表
-			if(curInstanceId !=null && !"".equals(curInstanceId)){
+			if (curInstanceId != null && !"".equals(curInstanceId)) {
 				WfCurInstance curInstence = wfOperation.getInstanceByInstanceId(curInstanceId);
 				// 根据节点查询该节点的操作人员
 				WfNode node = wfNodeDao.getNodeByNodeId(curInstence.getNodeId());
-				List<String> userIds = new ArrayList<String>(){{add(curInstence.getSignUserId());}};
-				userInfos.addAll(userInfoDao.getListByRoleId(node.getRoleId(),userIds));
-				
+				List<String> userIds = new ArrayList<String>() {
+					{
+						add(curInstence.getSignUserId());
+					}
+				};
+				userInfos.addAll(userInfoDao.getListByRoleId(node.getRoleId(), userIds));
+
 			}
 			System.out.println("szie" + userInfos.size());
 			map.put("userInfos", userInfos);
