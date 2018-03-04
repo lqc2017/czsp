@@ -2,7 +2,6 @@ package czsp.user.dao;
 
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
-import org.nutz.dao.sql.Criteria;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.log.Log;

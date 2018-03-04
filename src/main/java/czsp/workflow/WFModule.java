@@ -23,6 +23,7 @@ import czsp.user.model.UserInfo;
 import czsp.user.model.UserOperation;
 import czsp.workflow.dao.WfInstanceDao;
 import czsp.workflow.dao.WfNodeDao;
+import czsp.workflow.dao.WfPhaseDao;
 import czsp.workflow.dao.WfRouteDao;
 import czsp.workflow.model.WfCurInstance;
 import czsp.workflow.model.WfHisInstance;
@@ -31,10 +32,14 @@ import czsp.workflow.model.WfRoute;
 import czsp.workflow.model.view.VwfNodeDetail;
 
 @IocBean
+@At("/workflow")
 public class WFModule {
 
 	@Inject
 	private WfNodeDao wfNodeDao;
+
+	@Inject
+	private WfPhaseDao wfPhaseDao;
 
 	@Inject
 	private WfRouteDao wfRouteDao;
@@ -70,7 +75,7 @@ public class WFModule {
 	}
 
 	/**
-	 * 全琛 2018年2月24日 添加流程实例
+	 * 全琛 2018年2月24日 添加流程实例(测试模块，待删)
 	 */
 	@At("/createInstance")
 	@Ok("json")
@@ -79,7 +84,7 @@ public class WFModule {
 		try {
 			String userId = SessionUtil.loginAuth(map);
 			if (userId != null) {
-				wfOperation.initInstance(null);
+				wfOperation.initInstance("1101");
 				map.put("result", "success");
 			}
 		} catch (Exception e) {
@@ -244,7 +249,6 @@ public class WFModule {
 				userInfos.addAll(userInfoDao.getListByRoleId(node.getRoleId(), userIds));
 
 			}
-			System.out.println("szie" + userInfos.size());
 			map.put("userInfos", userInfos);
 			map.put("result", "success");
 
@@ -254,4 +258,19 @@ public class WFModule {
 		}
 		return map;
 	}
+
+	/**
+	 * 全琛 2018年3月4日 选择环节
+	 */
+	@At("/selectPhases")
+	@Ok("jsp:/czsp/workflow/selectPhases")
+	public Map<String, Object> selectPhases(String phaseIds) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		// 加载链表
+		List phases = wfPhaseDao.loadPhases();
+		map.put("phaseIds", phaseIds);
+		map.put("phases", phases);
+		return map;
+	}
+
 }

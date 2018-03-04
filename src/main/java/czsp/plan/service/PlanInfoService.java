@@ -22,7 +22,7 @@ public class PlanInfoService {
 
 	@Inject
 	private PlanAppDao planAppDao;
-	
+
 	@Inject
 	private WFOperation wfOperation;
 
@@ -38,15 +38,15 @@ public class PlanInfoService {
 				PlanInfo planInfo = planInfoDao.add(newPlan);
 
 				// 初始化app表
-				PlanApp planApp = planAppDao.add(planInfo);
-				
+				PlanApp planApp = planAppDao.add(planInfo, newPlanApp);
+
 				// 初始化流程表
-				WfCurInstance curInfstance = wfOperation.initInstance(planApp.getPhases());
+				WfCurInstance curInfstance = wfOperation.initInstance(planApp.getCurPhase());
 
 				// 更新info表关联字段
 				planInfo.setInstanceId(curInfstance.getInstanceId());
 				planInfoDao.update(planInfo);
-				
+
 				// 更新app表关联字段
 				planApp.setInstanceNo(curInfstance.getInstanceNo());
 				planApp.setCurNode(curInfstance.getNodeId());

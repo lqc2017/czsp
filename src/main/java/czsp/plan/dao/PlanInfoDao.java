@@ -43,4 +43,11 @@ public class PlanInfoDao {
 		dao.update(planInfo);
 	}
 
+	/**
+	 * 全琛 2018年3月4日 根据appId获得planInfo
+	 */
+	public PlanInfo getPlanInfoByAppId(String appId) {
+		return dao.fetch(PlanInfo.class, Cnd.where("appId", "=", appId));
+	}
+
 }

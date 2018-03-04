@@ -7,6 +7,7 @@
 <%@ page import="czsp.workflow.model.WfRoute"%>
 <%@ page import="czsp.workflow.model.view.VwfNodeDetail"%>
 <%@ page import="czsp.workflow.model.WfHisInstance"%>
+<%@ page import="czsp.workflow.model.WfCurInstance"%>
 <%@ page import="czsp.common.util.DicUtil"%>
 <%@ page import="czsp.common.Constants"%>
 <%@ page import="czsp.user.model.UserInfo"%>
@@ -24,6 +25,7 @@
 Map map = (HashMap)request.getAttribute("obj");
 VwfNodeDetail nodeDetail = (VwfNodeDetail)map.get("nodeDetail");
 WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
+WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 %>
 <body>
 	<input id="curInstanceId" type="hidden" value="${obj.instance.instanceId}"/>
@@ -54,7 +56,7 @@ WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 		<%
 			}
 			}
-			if (hisInstance != null && !hisInstance.getNodeId().endsWith("00")) {
+			if (hisInstance != null && !hisInstance.getNodeId().endsWith("00") && hisInstance.getInstanceNo().equals(curInstance.getInstanceNo())) {
 		%>
 		<option id="retreat" value="<%=hisInstance.getInstanceId() %>"><%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, hisInstance.getNodeId())%>(回退)
 		</option>
@@ -84,12 +86,13 @@ WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 			
 			var opType = $("select[name='nextNode']").find("option:selected").attr("id");
 			
+			var moduleMappingUrl = "/czsp/workflow";
 			if(opType=="retreat")
-				target = "/czsp/retreat?hisInstanceId=" + param + "&curInstanceId=" + curInstanceId + "&todoUserId=" + nextUserId;
+				target = moduleMappingUrl + "/retreat?hisInstanceId=" + param + "&curInstanceId=" + curInstanceId + "&todoUserId=" + nextUserId;
 			else if(opType=="circulate")
-				target = "/czsp/circulate?curInstanceId=" + curInstanceId + "&todoUserId=" + nextUserId;
+				target = moduleMappingUrl + "/circulate?curInstanceId=" + curInstanceId + "&todoUserId=" + nextUserId;
 			else
-				target = "/czsp/submit?routeId=" + param + "&curInstanceId=" + curInstanceId + "&todoUserId=" + nextUserId;
+				target = moduleMappingUrl + "/submit?routeId=" + param + "&curInstanceId=" + curInstanceId + "&todoUserId=" + nextUserId;
 
 			$.ajax({
 				url : target,
@@ -117,12 +120,13 @@ WfHisInstance hisInstance = (WfHisInstance)map.get("hisInstance");
 			
 			var opType = $("select[name='nextNode']").find("option:selected").attr("id");
 			
+			var moduleMappingUrl = "/czsp/workflow";
 			if(opType=="retreat")
-				target = "/czsp/getNextUserList?hisInstanceId=" + $("select[name='nextNode']").val();
+				target = moduleMappingUrl + "/getNextUserList?hisInstanceId=" + $("select[name='nextNode']").val();
 			else if(opType=="circulate"){
-				target = "/czsp/getNextUserList?curInstanceId=" + $("#curInstanceId").val();;
+				target = moduleMappingUrl + "/getNextUserList?curInstanceId=" + $("#curInstanceId").val();;
 			}else{
-				target = "/czsp/getNextUserList?routeId=" + $("select[name='nextNode']").val();
+				target = moduleMappingUrl + "/getNextUserList?routeId=" + $("select[name='nextNode']").val();
 				$("select[name='nextUser']").append("<option value=''>请选择</option>");
 			}
 			

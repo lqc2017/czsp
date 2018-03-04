@@ -16,6 +16,10 @@ import org.nutz.trans.Trans;
 
 import czsp.MainSetup;
 import czsp.common.util.SessionUtil;
+import czsp.plan.dao.PlanAppDao;
+import czsp.plan.dao.PlanInfoDao;
+import czsp.plan.entity.PlanApp;
+import czsp.plan.entity.PlanInfo;
 import czsp.user.dao.UserInfoDao;
 import czsp.user.dao.UserOperationDao;
 import czsp.user.model.UserInfo;
@@ -43,24 +47,30 @@ public class WFOperation extends WfInstanceDao {
 	@Inject
 	private UserInfoDao userInfoDao;
 
+	@Inject
+	private PlanInfoDao planInfoDao;
+
+	@Inject
+	private PlanAppDao planAppDao;
+
 	final Log log = Logs.getLog(MainSetup.class);
-	
+
 	/**
 	 * 全琛 2018年2月24日 创建流程
 	 */
-	public WfCurInstance initInstance(String phases) {
+	public WfCurInstance initInstance(String phaseId) {
 		WfCurInstance curInstance = new WfCurInstance();
 		curInstance.setIfSign("0");
 		curInstance.setIfRetrieve("1");
 		curInstance.setIfValid("1");
 		curInstance.setCreateTime(new Date());
-		//nodeId根据phases自己找
-		curInstance.setNodeId("110100");
+		// nodeId根据phaseId自己找
+		curInstance.setNodeId(wfNodeDao.getStartNode(phaseId).getNodeId());
 		return dao.insert(curInstance);
 	}
 
 	/**
-	 * 全琛 2018年2月24日 提交&特送
+	 * 全琛 2018年2月24日 提交&特送(归档时会清除app表的instanceNo)
 	 */
 	public void submitWF(WfRoute route, WfCurInstance curInstance, String opType, String todoUserId) throws Exception {
 		// 当前instance无效
@@ -69,50 +79,62 @@ public class WFOperation extends WfInstanceDao {
 		}
 
 		// 到时候phases字典从app表获取
-		String phases = "1101,1102,1103";
+		String phases = planAppDao.getAppByInstanceNo(curInstance.getInstanceNo()).getPhases();
+		/* 测试段代码 */
+		/*
+		 * if(phases == null){ phases = "1103,1101,1102"; }
+		 */
+		/* 测试段代码 */
 		String curPhaseId = route.getPhaseId();
 		String nextNodeId = route.getPhaseId() + route.getNextNode();
 
 		boolean hasNextPhase = phases.contains(curPhaseId) && !phases.endsWith(curPhaseId);
 		WfNode nextNode = wfNodeDao.getNodeByNodeId(nextNodeId);
 
-		nextNodeId = generateNextNodeId(nextNode, curPhaseId, phases);
+		WfNode newNextNode = generateNextNode(nextNode, curPhaseId, phases);
 
-		if (!"1".equals(nextNode.getIsEnd()) && (todoUserId == null || todoUserId.trim().isEmpty())) {
-			todoUserId = generateTodoUserId(nextNodeId);
+		if (!"1".equals(newNextNode.getIsEnd()) && (todoUserId == null || todoUserId.trim().isEmpty())) {
+			todoUserId = generateTodoUserId(newNextNode.getNodeId());
 			log.debug("用户未选择办理人，初始化办理人列表 : " + todoUserId);
 		}
 
-		WfCurInstance newInstance = new WfCurInstance(null, null, nextNodeId, "1", "0", "1", new Date(), todoUserId,
-				null);
+		WfCurInstance newInstance = new WfCurInstance(null, null, newNextNode.getNodeId(), "1", "0", "1", new Date(),
+				todoUserId, null);
 		Trans.exec(new Atom() {
 			public void run() {
-				archive(curInstance);
-				String newInstanceId = null;
+				PlanApp planApp = planAppDao.getAppByInstanceNo(curInstance.getInstanceNo());
 				String instanceNo = curInstance.getInstanceNo();
+				archive(curInstance);
+				// 归档后会有外键表会设成空值，此时要取出暂存
 
 				// 如果下一节点是该环节最后一个节点，判断是否有下一环节
 				if ("1".equals(nextNode.getIsEnd())) {
 					if (hasNextPhase) {
-						String newInstanceNo = dao.insert(newInstance).getInstanceNo();
-						instanceNo = newInstanceNo;
+						// 更新id和no
+						WfCurInstance curInstance = dao.insert(newInstance);
+
+						// 更新app表的no和curPhase
+						planApp.setInstanceNo(curInstance.getInstanceNo());
+						planApp.setCurPhase(newNextNode.getPhaseId());
 					} else {
 						// 将app的状态置为办结
+						planApp.setStatus("2");
+						planApp.setInstanceNo(null);
 					}
 				} else {
-					newInstanceId = dao.insert(newInstance).getInstanceId();
-					// 同一环节保持编号一致
+					// 只更新id不更新no
+					dao.insert(newInstance);
 					newInstance.setInstanceNo(instanceNo);
 					dao.update(newInstance);
 				}
-
-				cascade(opType, SessionUtil.getCurrenUserId(), curInstance, newInstanceId, instanceNo);
+				planAppDao.update(planApp);
+				cascade(opType, SessionUtil.getCurrenUserId(), curInstance, newInstance);
 			}
 		});
 	}
 
 	/**
-	 * 全琛 2018年2月25日 回退
+	 * 全琛 2018年2月25日 回退(归档时会清除app表的instanceNo)
 	 */
 	public void retreatWF(WfHisInstance hisInstance, WfCurInstance curInstance, String opType) throws Exception {
 		if (hisInstance.getNodeId().endsWith("00"))
@@ -120,17 +142,22 @@ public class WFOperation extends WfInstanceDao {
 
 		Trans.exec(new Atom() {
 			public void run() {
+				PlanApp planApp = planAppDao.getAppByInstanceNo(curInstance.getInstanceNo());
 				archive(curInstance);
 
 				WfCurInstance newInstance = new WfCurInstance(null, null, hisInstance.getNodeId(), "0", "1", "1",
 						new Date(), hisInstance.getSignUserId(), hisInstance.getSignUserId());
-				String newInstanceId = dao.insert(newInstance).getInstanceId();
+				newInstance = dao.insert(newInstance);
 
-				dao.update(WfCurInstance.class, Chain.make("instanceId", hisInstance.getInstanceId()).add("instanceNo",
-						hisInstance.getInstanceNo()), Cnd.where("instanceId", "=", newInstanceId));
+				dao.update(WfCurInstance.class,
+						Chain.make("instanceId", hisInstance.getInstanceId()).add("instanceNo",
+								hisInstance.getInstanceNo()),
+						Cnd.where("instanceId", "=", newInstance.getInstanceId()));
 
-				cascade(opType, SessionUtil.getCurrenUserId(), curInstance, hisInstance.getInstanceId(),
-						hisInstance.getInstanceNo());
+				newInstance = getInstanceByInstanceId(hisInstance.getInstanceId());
+
+				planAppDao.update(planApp);
+				cascade(opType, SessionUtil.getCurrenUserId(), curInstance, newInstance);
 			}
 		});
 	}
@@ -150,8 +177,7 @@ public class WFOperation extends WfInstanceDao {
 				curInstance.setIfRetrieve("1");
 				dao.update(curInstance);
 
-				cascade(opType, SessionUtil.getCurrenUserId(), curInstance, curInstance.getInstanceId(),
-						curInstance.getInstanceNo());
+				cascade(opType, SessionUtil.getCurrenUserId(), curInstance, curInstance);
 			}
 		});
 	}
@@ -169,17 +195,50 @@ public class WFOperation extends WfInstanceDao {
 	}
 
 	/**
-	 * 全琛 2018年2月27日 串联操作其他表
+	 * 全琛 2018年3月4日 串联操作其他表
+	 * 
+	 * @param opType
+	 *            操作类型
+	 * @param userId
+	 *            操作人
+	 * @param preInstance
+	 *            旧的curInstance
+	 * @param newInstance
+	 *            更新之后的curInstance
 	 */
-	public void cascade(String opType, String userId, WfCurInstance curInstance, String newInstanceId,
-			String instanceNo) {
+	protected void cascade(String opType, String userId, WfCurInstance preInstance, WfCurInstance newInstance) {
+		if (newInstance == null)
+			newInstance = new WfCurInstance();
+
 		// 保存记录到user_op
-		UserOperation operation = new UserOperation(opType, new Date(), userId, curInstance.getNodeId(),
-				curInstance.getInstanceId(), newInstanceId);
+		UserOperation operation = new UserOperation(opType, new Date(), userId, preInstance.getNodeId(),
+				preInstance.getInstanceId(), newInstance.getInstanceId());
 		userOperationDao.addOperation(operation);
 
-		// 修改app表
-		// todo..
+		// 修改app表(curNode\lastOpUser\lastOpTime\opedUsers)
+		PlanApp planApp = planAppDao.getAppByInstanceNo(newInstance.getInstanceNo());
+		if (newInstance != null && !opType.equals("流转")) {
+			planApp.setCurNode(newInstance.getNodeId());
+		}
+		planApp.setLastOpUser(userId);
+		planApp.setLastOpTime(new Date());
+		if (planApp.getOpedUsers() == null || "".equals(planApp.getOpedUsers()))
+			planApp.setOpedUsers(userId);
+		else
+			planApp.setOpedUsers(planApp.getOpedUsers() + "," + userId);
+		planAppDao.update(planApp);
+
+		// 流转操作不涉及info表，只修改curInstance表和部分app表字段
+		if (opType.equals("流转"))
+			return;
+
+		// 修改info表(curInstanceId)
+		PlanInfo planInfo = planInfoDao.getPlanInfoByAppId(planApp.getAppId());
+		if (newInstance.getInstanceId() != null) {
+			planInfo.setInstanceId(newInstance.getInstanceId());
+		}
+		planInfoDao.update(planInfo);
+
 	}
 
 	/**
@@ -209,7 +268,7 @@ public class WFOperation extends WfInstanceDao {
 	}
 
 	/**
-	 * 全琛 2018年2月28日 生成正确的nextNodeId
+	 * 全琛 2018年2月28日 初始化正确的nextNode
 	 * 
 	 * @param nextNode
 	 *            根据当前路由取得的下一节点
@@ -217,7 +276,7 @@ public class WFOperation extends WfInstanceDao {
 	 * @param phases
 	 * @return
 	 */
-	private String generateNextNodeId(WfNode nextNode, String curPhaseId, String phases) {
+	private WfNode generateNextNode(WfNode nextNode, String curPhaseId, String phases) {
 		boolean hasNextPhase = phases.contains(curPhaseId) && !phases.endsWith(curPhaseId);
 		String nextNodeId = nextNode.getNodeId();
 		if ("1".equals(nextNode.getIsEnd())) {
@@ -229,7 +288,7 @@ public class WFOperation extends WfInstanceDao {
 						+ wfRouteDao.getDefaultRoute(nextPhaseId, startNode.getWfCurNode()).getNextNode();
 			}
 		}
-		return nextNodeId;
+		return dao.fetch(WfNode.class, nextNodeId);
 	}
 
 	/**

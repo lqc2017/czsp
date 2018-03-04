@@ -1,5 +1,6 @@
 package czsp.plan.dao;
 
+import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.loader.annotation.IocBean;
@@ -13,15 +14,17 @@ public class PlanAppDao {
 	Ioc ioc = Mvcs.getIoc();
 	Dao dao = ioc.get(Dao.class, "dao");
 
-	public PlanApp add(PlanInfo planInfo) {
-		PlanApp planApp = new PlanApp();
+	public PlanApp add(PlanInfo planInfo, PlanApp planApp) {
 		planApp.setAppId(planInfo.getAppId());
 		planApp.setLastOpUser(planInfo.getCreateUserId());
 		planApp.setStatus("0");
 
 		// 以下字段页面生成
-		// planApp.setCurPhase(curPhase);
 		// planApp.setPhases(phases);
+
+		if (planApp.getPhases() != null) {
+			planApp.setCurPhase(planApp.getPhases().split(",")[0]);
+		}
 
 		// 以下字典由curInstance表提供
 		// planApp.setInstanceNo(instanceNo);
@@ -36,6 +39,13 @@ public class PlanAppDao {
 	 */
 	public void update(PlanApp planApp) {
 		dao.update(planApp);
+	}
+
+	/**
+	 * 全琛 2018年3月4日 根据instanceNo获得App
+	 */
+	public PlanApp getAppByInstanceNo(String instanceNo) {
+		return dao.fetch(PlanApp.class, Cnd.where("instanceNo", "=", instanceNo));
 	}
 
 }

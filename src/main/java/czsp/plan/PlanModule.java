@@ -14,6 +14,7 @@ import org.nutz.mvc.annotation.Param;
 
 import czsp.MainSetup;
 import czsp.common.util.MessageUtil;
+import czsp.plan.entity.PlanApp;
 import czsp.plan.entity.PlanInfo;
 import czsp.plan.service.PlanInfoService;
 import czsp.user.model.UserInfo;
@@ -45,10 +46,10 @@ public class PlanModule {
 	 */
 	@At("/create")
 	@Ok(">>:/plan/list")
-	public Map<String, Object> create(@Param("..") PlanInfo newPlan) {
+	public Map<String, Object> create(@Param("..") PlanInfo newPlan, @Param("..") PlanApp newPlanApp) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			planInfoService.add(newPlan,null);
+			planInfoService.add(newPlan, newPlanApp);
 		} catch (Exception e) {
 			log.error(MessageUtil.getStackTraceInfo(e));
 		}

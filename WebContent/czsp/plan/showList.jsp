@@ -24,9 +24,12 @@
 		}
 	%>
 	<form action="/czsp/plan/create">
-		<input type="hidden" id="createUserId" name="createUserId"
-			value="<%=userInfo.getUserId()%>" /> <label for="planName">规划名称</label>：
+		<input type="hidden" id="createUserId" name="createUserId" value="<%=userInfo.getUserId()%>" /> 
+		<label for="planName">规划名称</label>：
 		<input type="text" id="planName" name="planName" class="required" />
+		<label for="phases">规划环节</label>：<label id="phasesLabel"></label>
+		<input type="hidden" id="phases" name="phases" class="required" />
+		<button type="button" name="select">选择</button>
 		&nbsp <input type="submit" value="新建计划">
 	</form>
 	<br />
@@ -52,7 +55,7 @@
 				<td>${info.instanceId}</td>
 				<td><fmt:formatDate value="${info.createTime}" type="both" /></td>
 				<td>${info.createUserId}</td>
-				<td><button>查看实例</button></td>
+				<td><button>查看实例</button><button>启动计划</button></td>
 			</tr>
 		</c:forEach>
 	</table>
@@ -91,7 +94,16 @@
 			if (!validate()) {
 				e.preventDefault();
 			}
-		});
+		})
+		
+		var moduleMappingUrl = "/czsp/workflow";
+		$("button[name='select']").bind("click", function() {
+			var url = moduleMappingUrl + '/selectPhases';
+			if($("#phases").val() != undefined)
+				url = moduleMappingUrl + '/selectPhases?phaseIds='+$("#phases").val();
+			
+			window.open(url,"选择环节","top=100,left=400,width=250,height=200,resizable=no");
+		})
 	</script>
 </body>
 </html>
