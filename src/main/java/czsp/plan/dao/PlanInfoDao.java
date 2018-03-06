@@ -10,7 +10,7 @@ import org.nutz.ioc.Ioc;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.mvc.Mvcs;
 
-import czsp.plan.entity.PlanInfo;
+import czsp.plan.model.PlanInfo;
 
 @IocBean
 public class PlanInfoDao {

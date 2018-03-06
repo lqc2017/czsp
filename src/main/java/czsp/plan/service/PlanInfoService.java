@@ -9,8 +9,8 @@ import org.nutz.trans.Trans;
 
 import czsp.plan.dao.PlanAppDao;
 import czsp.plan.dao.PlanInfoDao;
-import czsp.plan.entity.PlanApp;
-import czsp.plan.entity.PlanInfo;
+import czsp.plan.model.PlanApp;
+import czsp.plan.model.PlanInfo;
 import czsp.user.model.UserInfo;
 import czsp.workflow.WFOperation;
 import czsp.workflow.model.WfCurInstance;

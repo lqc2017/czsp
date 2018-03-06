@@ -1,4 +1,4 @@
-package czsp.plan.entity;
+package czsp.plan.model;
 
 import java.util.Date;
 

@@ -14,8 +14,8 @@ import org.nutz.mvc.annotation.Param;
 
 import czsp.MainSetup;
 import czsp.common.util.MessageUtil;
-import czsp.plan.entity.PlanApp;
-import czsp.plan.entity.PlanInfo;
+import czsp.plan.model.PlanApp;
+import czsp.plan.model.PlanInfo;
 import czsp.plan.service.PlanInfoService;
 import czsp.user.model.UserInfo;
 
