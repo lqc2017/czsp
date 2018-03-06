@@ -63,9 +63,10 @@
 				<td>${instance.ifValid}</td>
 				<td><fmt:formatDate value="${instance.createTime}" type="both" /></td>
 				<td>
-				<c:if test="${(instance.ifSign == '0' && fn:contains(instance.todoUserId, userInfo.userId))
+				<c:if test="${userInfo.userId != null &&
+								((instance.ifSign == '0' && fn:contains(instance.todoUserId, userInfo.userId))
 								||(instance.ifSign == '1' && instance.signUserId == userInfo.userId)
-								|| instance.todoUserId == null }">
+								|| instance.todoUserId == null) }">
 				<button name="submit">提交</button>
 					<button name="del">删除</button></c:if></td>
 			</tr>

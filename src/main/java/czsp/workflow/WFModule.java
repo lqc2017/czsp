@@ -10,6 +10,7 @@ import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.annotation.At;
+import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Ok;
 
 import czsp.MainSetup;
@@ -17,6 +18,7 @@ import czsp.common.Constants;
 import czsp.common.util.DicUtil;
 import czsp.common.util.MessageUtil;
 import czsp.common.util.SessionUtil;
+import czsp.plan.service.PlanInfoService;
 import czsp.user.dao.UserInfoDao;
 import czsp.user.dao.UserOperationDao;
 import czsp.user.model.UserInfo;
@@ -55,6 +57,9 @@ public class WFModule {
 
 	@Inject
 	private UserInfoDao userInfoDao;
+
+	@Inject
+	private PlanInfoService planInfoService;
 
 	final Log log = Logs.getLog(MainSetup.class);
 
@@ -120,7 +125,7 @@ public class WFModule {
 		// 获得实例
 		WfCurInstance instance = wfOperation.getInstanceByInstanceId(instanceId);
 		// 检查签收状态(service)
-		if (instance != null && "0".equals(instance.getIfSign())) {
+		if (instance != null && "0".equals(instance.getIfSign()) && SessionUtil.getCurrenUserId() != null) {
 			wfOperation.signWf(SessionUtil.getCurrenUserId(), instance);
 		}
 		// 查询节点信息
@@ -270,6 +275,49 @@ public class WFModule {
 		List phases = wfPhaseDao.loadPhases();
 		map.put("phaseIds", phaseIds);
 		map.put("phases", phases);
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年3月6日 查看流程实例
+	 */
+	@At("/showInstance/?")
+	@Ok("jsp:/czsp/workflow/showInstance")
+	@Fail("jsp:/czsp/common/fail")
+	public Map<String, Object> showInstance(String planId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		// 加载当前流程实例ID
+		String curInstanceId = planInfoService.getPlanInfoByPlanId(planId).getInstanceId();
+		// 加载当前流程实例
+		WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(curInstanceId);
+		if (curInstance == null)
+			curInstance = new WfCurInstance();
+		// 加载历史流程实例
+		List<WfHisInstance> hisInstances = wfOperation.getHisInstanceByInstanceNo(curInstance.getInstanceNo());
+
+		if (hisInstances != null) {
+			// 防止hisInstances size为0的情况检测不到之前的环节
+			int size = -1;
+			// 遍历每一环节的历史流程
+			while (size < hisInstances.size()) {
+				size = hisInstances.size();
+				UserOperation operation = null;
+				if (size == 0)
+					operation = userOperationDao.getLatestOperation(curInstanceId, "'提交'");
+				else
+					operation = userOperationDao
+							.getLatestOperation(hisInstances.get(hisInstances.size() - 1).getInstanceId(), "'提交'");
+
+				if (operation != null) {
+					WfHisInstance instance = wfOperation.getHisInstanceByInstanceId(operation.getPreInstanceId());
+					hisInstances.addAll(wfOperation.getHisInstanceByInstanceNo(instance.getInstanceNo()));
+				}
+			}
+		}
+
+		map.put("dicWfNode", DicUtil.getInstance().getDicMap().get(Constants.DIC_WF_NODE_NO));
+		map.put("curInstance", curInstance);
+		map.put("hisInstances", hisInstances);
 		return map;
 	}
 

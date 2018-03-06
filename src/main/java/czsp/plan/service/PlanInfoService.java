@@ -56,4 +56,11 @@ public class PlanInfoService {
 
 	}
 
+	/**
+	 * 全琛 2018年3月6日 根据主键获得planInfo
+	 */
+	public PlanInfo getPlanInfoByPlanId(String planId) {
+		return planInfoDao.getPlanInfoByPlanId(planId);
+	}
+
 }

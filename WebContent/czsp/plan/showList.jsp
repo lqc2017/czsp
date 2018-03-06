@@ -55,12 +55,19 @@
 				<td>${info.instanceId}</td>
 				<td><fmt:formatDate value="${info.createTime}" type="both" /></td>
 				<td>${info.createUserId}</td>
-				<td><button>查看实例</button><button>启动计划</button></td>
+				<td><button name="instance">查看实例</button><button>启动计划</button></td>
 			</tr>
 		</c:forEach>
 	</table>
 
 	<script type="text/javascript">
+		$("button[name='instance']").bind("click", function() {
+			var tr = $(this).parents("tr");
+			var planId = tr.children("td:first").text();
+			
+			location.href = '/czsp/workflow/showInstance/'+planId;
+		})
+		
 		$("button[name='new']").bind("click", function() {
 
 			$.ajax({
