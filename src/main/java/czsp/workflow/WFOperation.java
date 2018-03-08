@@ -100,42 +100,28 @@ public class WFOperation extends WfInstanceDao {
 
 		WfCurInstance newInstance = new WfCurInstance(null, null, newNextNode.getNodeId(), "1", "0", "1", new Date(),
 				todoUserId, null);
+		String appId = planAppDao.getAppByInstanceNo(curInstance.getInstanceNo()).getAppId();
+
 		Trans.exec(new Atom() {
 			public void run() {
-				PlanApp planApp = planAppDao.getAppByInstanceNo(curInstance.getInstanceNo());
-				if (planApp == null)
-					planApp = new PlanApp();
-
-				PlanInfo planInfo = planInfoDao.getPlanInfoByAppId(planApp.getAppId());
-				String instanceNo = curInstance.getInstanceNo();
+				boolean isEnd = false;
 				archive(curInstance);
-				// 归档后会有外键表会设成空值，此时要取出暂存
 
 				// 如果下一节点是该环节最后一个节点，判断是否有下一环节
 				if ("1".equals(nextNode.getIsEnd())) {
 					if (hasNextPhase) {
 						// 更新id和no
-						WfCurInstance curInstance = dao.insert(newInstance);
-
-						// 更新app表的no和curPhase
-						planApp.setInstanceNo(curInstance.getInstanceNo());
-						planApp.setCurPhase(newNextNode.getPhaseId());
+						dao.insert(newInstance);
 					} else { // 办结
-						// 将app的状态置为办结
-						planApp.setStatus("2");
-						planApp.setInstanceNo(null);
-						
-						planInfo.setIsFinished("1");
-						planInfoDao.update(planInfo);
+						isEnd = true;
 					}
 				} else {
 					// 只更新id不更新no
 					dao.insert(newInstance);
-					newInstance.setInstanceNo(instanceNo);
+					newInstance.setInstanceNo(curInstance.getInstanceNo());
 					dao.update(newInstance);
 				}
-				planAppDao.update(planApp);
-				cascade(opType, SessionUtil.getCurrenUserId(), curInstance, newInstance);
+				cascade(opType, SessionUtil.getCurrenUserId(), appId, curInstance, newInstance, isEnd);
 			}
 		});
 	}
@@ -147,9 +133,9 @@ public class WFOperation extends WfInstanceDao {
 		if (hisInstance.getNodeId().endsWith("00"))
 			throw new Exception("cant't retreat to start node.");
 
+		String appId = planAppDao.getAppByInstanceNo(curInstance.getInstanceNo()).getAppId();
 		Trans.exec(new Atom() {
 			public void run() {
-				PlanApp planApp = planAppDao.getAppByInstanceNo(curInstance.getInstanceNo());
 				archive(curInstance);
 
 				WfCurInstance newInstance = new WfCurInstance(null, null, hisInstance.getNodeId(), "0", "1", "1",
@@ -163,8 +149,7 @@ public class WFOperation extends WfInstanceDao {
 
 				newInstance = getInstanceByInstanceId(hisInstance.getInstanceId());
 
-				planAppDao.update(planApp);
-				cascade(opType, SessionUtil.getCurrenUserId(), curInstance, newInstance);
+				cascade(opType, SessionUtil.getCurrenUserId(), appId, curInstance, newInstance, false);
 			}
 		});
 	}
@@ -184,7 +169,8 @@ public class WFOperation extends WfInstanceDao {
 				curInstance.setIfRetrieve("1");
 				dao.update(curInstance);
 
-				cascade(opType, SessionUtil.getCurrenUserId(), curInstance, curInstance);
+				cascade(opType, SessionUtil.getCurrenUserId(), curInstance.getInstanceNo(), curInstance, curInstance,
+						false);
 			}
 		});
 	}
@@ -208,12 +194,17 @@ public class WFOperation extends WfInstanceDao {
 	 *            操作类型
 	 * @param userId
 	 *            操作人
+	 * @param appId
+	 *            app主键
 	 * @param preInstance
 	 *            旧的curInstance
 	 * @param newInstance
 	 *            更新之后的curInstance
+	 * @param isEnd
+	 *            是否是最后一个节点
 	 */
-	protected void cascade(String opType, String userId, WfCurInstance preInstance, WfCurInstance newInstance) {
+	protected void cascade(String opType, String userId, String appId, WfCurInstance preInstance,
+			WfCurInstance newInstance, boolean isEnd) {
 		if (newInstance == null)
 			newInstance = new WfCurInstance();
 
@@ -222,17 +213,27 @@ public class WFOperation extends WfInstanceDao {
 				preInstance.getInstanceId(), newInstance.getInstanceId());
 		userOperationDao.addOperation(operation);
 
-		// 修改app表(curNode\lastOpUser\lastOpTime\opedUsers)
-		PlanApp planApp = planAppDao.getAppByInstanceNo(newInstance.getInstanceNo());
-		if (newInstance != null && !opType.equals("流转")) {
-			planApp.setCurNode(newInstance.getNodeId());
-		}
+		// 修改app表
+		PlanApp planApp = planAppDao.getAppByAppId(appId);
+		// 更新app表的LastOpUser和LastOpTime
 		planApp.setLastOpUser(userId);
 		planApp.setLastOpTime(new Date());
+		// 更新app表的opedUsers
 		if (planApp.getOpedUsers() == null || "".equals(planApp.getOpedUsers()))
 			planApp.setOpedUsers(userId);
 		else
 			planApp.setOpedUsers(planApp.getOpedUsers() + "," + userId);
+		// 更新app表的no和curPhase
+		planApp.setInstanceNo(newInstance.getInstanceNo());
+		planApp.setCurPhase(newInstance.getNodeId().substring(0, 4));
+		if (!opType.equals("流转")) {
+			planApp.setCurNode(newInstance.getNodeId());
+		}
+		// 更新app表的Status和InstanceNo
+		if (isEnd) {
+			planApp.setStatus("2");
+			planApp.setInstanceNo(null);
+		}
 		planAppDao.update(planApp);
 
 		// 流转操作不涉及info表，只修改curInstance表和部分app表字段
@@ -243,6 +244,8 @@ public class WFOperation extends WfInstanceDao {
 		PlanInfo planInfo = planInfoDao.getPlanInfoByAppId(planApp.getAppId());
 		if (newInstance.getInstanceId() != null) {
 			planInfo.setInstanceId(newInstance.getInstanceId());
+			if (isEnd)
+				planInfo.setIsFinished("1");
 		}
 		planInfoDao.update(planInfo);
 
