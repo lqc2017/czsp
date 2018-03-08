@@ -4,16 +4,21 @@ import java.util.List;
 
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
 
+import czsp.MainSetup;
 import czsp.plan.dao.PlanAppDao;
 import czsp.plan.dao.PlanInfoDao;
 import czsp.plan.model.PlanApp;
 import czsp.plan.model.PlanInfo;
-import czsp.user.model.UserInfo;
+import czsp.plan.model.view.VplanInfoDetail;
 import czsp.workflow.WFOperation;
+import czsp.workflow.dao.WfRouteDao;
 import czsp.workflow.model.WfCurInstance;
+import czsp.workflow.model.WfRoute;
 
 @IocBean
 public class PlanInfoService {
@@ -26,7 +31,10 @@ public class PlanInfoService {
 	@Inject
 	private WFOperation wfOperation;
 
-	public List<UserInfo> getList() {
+	@Inject
+	private WfRouteDao wfRouteDao;
+
+	public List<VplanInfoDetail> getList() {
 		return planInfoDao.getList();
 	}
 
@@ -35,6 +43,7 @@ public class PlanInfoService {
 		Trans.exec(new Atom() {
 			public void run() {
 				// 初始化info表
+				newPlan.setIsFinished("0");
 				PlanInfo planInfo = planInfoDao.add(newPlan);
 
 				// 初始化app表
@@ -61,6 +70,28 @@ public class PlanInfoService {
 	 */
 	public PlanInfo getPlanInfoByPlanId(String planId) {
 		return planInfoDao.getPlanInfoByPlanId(planId);
+	}
+
+	/**
+	 * 全琛 2018年3月8日 启动计划
+	 */
+	public void launchPlan(String planId) {
+		PlanInfo planInfo = planInfoDao.getPlanInfoByPlanId(planId);
+		WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(planInfo.getInstanceId());
+
+		// 找到开始节点的默认节点并推进一步
+		WfRoute route = wfRouteDao.getDefaultRoute(curInstance.getNodeId().substring(0, 4),
+				curInstance.getNodeId().substring(4));
+		try {
+			wfOperation.submitWF(route, curInstance, "启动", null);
+
+			PlanApp planApp = planAppDao.getAppByAppId(planInfo.getAppId());
+			planApp.setStatus("1");
+			planAppDao.update(planApp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

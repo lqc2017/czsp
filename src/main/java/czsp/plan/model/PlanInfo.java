@@ -31,6 +31,9 @@ public class PlanInfo {
 	@Column(value = "CREATE_USER_ID")
 	private String createUserId;
 
+	@Column(value = "IS_FINISHED")
+	private String isFinished;
+
 	public String getPlanId() {
 		return planId;
 	}
@@ -77,6 +80,14 @@ public class PlanInfo {
 
 	public void setCreateUserId(String createUserId) {
 		this.createUserId = createUserId;
+	}
+
+	public String getIsFinished() {
+		return isFinished;
+	}
+
+	public void setIsFinished(String isFinished) {
+		this.isFinished = isFinished;
 	}
 
 }

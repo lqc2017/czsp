@@ -103,6 +103,10 @@ public class WFOperation extends WfInstanceDao {
 		Trans.exec(new Atom() {
 			public void run() {
 				PlanApp planApp = planAppDao.getAppByInstanceNo(curInstance.getInstanceNo());
+				if (planApp == null)
+					planApp = new PlanApp();
+
+				PlanInfo planInfo = planInfoDao.getPlanInfoByAppId(planApp.getAppId());
 				String instanceNo = curInstance.getInstanceNo();
 				archive(curInstance);
 				// 归档后会有外键表会设成空值，此时要取出暂存
@@ -116,10 +120,13 @@ public class WFOperation extends WfInstanceDao {
 						// 更新app表的no和curPhase
 						planApp.setInstanceNo(curInstance.getInstanceNo());
 						planApp.setCurPhase(newNextNode.getPhaseId());
-					} else {
+					} else { // 办结
 						// 将app的状态置为办结
 						planApp.setStatus("2");
 						planApp.setInstanceNo(null);
+						
+						planInfo.setIsFinished("1");
+						planInfoDao.update(planInfo);
 					}
 				} else {
 					// 只更新id不更新no

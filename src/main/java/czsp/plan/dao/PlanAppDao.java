@@ -48,4 +48,11 @@ public class PlanAppDao {
 		return dao.fetch(PlanApp.class, Cnd.where("instanceNo", "=", instanceNo));
 	}
 
+	/**
+	 * 全琛 2018年3月8日 根据主键获得App
+	 */
+	public PlanApp getAppByAppId(String appId) {
+		return dao.fetch(PlanApp.class, appId);
+	}
+
 }

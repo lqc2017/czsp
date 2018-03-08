@@ -32,7 +32,7 @@
 	%>
 	<button name="new">新建流程</button>
 	&nbsp
-	<button name="ativate">激活</button>
+	<button name="activate">激活</button>
 	&nbsp
 	<button name="clear">清除(session)</button>
 	&nbsp
@@ -63,9 +63,9 @@
 				<td>${instance.ifValid}</td>
 				<td><fmt:formatDate value="${instance.createTime}" type="both" /></td>
 				<td>
-				<c:if test="${userInfo.userId != null &&
-								((instance.ifSign == '0' && fn:contains(instance.todoUserId, userInfo.userId))
-								||(instance.ifSign == '1' && instance.signUserId == userInfo.userId)
+				<c:if test="${userInfo.userId != null && obj.dicWfNode[instance.nodeId].first ne '1' &&
+								((instance.ifSign eq '0' && fn:contains(instance.todoUserId, userInfo.userId))
+								||(instance.ifSign eq '1' && instance.signUserId eq userInfo.userId)
 								|| instance.todoUserId == null) }">
 				<button name="submit">提交</button>
 					<button name="del">删除</button></c:if></td>
@@ -111,9 +111,9 @@
 			});
 		})
 
-		$("button[name='ativate']").bind("click", function() {
+		$("button[name='activate']").bind("click", function() {
 			$.ajax({
-				url : '/czsp/user/ativate',
+				url : '/czsp/user/activate',
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {

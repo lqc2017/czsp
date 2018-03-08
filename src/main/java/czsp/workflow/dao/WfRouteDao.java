@@ -37,6 +37,12 @@ public class WfRouteDao {
 
 	/**
 	 * 全琛 2018年2月26日 获得默认路由
+	 * 
+	 * @param phaseId
+	 *            4位的环节id
+	 * @param curNode
+	 *            2位的当前节点
+	 * @return
 	 */
 	public WfRoute getDefaultRoute(String phaseId, String curNode) {
 		Criteria cri = Cnd.cri();

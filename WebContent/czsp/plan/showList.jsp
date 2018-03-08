@@ -35,16 +35,19 @@
 	<br />
 	<br />
 	<br />
-	<button name="ativate">激活</button>
+	<button name="activate">激活</button>
 
 	<table border="1">
 		<tr>
 			<th>计划ID</th>
 			<th>申请ID</th>
 			<th>规划名称</th>
+			<th>当前环节</th>
+			<th>当前节点</th>
 			<th>当前实例ID</th>
 			<th>创建时间</th>
 			<th>创建人ID</th>
+			<th>是否办结</th>
 			<th>操作</th>
 		</tr>
 		<c:forEach var="info" items="${obj.infoList}">
@@ -52,10 +55,16 @@
 				<td>${info.planId}</td>
 				<td>${info.appId}</td>
 				<td>${info.planName}</td>
+				<td>${info.curPhase}</td>
+				<td>${info.curNode}</td>
 				<td>${info.instanceId}</td>
 				<td><fmt:formatDate value="${info.createTime}" type="both" /></td>
 				<td>${info.createUserId}</td>
-				<td><button name="instance">查看实例</button><button>启动计划</button></td>
+				<td><c:if test="${info.status eq '0'}">未流转</c:if>
+				<c:if test="${info.status eq '1'}">流转中</c:if>
+				<c:if test="${info.status eq '2'}">办结</c:if></td>
+				<td><button name="instance">查看实例</button>
+					<c:if test="${info.status eq '0'}"><button name="launch">启动计划</button></c:if></td>
 			</tr>
 		</c:forEach>
 	</table>
@@ -66,6 +75,20 @@
 			var planId = tr.children("td:first").text();
 			
 			location.href = '/czsp/workflow/showInstance/'+planId;
+		})
+		
+		$("button[name='launch']").bind("click", function() {
+			var tr = $(this).parents("tr");
+			var planId = tr.children("td:first").text();
+			
+			$.ajax({
+				url : '/czsp/plan/launch?planId='+planId,
+				dataType : 'json',
+				type : 'GET',
+				success : function(re) {
+					resultPrompt(re);
+				}
+			});
 		})
 		
 		$("button[name='new']").bind("click", function() {
@@ -80,9 +103,9 @@
 			});
 		})
 		
-		$("button[name='ativate']").bind("click", function() {
+		$("button[name='activate']").bind("click", function() {
 			$.ajax({
-				url : '/czsp/user/ativate',
+				url : '/czsp/user/activate',
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {

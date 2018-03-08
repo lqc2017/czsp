@@ -55,9 +55,9 @@ public class UserModule {
 		return map;
 	}
 
-	@At("/ativate")
+	@At("/activate")
 	@Ok("json")
-	public Map<String, Object> ativate() {
+	public Map<String, Object> activate() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (Mvcs.getHttpSession().getAttribute("userInfo") == null) {
 			UserInfo userInfo = userInfoDao.getUserInfoByUserId("100000");

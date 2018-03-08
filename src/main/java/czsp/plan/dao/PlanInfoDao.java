@@ -11,6 +11,7 @@ import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.mvc.Mvcs;
 
 import czsp.plan.model.PlanInfo;
+import czsp.plan.model.view.VplanInfoDetail;
 
 @IocBean
 public class PlanInfoDao {
@@ -24,7 +25,7 @@ public class PlanInfoDao {
 	public List getList() {
 		Criteria cri = Cnd.cri();
 		cri.getOrderBy().desc("CREATE_TIME");
-		List list = dao.query(PlanInfo.class, cri);
+		List list = dao.query(VplanInfoDetail.class, cri);
 		return list;
 	}
 
