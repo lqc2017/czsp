@@ -25,6 +25,9 @@ public class WfPhase {
 	@Column(value = "IS_END")
 	private String isEnd;
 
+	@Column(value = "WF_CODE")
+	private String wfCode;
+
 	public String getPhaseId() {
 		return phaseId;
 	}
@@ -71,6 +74,14 @@ public class WfPhase {
 
 	public void setNextPhaseId(String nextPhaseId) {
 		this.nextPhaseId = nextPhaseId;
+	}
+
+	public String getWfCode() {
+		return wfCode;
+	}
+
+	public void setWfCode(String wfCode) {
+		this.wfCode = wfCode;
 	}
 
 }

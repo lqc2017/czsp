@@ -60,7 +60,7 @@ public class UserModule {
 	public Map<String, Object> activate() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (Mvcs.getHttpSession().getAttribute("userInfo") == null) {
-			UserInfo userInfo = userInfoDao.getUserInfoByUserId("100000");
+			UserInfo userInfo = userInfoDao.getUserInfoByUserId("100001");
 			Mvcs.getHttpSession().setAttribute("userInfo", userInfo);
 			map.put("result", "success");
 		} else {

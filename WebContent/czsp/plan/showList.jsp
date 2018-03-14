@@ -74,7 +74,7 @@
 			var tr = $(this).parents("tr");
 			var planId = tr.children("td:first").text();
 			
-			location.href = '/czsp/workflow/showInstance/'+planId;
+			window.open('/czsp/workflow/showInstance/'+planId,"实例信息");
 		})
 		
 		$("button[name='launch']").bind("click", function() {

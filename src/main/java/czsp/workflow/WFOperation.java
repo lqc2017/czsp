@@ -80,11 +80,6 @@ public class WFOperation extends WfInstanceDao {
 
 		// 到时候phases字典从app表获取
 		String phases = planAppDao.getAppByInstanceNo(curInstance.getInstanceNo()).getPhases();
-		/* 测试段代码 */
-		/*
-		 * if(phases == null){ phases = "1103,1101,1102"; }
-		 */
-		/* 测试段代码 */
 		String curPhaseId = route.getPhaseId();
 		String nextNodeId = route.getPhaseId() + route.getNextNode();
 
@@ -163,14 +158,15 @@ public class WFOperation extends WfInstanceDao {
 		}
 		Trans.exec(new Atom() {
 			public void run() {
+				String appId = planAppDao.getAppByInstanceNo(curInstance.getInstanceNo()).getAppId();
+				
 				curInstance.setTodoUserId(todoUserId);
 				curInstance.setSignUserId(null);
 				curInstance.setIfSign("0");
 				curInstance.setIfRetrieve("1");
 				dao.update(curInstance);
 
-				cascade(opType, SessionUtil.getCurrenUserId(), curInstance.getInstanceNo(), curInstance, curInstance,
-						false);
+				cascade(opType, SessionUtil.getCurrenUserId(), appId, curInstance, curInstance, false);
 			}
 		});
 	}

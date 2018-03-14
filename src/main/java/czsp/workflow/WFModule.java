@@ -303,10 +303,10 @@ public class WFModule {
 				size = hisInstances.size();
 				UserOperation operation = null;
 				if (size == 0)
-					operation = userOperationDao.getLatestOperation(curInstanceId, "'提交'");
+					operation = userOperationDao.getLatestOperation(curInstanceId, "'提交','特送'");
 				else
 					operation = userOperationDao
-							.getLatestOperation(hisInstances.get(hisInstances.size() - 1).getInstanceId(), "'提交'");
+							.getLatestOperation(hisInstances.get(hisInstances.size() - 1).getInstanceId(), "'提交','特送'");
 
 				if (operation != null) {
 					WfHisInstance instance = wfOperation.getHisInstanceByInstanceId(operation.getPreInstanceId());
