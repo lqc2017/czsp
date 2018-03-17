@@ -2,10 +2,12 @@ package czsp.common.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.nutz.dao.entity.Record;
 
 public class DicUtil {
-	private static Map dicMap = new HashMap();
+	private static Map dicMap = new ConcurrentHashMap();
 	private static DicUtil dicUtil = null;
 
 	private DicUtil(){}

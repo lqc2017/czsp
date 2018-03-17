@@ -116,4 +116,16 @@ public class UserModule {
 		return map;
 	}
 
+	@At("/delete/?")
+	@Ok("json")
+	public Map<String, Object> delete(String userId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			userInfoService.deleteUser(userId);
+		} catch (Exception e) {
+			map.put("result", "fail");
+		}
+		map.put("result", "success");
+		return map;
+	}
 }

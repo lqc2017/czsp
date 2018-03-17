@@ -9,7 +9,6 @@ import org.nutz.ioc.Ioc;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.mvc.Mvcs;
 
-import czsp.common.util.StringWrapUtil;
 import czsp.user.model.UserInfo;
 
 @IocBean
@@ -77,6 +76,20 @@ public class UserInfoDao {
 		}
 		cri.where().andNotIn("userId", userIds);
 		return dao.query(UserInfo.class, cri);
+	}
+
+	/**
+	 * 全琛 2018年3月17日 删除用户
+	 */
+	public void deleteUser(String userId) {
+		dao.delete(UserInfo.class, userId);
+	}
+
+	/**
+	 * 全琛 2018年3月17日 更新用户
+	 */
+	public void updateUser(UserInfo userInfo) {
+		dao.update(userInfo);
 	}
 
 }

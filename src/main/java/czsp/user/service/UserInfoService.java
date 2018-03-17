@@ -67,4 +67,12 @@ public class UserInfoService {
 	public UserInfo getUserInfoByUserId(String userId) {
 		return userInfoDao.getUserInfoByUserId(userId);
 	}
+
+	public void deleteUser(String userId) {
+		userInfoDao.deleteUser(userId);
+	}
+
+	public void updateUser(UserInfo userInfo) {
+		userInfoDao.updateUser(userInfo);
+	}
 }

@@ -81,9 +81,27 @@
 		})
 		
 		$("button[name='grant']").bind("click", function() {
+			var tr = $(this).parents("tr");
+			var userId = tr.children("td:first").text();
 
-			window.open(UserURLPrefix + "/roleList=",
+			window.open(AuthURLPrefix + "/roleList?userId=" + userId,
 					"角色列表", "top=100,left=400,width=500,height=400,resizable=no");
+		})
+		
+		$("button[name='del']").bind("click", function() {
+			var tr = $(this).parents("tr");
+			var userId = tr.children("td:first").text();
+
+			$.ajax({
+				url : UserURLPrefix + '/delete/' + userId,
+				dataType : 'json',
+				type : 'GET',
+				success : function(re) {
+					console.log(re.result);
+					if (re.result == 'success')
+						location.reload();
+				}
+			});
 		})
 		
 		$("form").submit(function(e) {
