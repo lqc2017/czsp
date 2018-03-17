@@ -1,6 +1,11 @@
 /**
  * 
  */
+/*前缀初始化*/
+var WfURLPrefix = "/czsp/wf";
+var UserURLPrefix = "/czsp/user";
+var AuthURLPrefix = "/czsp/auth";
+var PlanURLPrefix = "/czsp/plan";
 
 function resultPrompt(re,withAlert=true,reloadPage=true) {
 	console.log(re.result);

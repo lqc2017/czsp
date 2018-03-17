@@ -102,7 +102,7 @@
 		$("button[name='new']").bind("click", function() {
 
 			$.ajax({
-				url : '/czsp/workflow/createInstance',
+				url : WfURLPrefix+'/createInstance',
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {
@@ -113,7 +113,7 @@
 
 		$("button[name='activate']").bind("click", function() {
 			$.ajax({
-				url : '/czsp/user/activate',
+				url : UserURLPrefix + '/activate',
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {
@@ -124,7 +124,7 @@
 		
 		$("button[name='clear']").bind("click", function() {
 			$.ajax({
-				url : '/czsp/user/clear',
+				url : UserURLPrefix + '/clear',
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {
@@ -134,7 +134,7 @@
 		})
 		
 		$("button[name='change']").bind("click", function() {
-			window.open('/czsp/user/change',"选择人员",
+			window.open(UserURLPrefix + '/change',"选择人员",
 					"top=100,left=400,width=500,height=400,resizable=no");
 		})
 
@@ -143,7 +143,7 @@
 			var instanceNo = tr.children("td:eq(1)").text();
 			var instanceId = tr.children("td:first").text();
 
-			window.open("/czsp/workflow/selectNextNode?instanceId=" + instanceId,
+			window.open(WfURLPrefix+"/selectNextNode?instanceId=" + instanceId,
 						"提交页面", "top=100,left=100,width=500,height=200,resizable=no");
 		})
 
@@ -152,7 +152,7 @@
 			var instanceId = tr.children("td:first").text();
 
 			$.ajax({
-				url : '/czsp/workflow/deleteInstance/' + instanceId,
+				url : WfURLPrefix+'/deleteInstance/' + instanceId,
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {

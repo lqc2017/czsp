@@ -71,7 +71,7 @@
 			var userId = tr.children("td:first").attr("title");
 
 			$.ajax({
-				url : '/czsp/user/select?userId='+userId,
+				url : UserURLPrefix + '/select?userId='+userId,
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {

@@ -19,8 +19,6 @@ import czsp.common.util.DicUtil;
 import czsp.common.util.MessageUtil;
 import czsp.common.util.SessionUtil;
 import czsp.plan.service.PlanInfoService;
-import czsp.user.dao.UserInfoDao;
-import czsp.user.dao.UserOperationDao;
 import czsp.user.model.UserInfo;
 import czsp.user.model.UserOperation;
 import czsp.user.service.UserInfoService;
@@ -36,7 +34,7 @@ import czsp.workflow.model.WfRoute;
 import czsp.workflow.model.view.VwfNodeDetail;
 
 @IocBean
-@At("/workflow")
+@At("/wf")
 public class WFModule {
 
 	@Inject

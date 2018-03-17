@@ -71,7 +71,7 @@
 		}
 		
 		/* $.ajax({
-			url : '/czsp/workflow/test',
+			url : WfURLPrefix+'/test',
 			dataType : 'json',
 			data : {"phaseIds" : idArray.toString()},
 			type : 'POST',

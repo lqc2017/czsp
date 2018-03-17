@@ -86,7 +86,7 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 			
 			var opType = $("select[name='nextNode']").find("option:selected").attr("id");
 			
-			var moduleMappingUrl = "/czsp/workflow";
+			var moduleMappingUrl = WfURLPrefix;
 			if(opType=="retreat")
 				target = moduleMappingUrl + "/retreat?hisInstanceId=" + param + "&curInstanceId=" + curInstanceId + "&todoUserId=" + nextUserId;
 			else if(opType=="circulate")
@@ -120,7 +120,7 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 			
 			var opType = $("select[name='nextNode']").find("option:selected").attr("id");
 			
-			var moduleMappingUrl = "/czsp/workflow";
+			var moduleMappingUrl = WfURLPrefix;
 			if(opType=="retreat")
 				target = moduleMappingUrl + "/getNextUserList?hisInstanceId=" + $("select[name='nextNode']").val();
 			else if(opType=="circulate"){

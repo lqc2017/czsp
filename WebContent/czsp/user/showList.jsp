@@ -69,7 +69,7 @@
 		$("button[name='new']").bind("click", function() {
 
 			$.ajax({
-				url : '/czsp/user/create',
+				url : UserURLPrefix + '/create',
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {
@@ -82,7 +82,7 @@
 		
 		$("button[name='grant']").bind("click", function() {
 
-			window.open("/czsp/user/roleList=",
+			window.open(UserURLPrefix + "/roleList=",
 					"角色列表", "top=100,left=400,width=500,height=400,resizable=no");
 		})
 		

@@ -18,7 +18,6 @@ import czsp.MainSetup;
 import czsp.common.Constants;
 import czsp.common.util.DicUtil;
 import czsp.common.util.MessageUtil;
-import czsp.user.dao.UserInfoDao;
 import czsp.user.model.UserInfo;
 import czsp.user.service.UserInfoService;
 

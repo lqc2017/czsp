@@ -74,7 +74,7 @@
 			var tr = $(this).parents("tr");
 			var planId = tr.children("td:first").text();
 			
-			window.open('/czsp/workflow/showInstance/'+planId,"实例信息");
+			window.open(WfURLPrefix+'/showInstance/'+planId,"实例信息");
 		})
 		
 		$("button[name='launch']").bind("click", function() {
@@ -82,7 +82,7 @@
 			var planId = tr.children("td:first").text();
 			
 			$.ajax({
-				url : '/czsp/plan/launch?planId='+planId,
+				url : PlanURLPrefix + '/launch?planId='+planId,
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {
@@ -94,7 +94,7 @@
 		$("button[name='new']").bind("click", function() {
 
 			$.ajax({
-				url : '/czsp/user/create',
+				url : UserURLPrefix + '/create',
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {
@@ -105,7 +105,7 @@
 		
 		$("button[name='activate']").bind("click", function() {
 			$.ajax({
-				url : '/czsp/user/activate',
+				url : UserURLPrefix + '/activate',
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {
@@ -126,8 +126,9 @@
 			}
 		})
 		
-		var moduleMappingUrl = "/czsp/workflow";
 		$("button[name='select']").bind("click", function() {
+			var moduleMappingUrl = WfURLPrefix;
+			
 			var url = moduleMappingUrl + '/selectPhases';
 			if($("#phases").val() != undefined)
 				url = moduleMappingUrl + '/selectPhases?phaseIds='+$("#phases").val();
