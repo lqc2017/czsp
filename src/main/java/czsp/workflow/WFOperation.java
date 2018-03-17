@@ -305,7 +305,8 @@ public class WFOperation extends WfInstanceDao {
 	private String generateTodoUserId(String nextNodeId) {
 		WfNode node = wfNodeDao.getNodeByNodeId(nextNodeId);
 		List<String> ids = new ArrayList<String>();
-		List<UserInfo> users = userInfoDao.getListByRoleId(node.getRoleId());
+		String[] roleArr = node.getRoleId().split(",");
+		List<UserInfo> users = userInfoDao.getListByRoleId(roleArr);
 		for (UserInfo user : users) {
 			ids.add(user.getUserId());
 		}

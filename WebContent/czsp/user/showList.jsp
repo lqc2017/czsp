@@ -80,6 +80,12 @@
 			});
 		})
 		
+		$("button[name='grant']").bind("click", function() {
+
+			window.open("/czsp/user/roleList=",
+					"角色列表", "top=100,left=400,width=500,height=400,resizable=no");
+		})
+		
 		$("form").submit(function(e) {
 			if (!validate()) {
 				e.preventDefault();

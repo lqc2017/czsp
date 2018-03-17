@@ -59,8 +59,7 @@ public class UserInfoDao {
 	/**
 	 * 全琛 2018年2月28日 根据角色获取用户列表
 	 */
-	public List getListByRoleId(String roleId) {
-		String[] roleArr = roleId.split(",");
+	public List getListByRoleId(String[] roleArr) {
 		Criteria cri = Cnd.cri();
 		for (String role : roleArr) {
 			cri.where().orLike("roleId", role);
@@ -71,13 +70,12 @@ public class UserInfoDao {
 	/**
 	 * 全琛 2018年3月1日 根据角色获取和排除条件筛选人员
 	 */
-	public List getListByRoleId(String roleId, List<String> notInUserIds) {
-		String[] roleArr = roleId.split(",");
+	public List getListByRoleId(String[] roleArr, String userIds) {
 		Criteria cri = Cnd.cri();
 		for (String role : roleArr) {
 			cri.where().orLike("roleId", role);
 		}
-		cri.where().andNotIn("userId", StringWrapUtil.getSQLParamList(notInUserIds, null, null));
+		cri.where().andNotIn("userId", userIds);
 		return dao.query(UserInfo.class, cri);
 	}
 

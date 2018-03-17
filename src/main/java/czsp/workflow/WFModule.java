@@ -23,6 +23,8 @@ import czsp.user.dao.UserInfoDao;
 import czsp.user.dao.UserOperationDao;
 import czsp.user.model.UserInfo;
 import czsp.user.model.UserOperation;
+import czsp.user.service.UserInfoService;
+import czsp.user.service.UserOperationService;
 import czsp.workflow.dao.WfInstanceDao;
 import czsp.workflow.dao.WfNodeDao;
 import czsp.workflow.dao.WfPhaseDao;
@@ -53,10 +55,10 @@ public class WFModule {
 	private WfInstanceDao wfInstanceDao;
 
 	@Inject
-	private UserOperationDao userOperationDao;
+	private UserOperationService userOperationService;
 
 	@Inject
-	private UserInfoDao userInfoDao;
+	private UserInfoService userInfoService;
 
 	@Inject
 	private PlanInfoService planInfoService;
@@ -133,7 +135,7 @@ public class WFModule {
 		// 查询路本节点路由
 		List routes = wfRouteDao.getListByCurNode(nodeDetail.getWfCurNode(), nodeDetail.getPhaseId());
 		// 查询最近一条历史提交操作记录
-		UserOperation operation = userOperationDao.getLatestOperation(instanceId, "'提交','特送'");
+		UserOperation operation = userOperationService.getLatestOperation(instanceId, "'提交','特送'");
 		WfHisInstance hisInstance = null;
 		if (operation != null)
 			hisInstance = wfInstanceDao.getHisInstanceByInstanceId(operation.getPreInstanceId());
@@ -234,12 +236,12 @@ public class WFModule {
 
 				// 根据节点查询该节点的操作人员
 				WfNode node = wfNodeDao.getNodeByNodeId(nodeId);
-				userInfos.addAll(userInfoDao.getListByRoleId(node.getRoleId()));
+				userInfos.addAll(userInfoService.getListByRoleId(node.getRoleId()));
 			}
 			// 回退人员
 			if (hisInstanceId != null && !"".equals(routeId)) {
 				WfHisInstance hisInstance = wfOperation.getHisInstanceByInstanceId(hisInstanceId);
-				userInfos.add(userInfoDao.getUserInfoByUserId(hisInstance.getSignUserId()));
+				userInfos.add(userInfoService.getUserInfoByUserId(hisInstance.getSignUserId()));
 			}
 			// 流转人员列表
 			if (curInstanceId != null && !"".equals(curInstanceId)) {
@@ -251,7 +253,7 @@ public class WFModule {
 						add(curInstence.getSignUserId());
 					}
 				};
-				userInfos.addAll(userInfoDao.getListByRoleId(node.getRoleId(), userIds));
+				userInfos.addAll(userInfoService.getListByRoleId(node.getRoleId(), userIds));
 
 			}
 			map.put("userInfos", userInfos);
@@ -303,9 +305,9 @@ public class WFModule {
 				size = hisInstances.size();
 				UserOperation operation = null;
 				if (size == 0)
-					operation = userOperationDao.getLatestOperation(curInstanceId, "'提交','特送'");
+					operation = userOperationService.getLatestOperation(curInstanceId, "'提交','特送'");
 				else
-					operation = userOperationDao
+					operation = userOperationService
 							.getLatestOperation(hisInstances.get(hisInstances.size() - 1).getInstanceId(), "'提交','特送'");
 
 				if (operation != null) {

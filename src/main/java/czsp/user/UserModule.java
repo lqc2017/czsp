@@ -20,13 +20,14 @@ import czsp.common.util.DicUtil;
 import czsp.common.util.MessageUtil;
 import czsp.user.dao.UserInfoDao;
 import czsp.user.model.UserInfo;
+import czsp.user.service.UserInfoService;
 
 @At("/user")
 @IocBean
 public class UserModule {
 
 	@Inject
-	private UserInfoDao userInfoDao;
+	private UserInfoService userInfoService;
 
 	final Log log = Logs.getLog(MainSetup.class);
 
@@ -34,7 +35,7 @@ public class UserModule {
 	@Ok("jsp:/czsp/user/showList")
 	public Map<String, Object> showList() {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List users = userInfoDao.getList();
+		List users = userInfoService.getList();
 		Map deptsMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_AHTU_DEPT_NO));
 		List departments = new ArrayList(deptsMap.values());
 
@@ -48,7 +49,7 @@ public class UserModule {
 	public Map<String, Object> create(@Param("..") UserInfo user) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			log.debug("new userId:" + userInfoDao.addUser(user));
+			log.debug("new userId:" + userInfoService.addUser(user));
 		} catch (Exception e) {
 			log.error(MessageUtil.getStackTraceInfo(e));
 		}
@@ -60,7 +61,7 @@ public class UserModule {
 	public Map<String, Object> activate() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (Mvcs.getHttpSession().getAttribute("userInfo") == null) {
-			UserInfo userInfo = userInfoDao.getUserInfoByUserId("100001");
+			UserInfo userInfo = userInfoService.getUserInfoByUserId("100001");
 			Mvcs.getHttpSession().setAttribute("userInfo", userInfo);
 			map.put("result", "success");
 		} else {
@@ -90,7 +91,7 @@ public class UserModule {
 		if (userInfo == null)
 			userInfo = new UserInfo();
 		Map<String, Object> map = new HashMap<String, Object>();
-		List users = userInfoDao.getListByCondition(userInfo);
+		List users = userInfoService.getListByCondition(userInfo);
 		Map deptsMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_AHTU_DEPT_NO));
 		List departments = new ArrayList(deptsMap.values());
 
@@ -105,7 +106,7 @@ public class UserModule {
 	public Map<String, Object> select(@Param("userId") String userId) {
 		System.out.println(userId);
 		Map<String, Object> map = new HashMap<String, Object>();
-		UserInfo userInfo = userInfoDao.getUserInfoByUserId(userId);
+		UserInfo userInfo = userInfoService.getUserInfoByUserId(userId);
 		if (userInfo == null) {
 			map.put("result", "fail");
 			map.put("message", "找不到该用户");
