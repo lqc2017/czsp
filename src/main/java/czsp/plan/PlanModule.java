@@ -13,6 +13,8 @@ import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.Param;
 
 import czsp.MainSetup;
+import czsp.common.Constants;
+import czsp.common.util.DicUtil;
 import czsp.common.util.MessageUtil;
 import czsp.plan.model.PlanApp;
 import czsp.plan.model.PlanInfo;
@@ -38,6 +40,18 @@ public class PlanModule {
 		List<VplanInfoDetail> infoList = planInfoService.getList();
 
 		map.put("infoList", infoList);
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年3月21日 新增计划页面
+	 */
+	@At("/add")
+	@Ok("jsp:/czsp/plan/add")
+	public Map<String, Object> add() {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		map.put("dicQx", DicUtil.getInstance().getDicMap().get(Constants.DIC_QX_NO));
 		return map;
 	}
 

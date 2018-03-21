@@ -21,4 +21,14 @@ public class SessionUtil {
 		UserInfo userInfo = (UserInfo) Mvcs.getHttpSession().getAttribute("userInfo");
 		return userInfo == null ? null : userInfo.getUserId();
 	}
+	
+	/**
+	 * 全琛
+	 * 2018年3月21日
+	 * 获得当前用户对象
+	 */
+	public static UserInfo getCurrenUser() {
+		UserInfo userInfo = (UserInfo) Mvcs.getHttpSession().getAttribute("userInfo");
+		return userInfo == null ? null : userInfo;
+	}
 }

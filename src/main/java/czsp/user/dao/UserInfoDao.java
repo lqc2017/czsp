@@ -51,6 +51,9 @@ public class UserInfoDao {
 
 		if (user.getDepartmentId() != null && !"".equals(user.getDepartmentId().trim()))
 			cri.where().andEquals("departmentId", user.getDepartmentId().trim());
+		
+		if (user.getQxId() != null && !"".equals(user.getQxId().trim()))
+			cri.where().andEquals("qxId", user.getQxId().trim());
 
 		return dao.query(UserInfo.class, cri);
 	}

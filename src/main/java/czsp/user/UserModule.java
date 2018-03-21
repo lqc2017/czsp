@@ -35,11 +35,16 @@ public class UserModule {
 	public Map<String, Object> showList() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List users = userInfoService.getList();
+		// 添加部门选项
 		Map deptsMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_AHTU_DEPT_NO));
 		List departments = new ArrayList(deptsMap.values());
+		// 添加区县选项
+		Map qxMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+		List qxList = new ArrayList(qxMap.values());
 
 		map.put("users", users);
 		map.put("departments", departments);
+		map.put("qxList", qxList);
 		return map;
 	}
 
@@ -91,12 +96,17 @@ public class UserModule {
 			userInfo = new UserInfo();
 		Map<String, Object> map = new HashMap<String, Object>();
 		List users = userInfoService.getListByCondition(userInfo);
+		// 添加部门选项
 		Map deptsMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_AHTU_DEPT_NO));
 		List departments = new ArrayList(deptsMap.values());
+		// 添加区县选项
+		Map qxMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+		List qxList = new ArrayList(qxMap.values());
 
 		map.put("userInfo", userInfo);
 		map.put("users", users);
 		map.put("departments", departments);
+		map.put("qxList", qxList);
 		return map;
 	}
 

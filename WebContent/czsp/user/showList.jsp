@@ -33,8 +33,24 @@
 			<%
 				}
 			%>
-		</select> &nbsp <label for="name">姓名</label>： <input type="text" id="name" name="name" class="required"/> &nbsp <input
-			type="submit" value="新建用户">
+		</select> 
+		
+		&nbsp <label for="name">姓名</label>： <input type="text" id="name" name="name" class="required"/> 
+			
+		&nbsp<label for="qxId">区县</label>：
+		 <select id="qxId" name="qxId" class="required">
+		 	<option value="">请选择</option>
+			<%
+				List<Record> qxList = (List<Record>) map.get("qxList");
+				for (Record qx : qxList) {
+			%>
+			<option value="<%=qx.get("id")%>"><%=qx.get("name")%></option>
+			<%
+				}
+			%>
+		</select>
+		
+		&nbsp <input type="submit" value="新建用户">
 	</form>
 	<br />
 	<br />
@@ -44,6 +60,7 @@
 			<th>用户ID</th>
 			<th>姓名</th>
 			<th>部门名称</th>
+			<th>区县</th>
 			<th>角色名称</th>
 			<th>操作</th>
 		</tr>
@@ -55,6 +72,7 @@
 			<td><%=user.getUserId()%></td>
 			<td><%=user.getName()%></td>
 			<td><%=DicUtil.getInstance().getItemName(Constants.DIC_AHTU_DEPT_NO, user.getDepartmentId())%></td>
+			<td><%=DicUtil.getInstance().getItemName(Constants.DIC_QX_NO, user.getQxId())%></td>
 			<td><%=user.getRoleId()%></td>
 			<td><button name="grant">授予角色</button>
 				<button name="del">删除</button></td>

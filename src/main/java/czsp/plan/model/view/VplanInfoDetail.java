@@ -45,6 +45,10 @@ public class VplanInfoDetail {
 	@Readonly
 	private String status;
 
+	@Column(value = "TOWN_NAME")
+	@Readonly
+	private String townName;
+
 	public String getPlanId() {
 		return planId;
 	}
@@ -79,6 +83,10 @@ public class VplanInfoDetail {
 
 	public String getStatus() {
 		return status;
+	}
+
+	public String getTownName() {
+		return townName;
 	}
 
 }

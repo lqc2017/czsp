@@ -10,7 +10,7 @@
 			<param-name>modules</param-name>
 			<param-value>czsp.MainModule</param-value>
 		</init-param>
-		
+
 		<init-param>
 			<param-name>exclusions</param-name>
 			<param-value>/static/*</param-value>
@@ -23,4 +23,9 @@
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
+
+
+	<welcome-file-list>
+		<welcome-file>/czsp/index.jsp</welcome-file>
+	</welcome-file-list>
 </web-app>

@@ -34,6 +34,12 @@ public class PlanInfo {
 	@Column(value = "IS_FINISHED")
 	private String isFinished;
 
+	@Column(value = "TOWN_ID")
+	private String townId;
+
+	@Column(value = "TOWN_NAME")
+	private String townName;
+
 	public String getPlanId() {
 		return planId;
 	}
@@ -88,6 +94,22 @@ public class PlanInfo {
 
 	public void setIsFinished(String isFinished) {
 		this.isFinished = isFinished;
+	}
+
+	public String getTownId() {
+		return townId;
+	}
+
+	public void setTownId(String townId) {
+		this.townId = townId;
+	}
+
+	public String getTownName() {
+		return townName;
+	}
+
+	public void setTownName(String townName) {
+		this.townName = townName;
 	}
 
 }

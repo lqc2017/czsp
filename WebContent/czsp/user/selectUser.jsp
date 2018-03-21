@@ -38,7 +38,23 @@
 				}
 			%>
 		</select> &nbsp <label for="name">姓名</label>： 
-		<input type="text" id="name" name="name" class="required" value="${obj.userInfo.name}" /> 
+		
+		<input type="text" id="name" name="name" size="5" class="required" value="${obj.userInfo.name}" /> 
+		
+		&nbsp<label for="qxId">区县</label>： <select id="qxId" name="qxId" class="required">
+			<option value="">请选择</option>
+			<%
+				List<Record> qxList = (List<Record>) map.get("qxList");
+				for (Record qx : qxList) {
+			%>
+			<option value="<%=qx.get("id")%>"
+				<%if (userInfo.getQxId() != null && qx.get("id").equals(userInfo.getQxId())) {%>
+				selected="selected" <%}%>><%=qx.get("name")%></option>
+			<%
+				}
+			%>
+		</select>
+		
 			&nbsp <input type="submit"value="查询">
 	</form>
 	<br />

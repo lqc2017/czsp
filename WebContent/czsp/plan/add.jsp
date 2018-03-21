@@ -23,53 +23,37 @@
 			userInfo = new UserInfo();
 		}
 	%>
-	<%-- <form action="/czsp/plan/create">
-		<input type="hidden" id="createUserId" name="createUserId" value="<%=userInfo.getUserId()%>" /> 
-		<label for="planName">规划名称</label>：
-		<input type="text" id="planName" name="planName" class="required" />
-		<label for="phases">规划环节</label>：<label id="phasesLabel"></label>
-		<input type="hidden" id="phases" name="phases" class="required" />
-		<button type="button" name="select">选择</button>
-		&nbsp <input type="submit" value="新建计划">
-	</form>
-	<br />
-	<br />
-	<br />
-	<button name="activate">激活</button> --%>
-
+	<form action="/czsp/plan/create">
+	<input type="hidden" id="createUserId" name="createUserId" value="<%=userInfo.getUserId()%>" /> 
 	<table border="1">
-		<tr>
-			<th>计划ID</th>
-			<th>申请ID</th>
-			<th>规划名称</th>
-			<th>村镇</th>
-			<th>当前环节</th>
-			<th>当前节点</th>
-			<th>当前实例ID</th>
-			<th>创建时间</th>
-			<th>创建人ID</th>
-			<th>是否办结</th>
-			<th>操作</th>
-		</tr>
-		<c:forEach var="info" items="${obj.infoList}">
 			<tr>
-				<td>${info.planId}</td>
-				<td>${info.appId}</td>
-				<td>${info.planName}</td>
-				<td>${info.townName}</td>
-				<td>${info.curPhase}</td>
-				<td>${info.curNode}</td>
-				<td>${info.instanceId}</td>
-				<td><fmt:formatDate value="${info.createTime}" type="both" /></td>
-				<td>${info.createUserId}</td>
-				<td><c:if test="${info.status eq '0'}">未流转</c:if>
-				<c:if test="${info.status eq '1'}">流转中</c:if>
-				<c:if test="${info.status eq '2'}">办结</c:if></td>
-				<td><button name="instance">查看实例</button>
-					<c:if test="${info.status eq '0'}"><button name="launch">启动计划</button></c:if></td>
+				<td><label for="planName">规划名称</label></td>
+				<td><input type="text" id="planName" name="planName" class="required" /></td>
 			</tr>
-		</c:forEach>
-	</table>
+			<tr>
+				<td><label for="phases">规划环节</label></td>
+				<td><label id="phasesLabel"></label>
+					<input type="hidden" id="phases" name="phases" class="required" />
+					<button type="button" name="selectPhase">选择</button>
+				</td>
+			</tr>
+			<tr>
+				<td><label for="qxId">区县</label></td>
+				<td><c:if test="${userInfo != null }">${obj.dicQx[userInfo.qxId].name}</c:if></td>
+			</tr>
+			<tr>
+				<td><label for="townName">村镇</label></td>
+				<td><label id="townLabel"></label>
+					<input type="hidden" id="townId" name="townId" class="required" />
+					<input type="hidden" id="townName" name="townName" class="required" />
+					<button type="button" name="selectTown">选择</button>
+				</td>
+			</tr>
+		</table>
+		
+		<input type="submit" value="新建计划">
+	</form>
+	<button name="change">选择用户</button>
 
 	<script type="text/javascript">
 		$("button[name='instance']").bind("click", function() {
@@ -77,6 +61,11 @@
 			var planId = tr.children("td:first").text();
 			
 			window.open(WfURLPrefix+'/showInstance/'+planId,"实例信息");
+		})
+		
+		$("button[name='change']").bind("click", function() {
+			window.open(UserURLPrefix + '/change',"选择人员",
+					"top=100,left=400,width=500,height=400,resizable=no");
 		})
 		
 		$("button[name='new']").bind("click", function() {
@@ -91,6 +80,18 @@
 			});
 		})
 		
+		$("button[name='activate']").bind("click", function() {
+			$.ajax({
+				url : UserURLPrefix + '/activate',
+				dataType : 'json',
+				type : 'GET',
+				success : function(re) {
+					resultPrompt(re);
+				}
+			});
+		})
+
+		
 		$("form").submit(function(e) {
 			if ($("#createUserId").val() == "null") {
 				alert("请先登录！");
@@ -102,7 +103,7 @@
 			}
 		})
 		
-		$("button[name='select']").bind("click", function() {
+		$("button[name='selectPhase']").bind("click", function() {
 			var moduleMappingUrl = WfURLPrefix;
 			
 			var url = moduleMappingUrl + '/selectPhases';
@@ -110,6 +111,11 @@
 				url = moduleMappingUrl + '/selectPhases?phaseIds='+$("#phases").val();
 			
 			window.open(url,"选择环节","top=100,left=400,width=250,height=200,resizable=no");
+		})
+		
+		$("button[name='selectTown']").bind("click", function() {
+			window.open(CommURLPrefix + '/selectTown',"选择村镇",
+			"top=100,left=400,width=500,height=400,resizable=no");
 		})
 	</script>
 </body>

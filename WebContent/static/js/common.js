@@ -2,6 +2,7 @@
  * 
  */
 /*前缀初始化*/
+var CommURLPrefix = "/czsp/common";
 var WfURLPrefix = "/czsp/wf";
 var UserURLPrefix = "/czsp/user";
 var AuthURLPrefix = "/czsp/auth";
