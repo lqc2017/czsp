@@ -8,6 +8,16 @@ var UserURLPrefix = "/czsp/user";
 var AuthURLPrefix = "/czsp/auth";
 var PlanURLPrefix = "/czsp/plan";
 
+/*表单必填初始化*/
+function initRequired(){
+	$(".required").each(function(){
+		var label = $("label[for='"+$(this).attr("name")+"']");
+		label.append("<span>(*)<span>");
+		
+		label.children("span").css("color","red");
+	})
+}
+
 function resultPrompt(re,withAlert=true,reloadPage=true) {
 	console.log(re.result);
 	if (re.result == 'success'){
@@ -20,6 +30,7 @@ function resultPrompt(re,withAlert=true,reloadPage=true) {
 		alert("message : " + re.message);
 }
 
+/*表单验证*/
 function validate() {
 	var elements = $("select.required");
 	var flag = true;
@@ -34,10 +45,29 @@ function validate() {
 	elements = $("input.required");
 	elements.each(function(){
 		if ($(this).val() == ""){
-			alert("请填写" + $("label[for='"+$(this).attr("id")+"']").text());
+			var content = $("label[for='"+$(this).attr("id")+"']").text();
+			alert("请填写" + content.replace("(*)",""));
 			flag = false;
 		}
 	});
 	return flag;
+}
+
+/*表单转json*/
+$.fn.serializeObject = function()  
+{  
+   var o = {};  
+   var a = this.serializeArray();  
+   $.each(a, function() {  
+       if (o[this.name]) {  
+           if (!o[this.name].push) {  
+               o[this.name] = [o[this.name]];  
+           }  
+           o[this.name].push(this.value || '');  
+       } else {  
+           o[this.name] = this.value || '';  
+       }  
+   });  
+   return o;  
 }
 

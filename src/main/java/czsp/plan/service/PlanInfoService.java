@@ -2,14 +2,12 @@ package czsp.plan.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
 
-import czsp.MainSetup;
 import czsp.plan.dao.PlanAppDao;
 import czsp.plan.dao.PlanInfoDao;
 import czsp.plan.model.PlanApp;
@@ -92,6 +90,36 @@ public class PlanInfoService {
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 * 全琛 2018年3月22日 修改计划
+	 */
+	public void update(PlanInfo planInfo) {
+		planInfoDao.update(planInfo, false);
+	}
+
+	/**
+	 * 全琛 2018年3月23日 删除计划
+	 */
+	public void deletePlan(String planId) {
+		Trans.exec(new Atom() {
+			public void run() {
+				PlanInfo planInfo = getPlanInfoByPlanId(planId);
+
+				planInfoDao.deletePlan(planId);
+
+				if (planInfo != null) {
+					if (StringUtils.isNotEmpty(planInfo.getAppId())) {
+						planAppDao.deleteApp(planInfo.getAppId());
+					}
+					
+					if (StringUtils.isNotEmpty(planInfo.getInstanceId())) {
+						wfOperation.deleteInstance(planInfo.getInstanceId());
+					}
+				}
+			}
+		});
 	}
 
 }

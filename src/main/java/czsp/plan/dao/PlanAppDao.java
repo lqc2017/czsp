@@ -55,4 +55,11 @@ public class PlanAppDao {
 		return dao.fetch(PlanApp.class, appId);
 	}
 
+	/**
+	 * 全琛 2018年3月23日 删除App
+	 */
+	public void deleteApp(String appId) {
+		dao.delete(PlanApp.class, appId);
+	}
+
 }

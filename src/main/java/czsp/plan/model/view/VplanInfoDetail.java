@@ -49,6 +49,18 @@ public class VplanInfoDetail {
 	@Readonly
 	private String townName;
 
+	@Column(value = "CREATE_USER_NAME")
+	@Readonly
+	private String createUserName;
+
+	@Column(value = "QX_ID")
+	@Readonly
+	private String qxId;
+
+	@Column(value = "PLAN_AREA")
+	@Readonly
+	private String planArea;
+
 	public String getPlanId() {
 		return planId;
 	}
@@ -87,6 +99,18 @@ public class VplanInfoDetail {
 
 	public String getTownName() {
 		return townName;
+	}
+
+	public String getCreateUserName() {
+		return createUserName;
+	}
+
+	public String getQxId() {
+		return qxId;
+	}
+
+	public String getPlanArea() {
+		return planArea;
 	}
 
 }

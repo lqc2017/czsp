@@ -38,10 +38,20 @@ public class PlanInfoDao {
 	}
 
 	/**
-	 * 全琛 2018年3月3日 修改计划
+	 * 全琛 2018年3月3日 修改计划(流程修改用)
 	 */
 	public void update(PlanInfo planInfo) {
 		dao.update(planInfo);
+	}
+
+	/**
+	 * 全琛 2018年3月22日 修改计划（前台修改用）更新部分不为null的字段
+	 */
+	public void update(PlanInfo planInfo, boolean withNull) {
+		if (withNull)
+			dao.update(planInfo);
+		else
+			dao.updateIgnoreNull(planInfo);
 	}
 
 	/**
@@ -56,6 +66,13 @@ public class PlanInfoDao {
 	 */
 	public PlanInfo getPlanInfoByPlanId(String planId) {
 		return dao.fetch(PlanInfo.class, planId);
+	}
+
+	/**
+	 * 全琛 2018年3月23日 删除计划
+	 */
+	public void deletePlan(String planId) {
+		dao.delete(PlanInfo.class, planId);
 	}
 
 }

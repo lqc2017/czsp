@@ -54,7 +54,7 @@
 		var townId = tr.children("td:eq(0)").attr("title");
 		var townName = tr.children("td:eq(1)").html();
 		
-		alert(townId+" "+townName);
+		//alert(townId+" "+townName);
 		
 		if (window.opener && !window.opener.closed) {
 			//设置label和input

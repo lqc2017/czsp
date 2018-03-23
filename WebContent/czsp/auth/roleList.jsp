@@ -58,6 +58,7 @@
 
 
 	<script type="text/javascript">
+		//关联键绑定
 		$("button[name='associate']").bind("click", function() {
 			var tr = $(this).parents("tr");
 			var roleId = tr.children("td:first").attr("title");
@@ -73,6 +74,7 @@
 			});
 		})
 		
+		//取消关联键绑定
 		$("button[name='remove']").bind("click", function() {
 			var tr = $(this).parents("tr");
 			var roleId = tr.children("td:first").attr("title");
@@ -87,12 +89,6 @@
 				}
 			});
 		})
-		
-		$("form").submit(function(e) {
-			if (!validate()) {
-				e.preventDefault();
-			}
-		});
 	</script>
 </body>
 </html>

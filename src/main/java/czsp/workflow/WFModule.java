@@ -94,7 +94,7 @@ public class WFModule {
 			}
 		} catch (Exception e) {
 			map.put("result", "fail");
-			map.put("message", map.put("message", MessageUtil.getStackTraceInfo(e)));
+			map.put("message",MessageUtil.getStackTraceInfo(e));
 		}
 		return map;
 	}
@@ -259,7 +259,7 @@ public class WFModule {
 
 		} catch (Exception e) {
 			map.put("result", "fail");
-			map.put("message", map.put("message", MessageUtil.getStackTraceInfo(e)));
+			map.put("message",MessageUtil.getStackTraceInfo(e));
 		}
 		return map;
 	}

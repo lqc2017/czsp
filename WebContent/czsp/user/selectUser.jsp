@@ -82,6 +82,7 @@
 
 
 	<script type="text/javascript">
+		//选择人员键绑定
 		$("button[name='select']").bind("click", function() {
 			var tr = $(this).parents("tr");
 			var userId = tr.children("td:first").attr("title");

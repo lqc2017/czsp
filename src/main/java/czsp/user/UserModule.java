@@ -60,21 +60,9 @@ public class UserModule {
 		return map;
 	}
 
-	@At("/activate")
-	@Ok("json")
-	public Map<String, Object> activate() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		if (Mvcs.getHttpSession().getAttribute("userInfo") == null) {
-			UserInfo userInfo = userInfoService.getUserInfoByUserId("100001");
-			Mvcs.getHttpSession().setAttribute("userInfo", userInfo);
-			map.put("result", "success");
-		} else {
-			map.put("result", "fail");
-			map.put("message", "状态已激活");
-		}
-		return map;
-	}
-
+	/**
+	 * 全琛 2018年3月23日 清空session中的用户信息
+	 */
 	@At("/clear")
 	@Ok("json")
 	public Map<String, Object> clear() {
@@ -84,11 +72,14 @@ public class UserModule {
 			map.put("result", "success");
 		} catch (Exception e) {
 			map.put("result", "fail");
-			map.put("message", map.put("message", MessageUtil.getStackTraceInfo(e)));
+			map.put("message", MessageUtil.getStackTraceInfo(e));
 		}
 		return map;
 	}
 
+	/**
+	 * 全琛 2018年3月23日 用户选择界面
+	 */
 	@At("/change")
 	@Ok("jsp:/czsp/user/selectUser")
 	public Map<String, Object> change(@Param("..") UserInfo userInfo) {
@@ -110,6 +101,9 @@ public class UserModule {
 		return map;
 	}
 
+	/**
+	 * 全琛 2018年3月23日 加载用户到session
+	 */
 	@At("/select")
 	@Ok("json")
 	public Map<String, Object> select(@Param("userId") String userId) {
@@ -132,10 +126,10 @@ public class UserModule {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			userInfoService.deleteUser(userId);
+			map.put("result", "success");
 		} catch (Exception e) {
 			map.put("result", "fail");
 		}
-		map.put("result", "success");
 		return map;
 	}
 }

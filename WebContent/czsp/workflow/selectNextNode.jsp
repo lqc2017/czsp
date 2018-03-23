@@ -29,11 +29,8 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 %>
 <body>
 	<input id="curInstanceId" type="hidden" value="${obj.instance.instanceId}"/>
-	<%
-	UserInfo userInfo = (UserInfo)session.getAttribute("userInfo");
-	if(userInfo!=null){ %>
-	当前人员：<%=userInfo.getName() %><br/>
-	<%} %>
+	<jsp:include page="/czsp/common/userMessage.jsp" flush="true"/>
+	
 	当前环节：<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_PHASE_NO,nodeDetail.getPhaseId())%>&nbsp&nbsp
 	当前节点：<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO,nodeDetail.getNodeId())%>
 	<br /> <label for="nextNode">下一节点</label>：
@@ -75,6 +72,7 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 	<button name="cancel">取消</button>
 
 	<script type="text/javascript">
+		//确认键绑定
 		$("button[name='confirm']").bind("click",function() {
 			if (!validate())
 				return;
@@ -110,11 +108,13 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 
 		})
 
+		//取消键绑定
 		$("button[name='cancel']").bind("click", function() {
 			window.opener.location.reload();
 			window.close()
 		})
 		
+		//加载人员列表事件绑定
 		$("select[name='nextNode']").bind("change",function() {
 			$("select[name='nextUser']").children().remove();
 			

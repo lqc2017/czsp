@@ -40,6 +40,18 @@ public class PlanInfo {
 	@Column(value = "TOWN_NAME")
 	private String townName;
 
+	@Column(value = "PLAN_AREA")
+	private String planArea;
+
+	@Column(value = "DESIGN_DEPARTMENT")
+	private String designDepartment;
+
+	@Column(value = "DESIGN_CONTACT_NAME")
+	private String designContactName;
+
+	@Column(value = "DESIGN_CONTACT_WAY")
+	private String designContactWay;
+
 	public String getPlanId() {
 		return planId;
 	}
@@ -110,6 +122,38 @@ public class PlanInfo {
 
 	public void setTownName(String townName) {
 		this.townName = townName;
+	}
+
+	public String getPlanArea() {
+		return planArea;
+	}
+
+	public void setPlanArea(String planArea) {
+		this.planArea = planArea;
+	}
+
+	public String getDesignDepartment() {
+		return designDepartment;
+	}
+
+	public void setDesignDepartment(String designDepartment) {
+		this.designDepartment = designDepartment;
+	}
+
+	public String getDesignContactName() {
+		return designContactName;
+	}
+
+	public void setDesignContactName(String designContactName) {
+		this.designContactName = designContactName;
+	}
+
+	public String getDesignContactWay() {
+		return designContactWay;
+	}
+
+	public void setDesignContactWay(String designContactWay) {
+		this.designContactWay = designContactWay;
 	}
 
 }

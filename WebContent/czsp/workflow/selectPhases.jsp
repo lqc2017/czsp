@@ -50,6 +50,7 @@
 
 
 	<script type="text/javascript">
+	//确认环节键绑定
 	$("button[name='confirm']").bind("click", function() {
 		var idArray = new Array();
 		var nameArray = new Array();

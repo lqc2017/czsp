@@ -10,106 +10,76 @@
 <script src="/czsp/static/js/jquery.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 </head>
-<%@ page import="czsp.user.model.UserInfo"%>
 <body>
-	<%
-		UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
-		if (userInfo != null) {
-	%>
-	当前人员：<%=userInfo.getName()%>(<%=userInfo.getUserId()%>)
-	<br />
-	<%
-		} else {
-			userInfo = new UserInfo();
-		}
-	%>
-	<%-- <form action="/czsp/plan/create">
-		<input type="hidden" id="createUserId" name="createUserId" value="<%=userInfo.getUserId()%>" /> 
-		<label for="planName">规划名称</label>：
-		<input type="text" id="planName" name="planName" class="required" />
-		<label for="phases">规划环节</label>：<label id="phasesLabel"></label>
-		<input type="hidden" id="phases" name="phases" class="required" />
-		<button type="button" name="select">选择</button>
-		&nbsp <input type="submit" value="新建计划">
-	</form>
-	<br />
-	<br />
-	<br />
-	<button name="activate">激活</button> --%>
-
-	<table border="1">
-		<tr>
-			<th>计划ID</th>
-			<th>申请ID</th>
-			<th>规划名称</th>
-			<th>村镇</th>
-			<th>当前环节</th>
-			<th>当前节点</th>
-			<th>当前实例ID</th>
-			<th>创建时间</th>
-			<th>创建人ID</th>
-			<th>是否办结</th>
-			<th>操作</th>
-		</tr>
-		<c:forEach var="info" items="${obj.infoList}">
+	<div style="width:1000px">
+		<jsp:include page="/czsp/common/userMessage.jsp" flush="true" />
+		<button name="add" style="float: right;">新增计划</button>
+		<table border='1' style="width:1000px;">
 			<tr>
-				<td>${info.planId}</td>
-				<td>${info.appId}</td>
-				<td>${info.planName}</td>
-				<td>${info.townName}</td>
-				<td>${info.curPhase}</td>
-				<td>${info.curNode}</td>
-				<td>${info.instanceId}</td>
-				<td><fmt:formatDate value="${info.createTime}" type="both" /></td>
-				<td>${info.createUserId}</td>
-				<td><c:if test="${info.status eq '0'}">未流转</c:if>
-				<c:if test="${info.status eq '1'}">流转中</c:if>
-				<c:if test="${info.status eq '2'}">办结</c:if></td>
-				<td><button name="instance">查看实例</button>
-					<c:if test="${info.status eq '0'}"><button name="launch">启动计划</button></c:if></td>
+				<th>区县</th>
+				<th>规划名称</th>
+				<th>村镇</th>
+				<th>规划面积(km²)</th>
+				<th>创建日期</th>
+				<th>创建人</th>
+				<th>状态</th>
+				<th>操作</th>
 			</tr>
-		</c:forEach>
-	</table>
+			<c:forEach var="info" items="${obj.infoList}">
+				<tr>
+					<td>${obj.dicQx[info.qxId].name}</td>
+					<td title="${info.planId}">${info.planName}</td>
+					<td>${info.townName}</td>
+					<td>${info.planArea}</td>
+					<td><fmt:formatDate value="${info.createTime}" type="date" /></td>
+					<td>${info.createUserName}</td>
+					<td><c:if test="${info.status eq '0'}">未流转</c:if>
+					<c:if test="${info.status eq '1'}">流转中</c:if>
+					<c:if test="${info.status eq '2'}">办结</c:if></td>
+					<td><c:if test="${info.status eq '0'}"><button name="edit">修改</button>
+					
+					</c:if>
+					<c:if test="${info.status eq '0'}"> <button name="launch">启动计划</button></c:if>
+					<button name="del">删除</button>
+					</td>
+				</tr>
+			</c:forEach>
+		</table>
+	</div>
 
 	<script type="text/javascript">
-		$("button[name='instance']").bind("click", function() {
+		//修改键绑定
+		$("button[name='edit']").bind("click", function() {
 			var tr = $(this).parents("tr");
-			var planId = tr.children("td:first").text();
+			var planId = tr.children("td:eq(1)").attr("title");
 			
-			window.open(WfURLPrefix+'/showInstance/'+planId,"实例信息");
+			window.open(PlanURLPrefix+'/edit/'+planId,"修改计划");
 		})
 		
-		$("button[name='new']").bind("click", function() {
+		//添加键绑定
+		$("button[name='add']").bind("click", function() {
+
+			location.href= PlanURLPrefix+'/add';
+		})
+		
+		//删除案件键绑定
+		$("button[name='del']").bind("click", function() {
+			var tr = $(this).parents("tr");
+			var planId = tr.children("td:eq(1)").attr("title");
 
 			$.ajax({
-				url : UserURLPrefix + '/create',
+				url : PlanURLPrefix+'/delete/' + planId,
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {
-					resultPrompt(re, false);
+					console.log(re.result);
+			        if (re.result == 'success'){
+						alert("success!");
+						location.href = PlanURLPrefix + "/list";
+					}else
+						alert("message : " + re.message);
 				}
 			});
-		})
-		
-		$("form").submit(function(e) {
-			if ($("#createUserId").val() == "null") {
-				alert("请先登录！");
-				e.preventDefault();
-				return;
-			}
-			if (!validate()) {
-				e.preventDefault();
-			}
-		})
-		
-		$("button[name='select']").bind("click", function() {
-			var moduleMappingUrl = WfURLPrefix;
-			
-			var url = moduleMappingUrl + '/selectPhases';
-			if($("#phases").val() != undefined)
-				url = moduleMappingUrl + '/selectPhases?phaseIds='+$("#phases").val();
-			
-			window.open(url,"选择环节","top=100,left=400,width=250,height=200,resizable=no");
 		})
 	</script>
 </body>

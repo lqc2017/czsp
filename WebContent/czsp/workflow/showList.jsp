@@ -22,17 +22,8 @@
 		</c:forEach>
 	</ul>
 	<br/>
-	<%
-	UserInfo userInfo = (UserInfo)session.getAttribute("userInfo");
-	if(userInfo!=null){ %>
-	当前人员：<%=userInfo.getName() %>(<%=userInfo.getUserId() %>)<br/>
-	<%} else{
-		userInfo = new UserInfo();	
-	}
-	%>
+	<jsp:include page="/czsp/common/userMessage.jsp" flush="true"/>
 	<button name="new">新建流程</button>
-	&nbsp
-	<button name="activate">激活</button>
 	&nbsp
 	<button name="clear">清除(session)</button>
 	&nbsp
@@ -99,6 +90,7 @@
 	</table>
 
 	<script type="text/javascript">
+		//新建流程键绑定
 		$("button[name='new']").bind("click", function() {
 
 			$.ajax({
@@ -111,17 +103,7 @@
 			});
 		})
 
-		$("button[name='activate']").bind("click", function() {
-			$.ajax({
-				url : UserURLPrefix + '/activate',
-				dataType : 'json',
-				type : 'GET',
-				success : function(re) {
-					resultPrompt(re);
-				}
-			});
-		})
-		
+		//清空人员信息键绑定
 		$("button[name='clear']").bind("click", function() {
 			$.ajax({
 				url : UserURLPrefix + '/clear',
@@ -133,11 +115,13 @@
 			});
 		})
 		
+		//选择人员键绑定
 		$("button[name='change']").bind("click", function() {
 			window.open(UserURLPrefix + '/change',"选择人员",
 					"top=100,left=400,width=500,height=400,resizable=no");
 		})
 
+		//流程提交键绑定
 		$("button[name='submit']").bind("click",function() {
 			var tr = $(this).parents("tr");
 			var instanceNo = tr.children("td:eq(1)").text();
@@ -147,6 +131,7 @@
 						"提交页面", "top=100,left=100,width=500,height=200,resizable=no");
 		})
 
+		//删除流程键绑定
 		$("button[name='del']").bind("click", function() {
 			var tr = $(this).parents("tr");
 			var instanceId = tr.children("td:first").text();

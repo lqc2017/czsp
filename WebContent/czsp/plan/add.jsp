@@ -12,19 +12,10 @@
 </head>
 <%@ page import="czsp.user.model.UserInfo"%>
 <body>
-	<%
-		UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
-		if (userInfo != null) {
-	%>
-	当前人员：<%=userInfo.getName()%>(<%=userInfo.getUserId()%>)
-	<br />
-	<%
-		} else {
-			userInfo = new UserInfo();
-		}
-	%>
-	<form action="/czsp/plan/create">
-	<input type="hidden" id="createUserId" name="createUserId" value="<%=userInfo.getUserId()%>" /> 
+	<jsp:include page="/czsp/common/userMessage.jsp" flush="true"/>
+	
+	<form action="/czsp/plan/create" method="post">
+	<input type="hidden" id="createUserId" name="createUserId" value="${userInfo.userId}" /> 
 	<table border="1">
 			<tr>
 				<td><label for="planName">规划名称</label></td>
@@ -49,6 +40,22 @@
 					<button type="button" name="selectTown">选择</button>
 				</td>
 			</tr>
+			<tr>
+				<td><label for="planArea">规划面积</label></td>
+				<td><input type="text" id="planArea" name="planArea" class="required" /></td>
+			</tr>
+			<tr>
+				<td><label for="designDepartment">设计部门</label></td>
+				<td><input type="text" id="designDepartment" name="designDepartment"/></td>
+			</tr>
+			<tr>
+				<td><label for="designContactName">设计部门联系人</label></td>
+				<td><input type="text" id="designContactName" name="designContactName"/></td>
+			</tr>
+			<tr>
+				<td><label for="designContactWay">设计部门联系方式</label></td>
+				<td><input type="text" id="designContactWay" name="designContactWay" /></td>
+			</tr>
 		</table>
 		
 		<input type="submit" value="新建计划">
@@ -56,44 +63,18 @@
 	<button name="change">选择用户</button>
 
 	<script type="text/javascript">
-		$("button[name='instance']").bind("click", function() {
-			var tr = $(this).parents("tr");
-			var planId = tr.children("td:first").text();
-			
-			window.open(WfURLPrefix+'/showInstance/'+planId,"实例信息");
-		})
+		//初始化必填框
+		initRequired();
 		
+		//选择人员键绑定
 		$("button[name='change']").bind("click", function() {
 			window.open(UserURLPrefix + '/change',"选择人员",
 					"top=100,left=400,width=500,height=400,resizable=no");
 		})
 		
-		$("button[name='new']").bind("click", function() {
-
-			$.ajax({
-				url : UserURLPrefix + '/create',
-				dataType : 'json',
-				type : 'GET',
-				success : function(re) {
-					resultPrompt(re, false);
-				}
-			});
-		})
-		
-		$("button[name='activate']").bind("click", function() {
-			$.ajax({
-				url : UserURLPrefix + '/activate',
-				dataType : 'json',
-				type : 'GET',
-				success : function(re) {
-					resultPrompt(re);
-				}
-			});
-		})
-
-		
+		//表单提交事件绑定
 		$("form").submit(function(e) {
-			if ($("#createUserId").val() == "null") {
+			if ($("#createUserId").val() == "") {
 				alert("请先登录！");
 				e.preventDefault();
 				return;
@@ -103,6 +84,7 @@
 			}
 		})
 		
+		//选择环节键绑定
 		$("button[name='selectPhase']").bind("click", function() {
 			var moduleMappingUrl = WfURLPrefix;
 			
@@ -113,7 +95,13 @@
 			window.open(url,"选择环节","top=100,left=400,width=250,height=200,resizable=no");
 		})
 		
+		//选择村镇键绑定
 		$("button[name='selectTown']").bind("click", function() {
+			if($("#createUserId").val() == "") {
+				alert("请先登录！");
+				return;
+			}
+			
 			window.open(CommURLPrefix + '/selectTown',"选择村镇",
 			"top=100,left=400,width=500,height=400,resizable=no");
 		})

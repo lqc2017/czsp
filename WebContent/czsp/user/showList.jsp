@@ -84,20 +84,7 @@
 
 
 	<script type="text/javascript">
-		$("button[name='new']").bind("click", function() {
-
-			$.ajax({
-				url : UserURLPrefix + '/create',
-				dataType : 'json',
-				type : 'GET',
-				success : function(re) {
-					console.log(re.result);
-					if (re.result == 'success')
-						location.reload();
-				}
-			});
-		})
-		
+		//授权键绑定
 		$("button[name='grant']").bind("click", function() {
 			var tr = $(this).parents("tr");
 			var userId = tr.children("td:first").text();
@@ -106,6 +93,7 @@
 					"角色列表", "top=100,left=400,width=500,height=400,resizable=no");
 		})
 		
+		//删除人员键绑定
 		$("button[name='del']").bind("click", function() {
 			var tr = $(this).parents("tr");
 			var userId = tr.children("td:first").text();
@@ -122,6 +110,7 @@
 			});
 		})
 		
+		//添加人员事件绑定
 		$("form").submit(function(e) {
 			if (!validate()) {
 				e.preventDefault();

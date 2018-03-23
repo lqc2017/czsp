@@ -22,6 +22,9 @@ public class UserInfo {
 	@Column(value = "QX_ID")
 	private String qxId;
 
+	@Column(value = "PHONE_NUMBER")
+	private String phoneNumber;
+
 	public String getUserId() {
 		return userId;
 	}
@@ -60,6 +63,14 @@ public class UserInfo {
 
 	public void setQxId(String qxId) {
 		this.qxId = qxId;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 }
