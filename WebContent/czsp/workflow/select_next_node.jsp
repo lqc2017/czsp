@@ -29,7 +29,7 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 %>
 <body>
 	<input id="curInstanceId" type="hidden" value="${obj.instance.instanceId}"/>
-	<jsp:include page="/czsp/common/userMessage.jsp" flush="true"/>
+	<jsp:include page="/czsp/common/base/cur_user_message.jsp" flush="true"/>
 	
 	当前环节：<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_PHASE_NO,nodeDetail.getPhaseId())%>&nbsp&nbsp
 	当前节点：<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO,nodeDetail.getNodeId())%>

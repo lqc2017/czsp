@@ -13,7 +13,7 @@
 <%@ page import="czsp.user.model.UserInfo"%>
 <body>
 	<div>
-		<jsp:include page="/czsp/common/userMessage.jsp" flush="true"/>
+		<jsp:include page="/czsp/common/base/cur_user_message.jsp" flush="true"/>
 		
 		<input type="hidden" id="curUserId" name="curUserId" value="${userInfo.userId}" /> 
 		<form id="updateForm">

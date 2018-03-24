@@ -26,7 +26,7 @@ public class AuthorityModule {
 	 * 全琛 2018年3月17日 角色列表
 	 */
 	@At("/roleList")
-	@Ok("jsp:/czsp/auth/roleList")
+	@Ok("jsp:/czsp/auth/show_role_list")
 	public Map<String, Object> roleList(String userId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		UserInfo userInfo = userInfoService.getUserInfoByUserId(userId);

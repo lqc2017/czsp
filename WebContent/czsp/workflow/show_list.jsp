@@ -22,7 +22,7 @@
 		</c:forEach>
 	</ul>
 	<br/>
-	<jsp:include page="/czsp/common/userMessage.jsp" flush="true"/>
+	<jsp:include page="/czsp/common/base/cur_user_message.jsp" flush="true"/>
 	<button name="new">新建流程</button>
 	&nbsp
 	<button name="clear">清除(session)</button>

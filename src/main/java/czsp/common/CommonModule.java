@@ -18,7 +18,7 @@ import czsp.user.model.UserInfo;
 @At("/common")
 public class CommonModule {
 	@At("/selectTown")
-	@Ok("jsp:/czsp/common/selectTown")
+	@Ok("jsp:/czsp/common/select_town")
 	public Map<String, Object> selectTown() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		UserInfo userInfo = SessionUtil.getCurrenUser();

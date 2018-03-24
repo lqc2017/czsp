@@ -12,7 +12,7 @@
 </head>
 <%@ page import="czsp.user.model.UserInfo"%>
 <body>
-	<jsp:include page="/czsp/common/userMessage.jsp" flush="true"/>
+	<jsp:include page="/czsp/common/base/cur_user_message.jsp" flush="true"/>
 	
 	<form action="/czsp/plan/create" method="post">
 	<input type="hidden" id="createUserId" name="createUserId" value="${userInfo.userId}" /> 

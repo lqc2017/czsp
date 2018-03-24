@@ -64,7 +64,7 @@ public class WFModule {
 	final Log log = Logs.getLog(MainSetup.class);
 
 	@At("/list")
-	@Ok("jsp:/czsp/workflow/showList")
+	@Ok("jsp:/czsp/workflow/show_list")
 	public Map<String, Object> showList() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// List<WfNode> wfNodes = ioc.get(WfNodeDao.class).getList();
@@ -119,7 +119,7 @@ public class WFModule {
 	 * 全琛 2018年2月25日 选择下一节点
 	 */
 	@At("/selectNextNode")
-	@Ok("jsp:/czsp/workflow/selectNextNode")
+	@Ok("jsp:/czsp/workflow/select_next_node")
 	public Map<String, Object> nextNode(String instanceId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 获得实例
@@ -268,7 +268,7 @@ public class WFModule {
 	 * 全琛 2018年3月4日 选择环节
 	 */
 	@At("/selectPhases")
-	@Ok("jsp:/czsp/workflow/selectPhases")
+	@Ok("jsp:/czsp/workflow/select_phases")
 	public Map<String, Object> selectPhases(String phaseIds) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 加载链表
@@ -282,7 +282,7 @@ public class WFModule {
 	 * 全琛 2018年3月6日 查看流程实例
 	 */
 	@At("/showInstance/?")
-	@Ok("jsp:/czsp/workflow/showInstance")
+	@Ok("jsp:/czsp/workflow/show_instance")
 	@Fail("jsp:/czsp/common/fail")
 	public Map<String, Object> showInstance(String planId) {
 		Map<String, Object> map = new HashMap<String, Object>();

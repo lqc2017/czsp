@@ -12,7 +12,7 @@
 </head>
 <body>
 	<div style="width:1000px">
-		<jsp:include page="/czsp/common/userMessage.jsp" flush="true" />
+		<jsp:include page="/czsp/common/base/cur_user_message.jsp" flush="true" />
 		<button name="add" style="float: right;">新增计划</button>
 		<table border='1' style="width:1000px;">
 			<tr>

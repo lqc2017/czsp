@@ -36,7 +36,7 @@ public class PlanModule {
 	 * 全琛 2018年3月3日 显示计划列表
 	 */
 	@At("/list")
-	@Ok("jsp:/czsp/plan/showList")
+	@Ok("jsp:/czsp/plan/show_list")
 	public Map<String, Object> showList() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<VplanInfoDetail> infoList = planInfoService.getList();

@@ -31,7 +31,7 @@ public class UserModule {
 	final Log log = Logs.getLog(MainSetup.class);
 
 	@At("/list")
-	@Ok("jsp:/czsp/user/showList")
+	@Ok("jsp:/czsp/user/show_list")
 	public Map<String, Object> showList() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List users = userInfoService.getList();
@@ -81,7 +81,7 @@ public class UserModule {
 	 * 全琛 2018年3月23日 用户选择界面
 	 */
 	@At("/change")
-	@Ok("jsp:/czsp/user/selectUser")
+	@Ok("jsp:/czsp/user/select_user")
 	public Map<String, Object> change(@Param("..") UserInfo userInfo) {
 		if (userInfo == null)
 			userInfo = new UserInfo();
