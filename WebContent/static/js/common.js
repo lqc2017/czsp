@@ -8,13 +8,28 @@ var UserURLPrefix = "/czsp/user";
 var AuthURLPrefix = "/czsp/auth";
 var PlanURLPrefix = "/czsp/plan";
 
+function initPage(){
+	initRequired();
+	initResetBtn();
+}
+
 /*表单必填初始化*/
 function initRequired(){
 	$(".required").each(function(){
 		var label = $("label[for='"+$(this).attr("name")+"']");
 		label.append("<span>(*)<span>");
-		
 		label.children("span").css("color","red");
+	})
+}
+
+/*重置按钮初始化*/
+function initResetBtn(){
+	$("button[name='reset']").bind("click",function(){
+		var form = $(this).parents("#searchFrom");
+		form.find("input[type!='submit']").val("");
+		form.find("select").children().removeAttr("selected");
+		
+		form.submit();
 	})
 }
 
@@ -70,4 +85,3 @@ $.fn.serializeObject = function()
    });  
    return o;  
 }
-

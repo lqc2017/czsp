@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.nutz.dao.entity.Record;
 
 public class DicUtil {
@@ -28,11 +29,15 @@ public class DicUtil {
 	}
 	
 	public static String getItemName(String dicId, String id) {
+		if(dicId == null || StringUtils.isEmpty(dicId) || id == null || StringUtils.isEmpty(id))
+			return null;
 		Map<String,Record> map = (HashMap<String,Record>)dicMap.get(dicId);
 		return map.get(id).get("name").toString();
 	}
 	
 	public static String getItemCode(String dicId, String id) {
+		if(dicId == null || StringUtils.isEmpty(dicId) || id == null || StringUtils.isEmpty(id))
+			return null;
 		Map<String,Record> map = (HashMap<String,Record>)dicMap.get(dicId);
 		return map.get(id).get("code").toString();
 	}

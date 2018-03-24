@@ -30,7 +30,8 @@
 			</tr>
 			<tr>
 				<td><label for="qxId">区县</label></td>
-				<td><c:if test="${userInfo != null }">${obj.dicQx[userInfo.qxId].name}</c:if></td>
+				<td><input type="hidden" id="qxId" name="qxId" class="required" value="<c:if test='${userInfo != null }'>${userInfo.qxId}</c:if>"/>
+				<c:if test="${userInfo != null }">${obj.dicQx[userInfo.qxId].name}</c:if></td>
 			</tr>
 			<tr>
 				<td><label for="townName">村镇</label></td>
@@ -64,7 +65,7 @@
 
 	<script type="text/javascript">
 		//初始化必填框
-		initRequired();
+		initPage();
 		
 		//选择人员键绑定
 		$("button[name='change']").bind("click", function() {

@@ -113,13 +113,27 @@ public class PlanInfoService {
 					if (StringUtils.isNotEmpty(planInfo.getAppId())) {
 						planAppDao.deleteApp(planInfo.getAppId());
 					}
-					
+
 					if (StringUtils.isNotEmpty(planInfo.getInstanceId())) {
 						wfOperation.deleteInstance(planInfo.getInstanceId());
 					}
 				}
 			}
 		});
+	}
+
+	/**
+	 * 全琛 2018年3月24日 根据appId获得app
+	 */
+	public PlanApp getPlanAppByAppId(String appId) {
+		return planAppDao.getAppByAppId(appId);
+	}
+
+	/**
+	 * 全琛 2018年3月24日 根据删选条件获取计划列表
+	 */
+	public List getListByCondition(VplanInfoDetail planCondition, String orderBy) {
+		return planInfoDao.getListByCondition(planCondition, orderBy);
 	}
 
 }

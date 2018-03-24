@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.log.Log;
@@ -227,7 +228,7 @@ public class WFModule {
 			log.debug("routeId:" + routeId);
 			log.debug("hisInstanceId:" + hisInstanceId);
 			log.debug("curInstanceId:" + curInstanceId);
-			if (routeId != null && !"".equals(routeId)) {
+			if (routeId != null && StringUtils.isNotEmpty(routeId)) {
 				// 根据路由获得下一节点名称
 				WfRoute route = wfRouteDao.getRouteByRouteId(routeId);
 				String nodeId = route.getPhaseId() + route.getNextNode();
@@ -237,12 +238,12 @@ public class WFModule {
 				userInfos.addAll(userInfoService.getListByRoleId(node.getRoleId()));
 			}
 			// 回退人员
-			if (hisInstanceId != null && !"".equals(routeId)) {
+			if (hisInstanceId != null && StringUtils.isNotEmpty(routeId)) {
 				WfHisInstance hisInstance = wfOperation.getHisInstanceByInstanceId(hisInstanceId);
 				userInfos.add(userInfoService.getUserInfoByUserId(hisInstance.getSignUserId()));
 			}
 			// 流转人员列表
-			if (curInstanceId != null && !"".equals(curInstanceId)) {
+			if (curInstanceId != null && StringUtils.isNotEmpty(curInstanceId)) {
 				WfCurInstance curInstence = wfOperation.getInstanceByInstanceId(curInstanceId);
 				// 根据节点查询该节点的操作人员
 				WfNode node = wfNodeDao.getNodeByNodeId(curInstence.getNodeId());

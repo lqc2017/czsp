@@ -60,6 +60,9 @@ public class VplanInfoDetail {
 	@Column(value = "PLAN_AREA")
 	@Readonly
 	private String planArea;
+	
+	/*以下字段查询用*/
+	private String createYear;
 
 	public String getPlanId() {
 		return planId;
@@ -111,6 +114,14 @@ public class VplanInfoDetail {
 
 	public String getPlanArea() {
 		return planArea;
+	}
+
+	public String getCreateYear() {
+		return createYear;
+	}
+
+	public void setCreateYear(String createYear) {
+		this.createYear = createYear;
 	}
 
 }

@@ -3,6 +3,7 @@ package czsp.plan.dao;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.sql.Criteria;
@@ -12,6 +13,7 @@ import org.nutz.mvc.Mvcs;
 
 import czsp.plan.model.PlanInfo;
 import czsp.plan.model.view.VplanInfoDetail;
+import czsp.user.model.UserInfo;
 
 @IocBean
 public class PlanInfoDao {
@@ -73,6 +75,34 @@ public class PlanInfoDao {
 	 */
 	public void deletePlan(String planId) {
 		dao.delete(PlanInfo.class, planId);
+	}
+
+	/**
+	 * 全琛 2018年3月24日 根据筛选条件获取列表
+	 */
+	public List getListByCondition(VplanInfoDetail planCondition, String orderBy) {
+		Criteria cri = Cnd.cri();
+
+		// 计划名称模糊
+		if (planCondition.getPlanName() != null)
+			cri.where().andLike("planName", planCondition.getPlanName());
+
+		// 年份
+		if (planCondition.getCreateYear() != null && StringUtils.isNotEmpty(planCondition.getCreateYear()))
+			cri.where().and("to_char(CREATE_TIME,'YYYY')", "=", planCondition.getCreateYear());
+
+		// 区县
+		if (planCondition.getQxId() != null && StringUtils.isNotEmpty(planCondition.getQxId()))
+			cri.where().andEquals("qxId", planCondition.getQxId());
+
+		// 状态
+		if (planCondition.getStatus() != null && StringUtils.isNotEmpty(planCondition.getStatus()))
+			cri.where().andEquals("status", planCondition.getStatus());
+
+		if (orderBy == null)
+			cri.getOrderBy().desc("create_time");
+
+		return dao.query(VplanInfoDetail.class, cri);
 	}
 
 }

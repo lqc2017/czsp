@@ -1,5 +1,6 @@
 package czsp.plan;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import org.nutz.mvc.annotation.Param;
 
 import czsp.MainSetup;
 import czsp.common.Constants;
+import czsp.common.util.DateUtil;
 import czsp.common.util.DicUtil;
 import czsp.common.util.MessageUtil;
 import czsp.plan.model.PlanApp;
@@ -141,4 +143,40 @@ public class PlanModule {
 		return map;
 	}
 
+	/**
+	 * 全琛 2018年3月24日 查询页面
+	 */
+	@At("/query")
+	@Ok("jsp:/czsp/plan/query/query_plan_list")
+	public Map<String, Object> queryPlan(@Param("..") VplanInfoDetail planCondition) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List infoList = planInfoService.getListByCondition(planCondition, null);
+
+		// 添加区县选项
+		Map qxMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+		List qxList = new ArrayList(qxMap.values());
+
+		map.put("infoList", infoList);
+		map.put("yearList", DateUtil.getYearList(5));
+		map.put("planCondition", planCondition);
+		map.put("qxList", qxList);
+		map.put("dicUtil", DicUtil.getInstance());
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年3月24日 案件详细信息界面
+	 */
+	@At("/detail/?")
+	@Ok("jsp:/czsp/plan/query/show_plan_detail")
+	public Map<String, Object> showDetail(String planId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
+		PlanApp planApp = planInfoService.getPlanAppByAppId(planInfo.getAppId());
+
+		map.put("dicUtil", DicUtil.getInstance());
+		map.put("planInfo", planInfo);
+		map.put("planApp", planApp);
+		return map;
+	}
 }

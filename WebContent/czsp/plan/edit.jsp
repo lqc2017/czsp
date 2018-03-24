@@ -66,7 +66,7 @@
 	</div>
 
 	<script type="text/javascript">
-		initRequired();
+		initPage();
 		
 		//选择人员键绑定
 		$("button[name='change']").bind("click", function() {

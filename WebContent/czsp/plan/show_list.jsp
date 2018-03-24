@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>计划</title>
+<title>计划列表</title>
 <script src="/czsp/static/js/jquery.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 </head>

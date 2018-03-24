@@ -82,11 +82,11 @@ public class UserModule {
 	 */
 	@At("/change")
 	@Ok("jsp:/czsp/user/select_user")
-	public Map<String, Object> change(@Param("..") UserInfo userInfo) {
-		if (userInfo == null)
-			userInfo = new UserInfo();
+	public Map<String, Object> change(@Param("..") UserInfo userCondition) {
+		if (userCondition == null)
+			userCondition = new UserInfo();
 		Map<String, Object> map = new HashMap<String, Object>();
-		List users = userInfoService.getListByCondition(userInfo);
+		List users = userInfoService.getListByCondition(userCondition);
 		// 添加部门选项
 		Map deptsMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_AHTU_DEPT_NO));
 		List departments = new ArrayList(deptsMap.values());
@@ -94,7 +94,7 @@ public class UserModule {
 		Map qxMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
 		List qxList = new ArrayList(qxMap.values());
 
-		map.put("userInfo", userInfo);
+		map.put("userCondition", userCondition);
 		map.put("users", users);
 		map.put("departments", departments);
 		map.put("qxList", qxList);

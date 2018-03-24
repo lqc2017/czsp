@@ -19,9 +19,9 @@
 </head>
 <%
 	Map map = (HashMap) request.getAttribute("obj");
-	UserInfo userInfo = (UserInfo) map.get("userInfo");
-	if (userInfo == null)
-		userInfo = new UserInfo();
+	UserInfo userCondition = (UserInfo) map.get("userCondition");
+	if (userCondition == null)
+		userCondition = new UserInfo();
 %>
 <body>
 	<form action="/czsp/user/change">
@@ -32,7 +32,7 @@
 				for (Record department : departments) {
 			%>
 			<option value="<%=department.get("id")%>"
-				<%if (userInfo.getDepartmentId() != null && department.get("id").equals(userInfo.getDepartmentId())) {%>
+				<%if (userCondition.getDepartmentId() != null && department.get("id").equals(userCondition.getDepartmentId())) {%>
 				selected="selected" <%}%>><%=department.get("name")%></option>
 			<%
 				}
@@ -48,7 +48,7 @@
 				for (Record qx : qxList) {
 			%>
 			<option value="<%=qx.get("id")%>"
-				<%if (userInfo.getQxId() != null && qx.get("id").equals(userInfo.getQxId())) {%>
+				<%if (userCondition.getQxId() != null && qx.get("id").equals(userCondition.getQxId())) {%>
 				selected="selected" <%}%>><%=qx.get("name")%></option>
 			<%
 				}

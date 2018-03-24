@@ -52,6 +52,9 @@ public class PlanInfo {
 	@Column(value = "DESIGN_CONTACT_WAY")
 	private String designContactWay;
 
+	@Column(value = "QX_ID")
+	private String qxId;
+
 	public String getPlanId() {
 		return planId;
 	}
@@ -154,6 +157,14 @@ public class PlanInfo {
 
 	public void setDesignContactWay(String designContactWay) {
 		this.designContactWay = designContactWay;
+	}
+
+	public String getQxId() {
+		return qxId;
+	}
+
+	public void setQxId(String qxId) {
+		this.qxId = qxId;
 	}
 
 }

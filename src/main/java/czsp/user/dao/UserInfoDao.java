@@ -2,6 +2,7 @@ package czsp.user.dao;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.sql.Criteria;
@@ -49,11 +50,11 @@ public class UserInfoDao {
 		if (user.getName() != null)
 			cri.where().andLike("name", user.getName());
 
-		if (user.getDepartmentId() != null && !"".equals(user.getDepartmentId().trim()))
-			cri.where().andEquals("departmentId", user.getDepartmentId().trim());
+		if (user.getDepartmentId() != null && StringUtils.isNotEmpty(user.getDepartmentId()))
+			cri.where().andEquals("departmentId", user.getDepartmentId());
 		
-		if (user.getQxId() != null && !"".equals(user.getQxId().trim()))
-			cri.where().andEquals("qxId", user.getQxId().trim());
+		if (user.getQxId() != null && StringUtils.isNotEmpty(user.getQxId()))
+			cri.where().andEquals("qxId", user.getQxId());
 
 		return dao.query(UserInfo.class, cri);
 	}
