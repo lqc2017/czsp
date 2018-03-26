@@ -6,30 +6,19 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>角色列表</title>
+<title>村镇规划编制审批系统</title>
 <script src="/czsp/static/js/jquery.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <body>
 	<jsp:include page="/czsp/common/menu.jsp" flush="true" />
-	<iframe id="main-frame" width="100%" frameborder="0"
-		src=""></iframe>
+	<iframe id="main-frame" width="100%" frameborder="0" src=""></iframe>
 
 	<script type="text/javascript">
-		function setIframeHeight(iframe) {
-			if (iframe) {
-				var iframeWin = iframe.contentWindow
-						|| iframe.contentDocument.parentWindow;
-				if (iframeWin.document.body) {
-					iframe.height = iframeWin.document.documentElement.scrollHeight
-							|| iframeWin.document.body.scrollHeight;
-				}
-			}
-		};
-
-		window.onload = function() {
-			setIframeHeight(document.getElementById('external-frame'));
-		};
+		$(function() {
+			var ifm = document.getElementById("main-frame");
+			ifm.height = document.documentElement.clientHeight;
+		})
 	</script>
 </body>
 </html>

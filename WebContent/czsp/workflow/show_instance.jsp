@@ -21,6 +21,7 @@
 	Map map = (HashMap) request.getAttribute("obj");
 %>
 <body>
+	<input id="curInstanceId" type="hidden" value="${obj.curInstance.instanceId}"/>
 	<table border="1">
 		<tbody>
 			<tr>

@@ -24,6 +24,7 @@ import czsp.plan.model.PlanApp;
 import czsp.plan.model.PlanInfo;
 import czsp.plan.model.view.VplanInfoDetail;
 import czsp.plan.service.PlanInfoService;
+import czsp.workflow.service.WfDefineService;
 
 @IocBean
 @At("/plan")
@@ -31,6 +32,9 @@ public class PlanModule {
 
 	@Inject
 	private PlanInfoService planInfoService;
+
+	@Inject
+	private WfDefineService wfDefineService;
 
 	final Log log = Logs.getLog(MainSetup.class);
 
@@ -170,6 +174,41 @@ public class PlanModule {
 	@At("/detail/?")
 	@Ok("jsp:/czsp/plan/query/show_plan_detail")
 	public Map<String, Object> showDetail(String planId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
+		PlanApp planApp = planInfoService.getPlanAppByAppId(planInfo.getAppId());
+
+		map.put("dicUtil", DicUtil.getInstance());
+		map.put("planInfo", planInfo);
+		map.put("planApp", planApp);
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年3月26日 待办列表
+	 */
+	@At("/todoList")
+	@Ok("jsp:/czsp/plan/todo_list")
+	public Map<String, Object> todoList() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		// 加载环节
+		List phases = wfDefineService.loadPhases();
+		// 加载案件
+		VplanInfoDetail planCondition = new VplanInfoDetail();
+		planCondition.setStatus("1");
+		List infoList = planInfoService.getListByCondition(planCondition, null);
+
+		map.put("phases", phases);
+		map.put("infoList", infoList);
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年3月26日 审核界面
+	 */
+	@At("/audit/?")
+	@Ok("jsp:/czsp/plan/audit_plan")
+	public Map<String, Object> audit(String planId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
 		PlanApp planApp = planInfoService.getPlanAppByAppId(planInfo.getAppId());

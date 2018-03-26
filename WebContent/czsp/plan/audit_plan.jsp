@@ -25,8 +25,14 @@
 	<!-- 基本信息 -->
 	<jsp:include page="/czsp/common/base/base_plan_info.jsp" flush="true" />
 	
-	<!-- 流程信息 -->
-	<iframe id="process-frame" width="100%" frameborder="0" src="/czsp/wf/showInstance/<%=planInfo.getPlanId() %>"></iframe>
+	<!-- 扩展信息填写 -->
+	<jsp:include page="/czsp/plan/base/extended_information.jsp" flush="true" />
+	
+	<!-- 办理意见 -->
+	<jsp:include page="/czsp/plan/base/audit_opinion.jsp" flush="true" />
+	
+	<!-- 按钮栏 -->
+	<jsp:include page="/czsp/plan/base/base_button.jsp" flush="true" />
 
 	<script type="text/javascript">
 		$(function() {

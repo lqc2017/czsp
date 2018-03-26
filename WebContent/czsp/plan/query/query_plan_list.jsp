@@ -102,6 +102,7 @@
 	<script type="text/javascript">
 		initPage();
 		
+		//查看详细信息按钮绑定
 		$("button[name='detail']").bind("click", function() {
 			var tr = $(this).parents("tr");
 			var planId = tr.children("td:eq(1)").attr("title");

@@ -60,8 +60,8 @@ public class VplanInfoDetail {
 	@Column(value = "PLAN_AREA")
 	@Readonly
 	private String planArea;
-	
-	/*以下字段查询用*/
+
+	/* 以下字段查询用 */
 	private String createYear;
 
 	public String getPlanId() {
@@ -82,6 +82,10 @@ public class VplanInfoDetail {
 
 	public Date getCreateTime() {
 		return createTime;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	public String getCreateUserId() {
