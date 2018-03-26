@@ -25,7 +25,7 @@ public class WfNodeDao {
 	}
 
 	/**
-	 * 全琛 2018年2月24日 根据主键获得视图
+	 * 全琛 2018年2月24日 根据主键获得节点详细信息
 	 */
 	public VwfNodeDetail getNodeDetailByNodeId(String nodeId) {
 		return dao.fetch(VwfNodeDetail.class, nodeId);

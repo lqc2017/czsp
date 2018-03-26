@@ -29,7 +29,7 @@ public class WfRouteDao {
 	}
 
 	/**
-	 * 全琛 2018年2月25日 根据逐渐获得路由记录
+	 * 全琛 2018年2月25日 根据主键获得路由记录
 	 */
 	public WfRoute getRouteByRouteId(String routeId) {
 		return dao.fetch(WfRoute.class, routeId);

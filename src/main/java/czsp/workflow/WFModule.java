@@ -24,34 +24,22 @@ import czsp.user.model.UserInfo;
 import czsp.user.model.UserOperation;
 import czsp.user.service.UserInfoService;
 import czsp.user.service.UserOperationService;
-import czsp.workflow.dao.WfInstanceDao;
-import czsp.workflow.dao.WfNodeDao;
-import czsp.workflow.dao.WfPhaseDao;
-import czsp.workflow.dao.WfRouteDao;
 import czsp.workflow.model.WfCurInstance;
 import czsp.workflow.model.WfHisInstance;
 import czsp.workflow.model.WfNode;
 import czsp.workflow.model.WfRoute;
 import czsp.workflow.model.view.VwfNodeDetail;
+import czsp.workflow.service.WfDefineService;
 
 @IocBean
 @At("/wf")
 public class WFModule {
 
 	@Inject
-	private WfNodeDao wfNodeDao;
-
-	@Inject
-	private WfPhaseDao wfPhaseDao;
-
-	@Inject
-	private WfRouteDao wfRouteDao;
-
-	@Inject
 	private WFOperation wfOperation;
-
+	
 	@Inject
-	private WfInstanceDao wfInstanceDao;
+	private WfDefineService wfDefineService;
 
 	@Inject
 	private UserOperationService userOperationService;
@@ -69,7 +57,7 @@ public class WFModule {
 	public Map<String, Object> showList() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// List<WfNode> wfNodes = ioc.get(WfNodeDao.class).getList();
-		List<WfNode> wfNodes = wfNodeDao.getList();
+		List<WfNode> wfNodes = wfDefineService.getList();
 		List<WfCurInstance> wfCurInstances = wfOperation.getCurInstanceList();
 		List<WfHisInstance> wfHisInstances = wfOperation.getHisInstanceList();
 
@@ -130,14 +118,14 @@ public class WFModule {
 			wfOperation.signWf(SessionUtil.getCurrenUserId(), instance);
 		}
 		// 查询节点信息
-		VwfNodeDetail nodeDetail = wfNodeDao.getNodeDetailByNodeId(instance.getNodeId());
+		VwfNodeDetail nodeDetail = wfDefineService.getNodeDetailByNodeId(instance.getNodeId());
 		// 查询路本节点路由
-		List routes = wfRouteDao.getListByCurNode(nodeDetail.getWfCurNode(), nodeDetail.getPhaseId());
+		List routes = wfDefineService.getListByCurNode(nodeDetail.getWfCurNode(), nodeDetail.getPhaseId());
 		// 查询最近一条历史提交操作记录
 		UserOperation operation = userOperationService.getLatestOperation(instanceId, "'提交','特送'");
 		WfHisInstance hisInstance = null;
 		if (operation != null)
-			hisInstance = wfInstanceDao.getHisInstanceByInstanceId(operation.getPreInstanceId());
+			hisInstance = wfOperation.getHisInstanceByInstanceId(operation.getPreInstanceId());
 
 		// 查询节点信息
 		map.put("instance", instance);
@@ -158,7 +146,7 @@ public class WFModule {
 		try {
 			String curUserId = SessionUtil.loginAuth(map);
 			if (curUserId != null) {
-				WfRoute route = wfRouteDao.getRouteByRouteId(routeId);
+				WfRoute route = wfDefineService.getRouteByRouteId(routeId);
 				WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(curInstanceId);
 				if ("1".equals(route.getIsTesong())) {
 					wfOperation.submitWF(route, curInstance, "特送", todoUserId);
@@ -230,11 +218,11 @@ public class WFModule {
 			log.debug("curInstanceId:" + curInstanceId);
 			if (routeId != null && StringUtils.isNotEmpty(routeId)) {
 				// 根据路由获得下一节点名称
-				WfRoute route = wfRouteDao.getRouteByRouteId(routeId);
+				WfRoute route = wfDefineService.getRouteByRouteId(routeId);
 				String nodeId = route.getPhaseId() + route.getNextNode();
 
 				// 根据节点查询该节点的操作人员
-				WfNode node = wfNodeDao.getNodeByNodeId(nodeId);
+				WfNode node = wfDefineService.getNodeByNodeId(nodeId);
 				userInfos.addAll(userInfoService.getListByRoleId(node.getRoleId()));
 			}
 			// 回退人员
@@ -246,7 +234,7 @@ public class WFModule {
 			if (curInstanceId != null && StringUtils.isNotEmpty(curInstanceId)) {
 				WfCurInstance curInstence = wfOperation.getInstanceByInstanceId(curInstanceId);
 				// 根据节点查询该节点的操作人员
-				WfNode node = wfNodeDao.getNodeByNodeId(curInstence.getNodeId());
+				WfNode node = wfDefineService.getNodeByNodeId(curInstence.getNodeId());
 				List<String> userIds = new ArrayList<String>() {
 					{
 						add(curInstence.getSignUserId());
@@ -272,8 +260,8 @@ public class WFModule {
 	@Ok("jsp:/czsp/workflow/select_phases")
 	public Map<String, Object> selectPhases(String phaseIds) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		// 加载链表
-		List phases = wfPhaseDao.loadPhases();
+		// 加载环节
+		List phases = wfDefineService.loadPhases();
 		map.put("phaseIds", phaseIds);
 		map.put("phases", phases);
 		return map;
