@@ -78,6 +78,10 @@ public class VplanWfDetail {
 	@Readonly
 	private String ifSign;
 
+	@Column(value = "IF_RETRIEVE")
+	@Readonly
+	private String ifRetrieve;
+
 	@Column(value = "TOWN_NAME")
 	@Readonly
 	private String townName;
@@ -195,6 +199,22 @@ public class VplanWfDetail {
 
 	public void setSignUserName(String signUserName) {
 		this.signUserName = signUserName;
+	}
+
+	public void setLastOpUser(String lastOpUser) {
+		this.lastOpUser = lastOpUser;
+	}
+
+	public void setIfSign(String ifSign) {
+		this.ifSign = ifSign;
+	}
+
+	public String getIfRetrieve() {
+		return ifRetrieve;
+	}
+
+	public void setIfRetrieve(String ifRetrieve) {
+		this.ifRetrieve = ifRetrieve;
 	}
 
 }

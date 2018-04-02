@@ -50,10 +50,10 @@ public class UserInfoDao {
 		if (user.getName() != null)
 			cri.where().andLike("name", user.getName());
 
-		if (user.getDepartmentId() != null && StringUtils.isNotEmpty(user.getDepartmentId()))
+		if (StringUtils.isNotBlank(user.getDepartmentId()))
 			cri.where().andEquals("departmentId", user.getDepartmentId());
 
-		if (user.getQxId() != null && StringUtils.isNotEmpty(user.getQxId()))
+		if (StringUtils.isNotBlank(user.getQxId()))
 			cri.where().andEquals("qxId", user.getQxId());
 
 		return dao.query(UserInfo.class, cri);

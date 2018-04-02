@@ -34,11 +34,11 @@ function initResetBtn(){
 }
 
 /*ajax返回信息提示*/
-function resultPrompt(re,withAlert=true,reloadPage=true) {
+function resultPrompt(re,withAlert=true,reloadPage=true,content="success!") {
 	console.log(re.result);
 	if (re.result == 'success'){
 		if(withAlert)
-			alert("success!");
+			alert(content);
 		if(reloadPage)
 			location.reload();
 	}

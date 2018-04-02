@@ -128,7 +128,7 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 				success : function(re) {
 					console.log(re.result);
 					if (re.result == 'success')
-						window.opener.location = PlanURLPrefix+"/todoList";
+						window.opener.location = PlanURLPrefix+"/auditList";
 					else
 						alert("message : " + re.message);
 					window.close();
@@ -139,7 +139,7 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 
 		//取消键绑定
 		$("button[name='cancel']").bind("click", function() {
-			window.opener.location.reload();
+			//window.opener.location.reload();
 			window.close()
 		})
 		

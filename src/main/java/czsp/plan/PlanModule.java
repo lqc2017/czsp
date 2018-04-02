@@ -25,9 +25,11 @@ import czsp.common.util.MessageUtil;
 import czsp.common.util.SessionUtil;
 import czsp.plan.model.PlanApp;
 import czsp.plan.model.PlanInfo;
+import czsp.plan.model.PlanOpinion;
 import czsp.plan.model.view.VplanInfoDetail;
 import czsp.plan.model.view.VplanWfDetail;
 import czsp.plan.service.PlanInfoService;
+import czsp.plan.service.PlanOpinionService;
 import czsp.user.model.UserInfo;
 import czsp.workflow.service.WfDefineService;
 
@@ -37,6 +39,9 @@ public class PlanModule {
 
 	@Inject
 	private PlanInfoService planInfoService;
+
+	@Inject
+	private PlanOpinionService planOpinionService;
 
 	@Inject
 	private WfDefineService wfDefineService;
@@ -56,6 +61,38 @@ public class PlanModule {
 
 		map.put("infoList", infoList);
 		map.put("dicQx", dicQx);
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年4月2日 可回收列表页面
+	 * 
+	 * @throws Exception
+	 */
+	@At("/retrieveList")
+	@Ok("jsp:/czsp/plan/query/retrieve_list")
+	@Fail("jsp:/czsp/common/fail")
+	public Map<String, Object> retrieveList() throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		// 加载案件
+		UserInfo userInfo = SessionUtil.getCurrenUser();
+		if (userInfo == null || StringUtils.isBlank(userInfo.getUserId())) {
+			throw new Exception("用户未登录");
+		}
+		if (userInfo == null || StringUtils.isBlank(userInfo.getQxId())) {
+			throw new Exception("用户未设置区县");
+		}
+
+		//根据条件加载列表(下一用户未签收，当前用户是最后一个操作用户)
+		VplanWfDetail planCondition = new VplanWfDetail();
+		planCondition.setIfRetrieve("1");
+		planCondition.setIfSign("0");
+		planCondition.setLastOpUser(userInfo.getUserId());
+		List infoList = planInfoService.getListByCondition(planCondition);
+
+		map.put("infoList", infoList);
+		map.put("planCondition", planCondition);
+		map.put("dicUtil", DicUtil.getInstance());
 		return map;
 	}
 
@@ -122,12 +159,12 @@ public class PlanModule {
 	}
 
 	/**
-	 * 全琛 2018年3月26日 待办列表页面
+	 * 全琛 2018年3月26日 审批列表页面
 	 * 
 	 * @throws Exception
 	 */
-	@At("/todoList")
-	@Ok("jsp:/czsp/plan/todo_list")
+	@At("/auditList")
+	@Ok("jsp:/czsp/plan/audit_list")
 	@Fail("jsp:/czsp/common/fail")
 	public Map<String, Object> todoList() throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -162,9 +199,12 @@ public class PlanModule {
 	public Map<String, Object> audit(String planId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
+		PlanOpinion planOpinion = planOpinionService.getLatestOpinion(planInfo.getInstanceId(),
+				planInfo.getPlanApp().getCurNode());
 
 		map.put("dicUtil", DicUtil.getInstance());
 		map.put("planInfo", planInfo);
+		map.put("planOpinion", planOpinion);
 		return map;
 	}
 
@@ -236,4 +276,33 @@ public class PlanModule {
 		return map;
 	}
 
+	/**
+	 * 全琛 2018年4月2日 暂存用户意见
+	 */
+	@At("/save")
+	@AdaptBy(type = JsonAdaptor.class)
+	@Ok("json")
+	public Map<String, Object> save(@Param("..") PlanOpinion planOpinion) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			if (planOpinion.getOpinionId() == null) {
+				if (StringUtils.isBlank(planOpinion.getCreateBy())) {
+					map.put("result", "fail");
+					map.put("message", "不存在当前用户信息");
+				} else {
+					planOpinionService.addOpinion(planOpinion);
+					map.put("result", "success");
+				}
+
+			} else {
+				planOpinionService.updateOpinion(planOpinion);
+				map.put("result", "success");
+			}
+
+		} catch (Exception e) {
+			map.put("result", "fail");
+			map.put("message", MessageUtil.getStackTraceInfo(e));
+		}
+		return map;
+	}
 }

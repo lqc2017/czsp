@@ -11,8 +11,19 @@
 <body>
 	<ul class="nav nav-pills">
 		<li class="active"><a href="javascript:;" url="/czsp/plan/list">新建计划</a></li>
-		<li><a href="javascript:;" url="/czsp/plan/todoList">业务办理</a></li>
-		<li><a href="javascript:;" url="/czsp/plan/query">案件查询</a></li>
+		<li><a href="javascript:;" url="/czsp/plan/auditList">业务办理</a></li>
+		<li class="dropdown">
+			<a href="javascript:;" url="/czsp/plan/query">案件查询
+				<span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu">
+				<li><a href="javascript:;" url="/czsp/plan/query">信息监控</a></li>
+				<li class="divider"></li>
+				<li><a href="javascript:;" url="/czsp/plan/retrieveList">可回收案件</a></li>
+				<li><a href="javascript:;" url="/czsp/plan/toSignList">待签收案件</a></li>
+			</ul>
+				
+		</li>
 		<li class="dropdown">
 			<a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">综合管理
 				<span class="caret"></span>

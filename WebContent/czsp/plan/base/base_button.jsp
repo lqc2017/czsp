@@ -10,9 +10,9 @@
 	<button name="detail">流程信息</button>
 	<c:if test="${planInfo.curInstance.ifSign eq '0'}"><button name="sign">签收</button></c:if>
 	<c:if test="${planInfo.curInstance.ifSign eq '1' && userInfo.userId == planInfo.curInstance.signUserId}">
-	<button name="submit">提交</button>
+		<button name="submit">提交</button>
+		<button name="save">保存</button>
 	</c:if>
-	<button name="save">保存</button>
 	
 	<script type="text/javascript">
 		//流程提交键绑定
@@ -39,15 +39,28 @@
 				    dataType:'json',
 				    type : 'GET',
 				    success:function(re){
-				        console.log(re.result);
-				        if (re.result == 'success'){
-							alert("签收成功!");
-							location.reload();
-						}else
-							alert("message : " + re.message);
+				    	resultPrompt(re,true,true,"签收成功");
 				    }
 				});
 			}
+		})
+		
+		//保存按钮绑定
+		$("button[name='save']").bind("click", function() {
+			var instanceId = $("#curInstanceId").val();
+			$("form#opinionForm").find("input[name='opType']").val("暂存");
+			
+			var data = $("form#opinionForm").serializeObject();
+			//alert(JSON.stringify(data));
+			$.ajax({
+			    url: PlanURLPrefix + '/save',
+			    data: JSON.stringify(data),
+			    dataType:'json',
+			    type : 'POST',
+			    success:function(re){
+			        resultPrompt(re,true,true,"保存意见成功");
+			    }
+			}); 
 		})
 	</script>
 </body>

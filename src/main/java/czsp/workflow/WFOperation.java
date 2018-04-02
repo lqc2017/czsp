@@ -72,7 +72,8 @@ public class WFOperation extends WfInstanceDao {
 	/**
 	 * 全琛 2018年2月24日 提交&特送(归档时会清除app表的instanceNo)
 	 */
-	public void submitWF(WfRoute route, WfCurInstance curInstance, String opType, String todoUserId) throws Exception {
+	public String submitWF(WfRoute route, WfCurInstance curInstance, String opType, String todoUserId)
+			throws Exception {
 		// 当前instance无效
 		if ("0".equals(curInstance.getIfValid())) {
 			throw new Exception("this instance is not valid,please deal it.");
@@ -88,8 +89,27 @@ public class WFOperation extends WfInstanceDao {
 
 		WfNode newNextNode = generateNextNode(nextNode, curPhaseId, phases);
 
-		if (!"1".equals(newNextNode.getIsEnd()) && (todoUserId == null || todoUserId.trim().isEmpty())) {
-			throw new Exception("submit failed,can not find any user.");
+		//跨环节是选不了下一环节人员，所以要后台初始化
+		if (!"1".equals(newNextNode.getIsEnd()) && StringUtils.isBlank(todoUserId)) {
+
+			// 初始化下一节点人员(判断是否根据区县筛选)
+			List<UserInfo> userInfos = new ArrayList<UserInfo>();
+			String[] roleArr = newNextNode.getRoleId().split(",");
+			String qxId = "";
+			qxId = planInfoDao.getPlanInfoByInstanceId(curInstance.getInstanceId()).getQxId();
+			if (newNextNode.getIsQxOp() == null) {
+				userInfos.addAll(userInfoDao.getListByRoleId(roleArr, null, null));
+			} else if (newNextNode.getIsQxOp().equals("1")) {
+				userInfos.addAll(userInfoDao.getListByRoleId(roleArr, null, qxId));
+			} else {
+				userInfos.addAll(userInfoDao.getListByRoleId(roleArr, null, null));
+			}
+
+			List<String> userIds = new ArrayList<String>();
+			for (UserInfo u : userInfos) {
+				userIds.add(u.getUserId());
+			}
+			todoUserId = StringUtils.join(userIds.toArray(), ",");
 		}
 
 		WfCurInstance newInstance = new WfCurInstance(null, null, newNextNode.getNodeId(), "1", "0", "1", new Date(),
@@ -118,6 +138,7 @@ public class WFOperation extends WfInstanceDao {
 				cascade(opType, SessionUtil.getCurrenUserId(), appId, curInstance, newInstance, isEnd);
 			}
 		});
+		return newInstance.getInstanceId();
 	}
 
 	/**
@@ -214,7 +235,7 @@ public class WFOperation extends WfInstanceDao {
 		planApp.setLastOpUser(userId);
 		planApp.setLastOpTime(new Date());
 		// 更新app表的opedUsers
-		if (planApp.getOpedUsers() == null || "".equals(planApp.getOpedUsers()))
+		if (StringUtils.isBlank(planApp.getOpedUsers()))
 			planApp.setOpedUsers(userId);
 		else
 			planApp.setOpedUsers(planApp.getOpedUsers() + "," + userId);
@@ -298,6 +319,31 @@ public class WFOperation extends WfInstanceDao {
 			}
 		}
 		return dao.fetch(WfNode.class, nextNodeId);
+	}
+
+	/**
+	 * 全琛 2018年4月2日 回收
+	 */
+	public void retrieveWF(WfHisInstance hisInstance, WfCurInstance curInstance, String opType) {
+		String appId = planAppDao.getAppByInstanceNo(curInstance.getInstanceNo()).getAppId();
+		Trans.exec(new Atom() {
+			public void run() {
+				dao.delete(curInstance);
+
+				WfCurInstance newInstance = new WfCurInstance(null, null, hisInstance.getNodeId(), "0", "1", "1",
+						new Date(), hisInstance.getSignUserId(), hisInstance.getSignUserId());
+				newInstance = dao.insert(newInstance);
+
+				dao.update(WfCurInstance.class,
+						Chain.make("instanceId", hisInstance.getInstanceId()).add("instanceNo",
+								hisInstance.getInstanceNo()),
+						Cnd.where("instanceId", "=", newInstance.getInstanceId()));
+
+				newInstance = getInstanceByInstanceId(hisInstance.getInstanceId());
+
+				cascade(opType, SessionUtil.getCurrenUserId(), appId, curInstance, newInstance, false);
+			}
+		});
 	}
 
 }

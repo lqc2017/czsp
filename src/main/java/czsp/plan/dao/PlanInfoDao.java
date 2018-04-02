@@ -89,15 +89,15 @@ public class PlanInfoDao {
 			cri.where().andLike("planName", planCondition.getPlanName());
 
 		// 年份
-		if (planCondition.getCreateYear() != null && StringUtils.isNotEmpty(planCondition.getCreateYear()))
+		if (StringUtils.isNotBlank(planCondition.getCreateYear()))
 			cri.where().and("to_char(CREATE_TIME,'YYYY')", "=", planCondition.getCreateYear());
 
 		// 区县
-		if (planCondition.getQxId() != null && StringUtils.isNotEmpty(planCondition.getQxId()))
+		if (StringUtils.isNotBlank(planCondition.getQxId()))
 			cri.where().andEquals("qxId", planCondition.getQxId());
 
 		// 状态
-		if (planCondition.getStatus() != null && StringUtils.isNotEmpty(planCondition.getStatus()))
+		if (StringUtils.isNotBlank(planCondition.getQxId()))
 			cri.where().andEquals("status", planCondition.getStatus());
 
 		if (orderBy == null)
@@ -113,8 +113,8 @@ public class PlanInfoDao {
 		Criteria cri = Cnd.cri();
 
 		// 待办人id和签收人id
-		if (planCondition.getTodoUserId() != null && StringUtils.isNotEmpty(planCondition.getTodoUserId())
-				&& planCondition.getSignUserId() != null && StringUtils.isNotEmpty(planCondition.getSignUserId())) {
+		if (StringUtils.isNotBlank(planCondition.getTodoUserId())
+				&& StringUtils.isNotBlank(planCondition.getSignUserId())) {
 			SqlExpressionGroup e1 = Cnd.exps("todoUserId", "LIKE", "%" + planCondition.getTodoUserId() + "%")
 					.and("ifSign", "=", "0");
 			SqlExpressionGroup e2 = Cnd.exps("signUserId", "=", planCondition.getSignUserId()).and("ifSign", "=", "1");
@@ -122,7 +122,7 @@ public class PlanInfoDao {
 		}
 
 		// 状态
-		if (planCondition.getStatus() != null && StringUtils.isNotEmpty(planCondition.getStatus()))
+		if (StringUtils.isNotBlank(planCondition.getStatus()))
 			cri.where().andEquals("status", planCondition.getStatus());
 
 		if (orderBy == null)
@@ -149,16 +149,28 @@ public class PlanInfoDao {
 			cri.where().andLike("planName", planCondition.getPlanName());
 
 		// 年份
-		if (planCondition.getCreateYear() != null && StringUtils.isNotEmpty(planCondition.getCreateYear()))
+		if (StringUtils.isNotBlank(planCondition.getCreateYear()))
 			cri.where().and("to_char(CREATE_TIME,'YYYY')", "=", planCondition.getCreateYear());
 
 		// 区县
-		if (planCondition.getQxId() != null && StringUtils.isNotEmpty(planCondition.getQxId()))
+		if (StringUtils.isNotBlank(planCondition.getQxId()))
 			cri.where().andEquals("qxId", planCondition.getQxId());
 
 		// 状态
-		if (planCondition.getStatus() != null && StringUtils.isNotEmpty(planCondition.getStatus()))
+		if (StringUtils.isNotBlank(planCondition.getStatus()))
 			cri.where().andEquals("status", planCondition.getStatus());
+
+		// 最后操作人
+		if (StringUtils.isNotBlank(planCondition.getLastOpUser()))
+			cri.where().andEquals("lastOpUser", planCondition.getLastOpUser());
+
+		// 签收状态
+		if (StringUtils.isNotBlank(planCondition.getIfSign()))
+			cri.where().andEquals("ifSign", planCondition.getIfSign());
+
+		// 回收状态
+		if (StringUtils.isNotBlank(planCondition.getIfRetrieve()))
+			cri.where().andEquals("ifRetrieve", planCondition.getIfRetrieve());
 
 		cri.getOrderBy().desc("create_time");
 

@@ -1,5 +1,6 @@
 package czsp.plan.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,9 +15,13 @@ import czsp.plan.model.PlanApp;
 import czsp.plan.model.PlanInfo;
 import czsp.plan.model.view.VplanInfoDetail;
 import czsp.plan.model.view.VplanWfDetail;
+import czsp.user.dao.UserInfoDao;
+import czsp.user.model.UserInfo;
 import czsp.workflow.WFOperation;
+import czsp.workflow.dao.WfNodeDao;
 import czsp.workflow.dao.WfRouteDao;
 import czsp.workflow.model.WfCurInstance;
+import czsp.workflow.model.WfNode;
 import czsp.workflow.model.WfRoute;
 
 @IocBean
@@ -28,10 +33,16 @@ public class PlanInfoService {
 	private PlanAppDao planAppDao;
 
 	@Inject
+	private UserInfoDao userInfoDao;
+
+	@Inject
 	private WFOperation wfOperation;
 
 	@Inject
 	private WfRouteDao wfRouteDao;
+
+	@Inject
+	private WfNodeDao wfNodeDao;
 
 	public List<VplanInfoDetail> getList() {
 		return planInfoDao.getList();
@@ -78,18 +89,54 @@ public class PlanInfoService {
 		PlanInfo planInfo = planInfoDao.getPlanInfoByPlanId(planId);
 		WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(planInfo.getInstanceId());
 
-		// 找到开始节点的默认节点并推进一步
+		// 找到开始节点的默认节点
 		WfRoute route = wfRouteDao.getDefaultRoute(curInstance.getNodeId().substring(0, 4),
 				curInstance.getNodeId().substring(4));
-		try {
-			wfOperation.submitWF(route, curInstance, "启动", null);
 
-			PlanApp planApp = planAppDao.getAppByAppId(planInfo.getAppId());
-			planApp.setStatus("1");
-			planAppDao.update(planApp);
-		} catch (Exception e) {
-			e.printStackTrace();
+		String nodeId = route.getPhaseId() + route.getNextNode();
+
+		// 根据节点查询该节点的操作人员
+		WfNode node = wfNodeDao.getNodeByNodeId(nodeId);
+		// 初始化下一节点人员(判断是否根据区县筛选)
+		List<UserInfo> userInfos = new ArrayList<UserInfo>();
+		String[] roleArr = node.getRoleId().split(",");
+		String qxId = "";
+		qxId = this.getPlanInfoByInstanceId(curInstance.getInstanceId()).getQxId();
+		if (node.getIsQxOp() == null) {
+			userInfos.addAll(userInfoDao.getListByRoleId(roleArr, null, null));
+		} else if (node.getIsQxOp().equals("1")) {
+			userInfos.addAll(userInfoDao.getListByRoleId(roleArr, null, qxId));
+		} else {
+			userInfos.addAll(userInfoDao.getListByRoleId(roleArr, null, null));
 		}
+
+		List<String> userIds = new ArrayList<String>();
+		for (UserInfo u : userInfos) {
+			userIds.add(u.getUserId());
+		}
+		String todoUserId = StringUtils.join(userIds.toArray(), ",");
+
+		Trans.exec(new Atom() {
+			public void run() {
+				String curInstanceId = "";
+				try {
+					// 推进一步并获得最新的流程实例id
+					curInstanceId = wfOperation.submitWF(route, curInstance, "启动", todoUserId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				// 更改app状态位（改成流转中）
+				PlanApp planApp = planAppDao.getAppByAppId(planInfo.getAppId());
+				planApp.setStatus("1");
+				planAppDao.update(planApp);
+
+				// 将当前实例置为不可回收
+				WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(curInstanceId);
+				curInstance.setIfRetrieve("0");
+				wfOperation.updateInstance(curInstance);
+			}
+		});
 
 	}
 

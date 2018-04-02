@@ -64,11 +64,18 @@ public class WfInstanceDao {
 	public WfHisInstance getLatestHisInstanceByPreNodes(List<String> preNodes) {
 		return dao.fetch(WfHisInstance.class, Cnd.where("nodeId", "in", preNodes).orderBy("finishTime", "desc"));
 	}
-	
+
 	/**
 	 * 全琛 2018年3月6日 根据instanceNo获得历史流程记录
 	 */
 	public List<WfHisInstance> getHisInstanceByInstanceNo(String instanceNo) {
 		return dao.query(WfHisInstance.class, Cnd.where("instanceNo", "=", instanceNo).orderBy("finishTime", "desc"));
+	}
+
+	/**
+	 * 全琛 2018年4月2日 更新当前流程实例
+	 */
+	public void updateInstance(WfCurInstance wfCurInstance) {
+		dao.update(wfCurInstance);
 	}
 }

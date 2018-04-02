@@ -44,7 +44,7 @@ public class AuthorityModule {
 		try {
 			UserInfo userInfo = userInfoService.getUserInfoByUserId(userId);
 			String userRole = userInfo.getRoleId();
-			if (userRole != null && StringUtils.isNotEmpty(userRole))
+			if (StringUtils.isNotBlank(userRole))
 				userInfo.setRoleId(userInfo.getRoleId() + "," + roleId);
 			else
 				userInfo.setRoleId(roleId);

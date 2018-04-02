@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.log.Log;
@@ -370,4 +371,35 @@ public class WFModule {
 		return map;
 	}
 
+	/**
+	 * 全琛 2018年4月2日 回收操作
+	 */
+	@At("/retrieve/?")
+	@Ok("json")
+	public Map<String, Object> retrieve(String instanceId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			if (StringUtils.isBlank(instanceId)) {
+				throw new Exception("找不到流程实例。");
+			}
+			
+			// 查询最近一条历史提交操作记录
+			UserOperation operation = userOperationService.getLatestOperation(instanceId, "'提交','特送'");
+			WfHisInstance hisInstance = null;
+			if (operation != null)
+				hisInstance = wfOperation.getHisInstanceByInstanceId(operation.getPreInstanceId());
+			else {
+				throw new Exception("找不到前驱。");
+			}
+
+			log.debug(hisInstance);
+			WfCurInstance curInstance = wfOperation.getInstanceByInstanceId(instanceId);
+			wfOperation.retrieveWF(hisInstance, curInstance, "回收");
+			map.put("result", "success");
+		} catch (Exception e) {
+			map.put("result", "fail");
+			map.put("message", MessageUtil.getStackTraceInfo(e));
+		}
+		return map;
+	}
 }

@@ -58,7 +58,7 @@
 
 				<tr>
 					<td><label for="finishDate">预计办结日期</label></td>
-					<td><input type="text" id="finishDate" name="finishDate" value='<fmt:formatDate value="${plan.finishDate}" type="date" />'/></td>
+					<td><input type="text" id="finishDate" name="finishDate" class="required" value='<fmt:formatDate value="${plan.finishDate}" type="date" />'/></td>
 					<td colspan="2"></td>
 				</tr>
 
@@ -69,17 +69,10 @@
 			</table>
 		</form>
 		<button name="save">保存</button>
-		<button name="change">选择用户</button>
 	</div>
 
 	<script type="text/javascript">
 		initPage();
-		
-		//选择人员键绑定
-		$("button[name='change']").bind("click", function() {
-			window.open(UserURLPrefix + '/change',"选择人员",
-					"top=100,left=400,width=500,height=400,resizable=no");
-		})
 		
 		//保存键绑定
 		$("button[name='save']").bind("click",function(){
