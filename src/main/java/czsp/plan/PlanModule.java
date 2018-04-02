@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.log.Log;
@@ -12,6 +13,7 @@ import org.nutz.log.Logs;
 import org.nutz.mvc.adaptor.JsonAdaptor;
 import org.nutz.mvc.annotation.AdaptBy;
 import org.nutz.mvc.annotation.At;
+import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.Param;
 
@@ -20,10 +22,13 @@ import czsp.common.Constants;
 import czsp.common.util.DateUtil;
 import czsp.common.util.DicUtil;
 import czsp.common.util.MessageUtil;
+import czsp.common.util.SessionUtil;
 import czsp.plan.model.PlanApp;
 import czsp.plan.model.PlanInfo;
 import czsp.plan.model.view.VplanInfoDetail;
+import czsp.plan.model.view.VplanWfDetail;
 import czsp.plan.service.PlanInfoService;
+import czsp.user.model.UserInfo;
 import czsp.workflow.service.WfDefineService;
 
 @IocBean
@@ -39,7 +44,7 @@ public class PlanModule {
 	final Log log = Logs.getLog(MainSetup.class);
 
 	/**
-	 * 全琛 2018年3月3日 显示计划列表
+	 * 全琛 2018年3月3日 计划列表页面
 	 */
 	@At("/list")
 	@Ok("jsp:/czsp/plan/show_list")
@@ -63,6 +68,103 @@ public class PlanModule {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		map.put("dicQx", DicUtil.getInstance().getDicMap().get(Constants.DIC_QX_NO));
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年3月22日 编辑页面
+	 */
+	@At("/edit/?")
+	@Ok("jsp:/czsp/plan/edit")
+	public Map<String, Object> edit(String planId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
+		Map dicQx = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+
+		map.put("planInfo", planInfo);
+		map.put("dicQx", dicQx);
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年3月24日 查询页面
+	 */
+	@At("/query")
+	@Ok("jsp:/czsp/plan/query/query_plan_list")
+	public Map<String, Object> queryPlan(@Param("..") VplanWfDetail planCondition) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List infoList = planInfoService.getListByCondition(planCondition);
+
+		// 添加区县选项
+		Map qxMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+		List qxList = new ArrayList(qxMap.values());
+
+		map.put("infoList", infoList);
+		map.put("yearList", DateUtil.getYearList(5));
+		map.put("planCondition", planCondition);
+		map.put("qxList", qxList);
+		map.put("dicUtil", DicUtil.getInstance());
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年3月24日 案件详细信息页面
+	 */
+	@At("/detail/?")
+	@Ok("jsp:/czsp/plan/query/show_plan_detail")
+	public Map<String, Object> showDetail(String planId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
+
+		map.put("dicUtil", DicUtil.getInstance());
+		map.put("planInfo", planInfo);
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年3月26日 待办列表页面
+	 * 
+	 * @throws Exception
+	 */
+	@At("/todoList")
+	@Ok("jsp:/czsp/plan/todo_list")
+	@Fail("jsp:/czsp/common/fail")
+	public Map<String, Object> todoList() throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		// 加载环节
+		List phases = wfDefineService.loadPhases();
+		// 加载案件
+		UserInfo userInfo = SessionUtil.getCurrenUser();
+		if (userInfo == null || StringUtils.isBlank(userInfo.getUserId())) {
+			throw new Exception("用户未登录");
+		}
+		if (userInfo == null || StringUtils.isBlank(userInfo.getQxId())) {
+			throw new Exception("用户未设置区县");
+		}
+		//
+		VplanWfDetail planCondition = new VplanWfDetail();
+		planCondition.setStatus("1");
+		planCondition.setTodoUserId(userInfo.getUserId());
+		planCondition.setSignUserId(userInfo.getUserId());
+		List infoList = planInfoService.getListByCondition(planCondition, null);
+		planInfoService.getListByCondition(planCondition, null);
+
+		map.put("phases", phases);
+		map.put("infoList", infoList);
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年3月26日 审核页面
+	 */
+	@At("/audit/?")
+	@Ok("jsp:/czsp/plan/audit_plan")
+	public Map<String, Object> audit(String planId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
+
+		map.put("dicUtil", DicUtil.getInstance());
+		map.put("planInfo", planInfo);
 		return map;
 	}
 
@@ -95,19 +197,6 @@ public class PlanModule {
 			map.put("result", "fail");
 			map.put("message", MessageUtil.getStackTraceInfo(e));
 		}
-		return map;
-	}
-
-	/**
-	 * 全琛 2018年3月22日 编辑页面
-	 */
-	@At("/edit/?")
-	@Ok("jsp:/czsp/plan/edit")
-	public Map<String, Object> edit(String planId) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
-
-		map.put("planInfo", planInfo);
 		return map;
 	}
 
@@ -147,75 +236,4 @@ public class PlanModule {
 		return map;
 	}
 
-	/**
-	 * 全琛 2018年3月24日 查询页面
-	 */
-	@At("/query")
-	@Ok("jsp:/czsp/plan/query/query_plan_list")
-	public Map<String, Object> queryPlan(@Param("..") VplanInfoDetail planCondition) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		List infoList = planInfoService.getListByCondition(planCondition, null);
-
-		// 添加区县选项
-		Map qxMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
-		List qxList = new ArrayList(qxMap.values());
-
-		map.put("infoList", infoList);
-		map.put("yearList", DateUtil.getYearList(5));
-		map.put("planCondition", planCondition);
-		map.put("qxList", qxList);
-		map.put("dicUtil", DicUtil.getInstance());
-		return map;
-	}
-
-	/**
-	 * 全琛 2018年3月24日 案件详细信息界面
-	 */
-	@At("/detail/?")
-	@Ok("jsp:/czsp/plan/query/show_plan_detail")
-	public Map<String, Object> showDetail(String planId) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
-		PlanApp planApp = planInfoService.getPlanAppByAppId(planInfo.getAppId());
-
-		map.put("dicUtil", DicUtil.getInstance());
-		map.put("planInfo", planInfo);
-		map.put("planApp", planApp);
-		return map;
-	}
-
-	/**
-	 * 全琛 2018年3月26日 待办列表
-	 */
-	@At("/todoList")
-	@Ok("jsp:/czsp/plan/todo_list")
-	public Map<String, Object> todoList() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		// 加载环节
-		List phases = wfDefineService.loadPhases();
-		// 加载案件
-		VplanInfoDetail planCondition = new VplanInfoDetail();
-		planCondition.setStatus("1");
-		List infoList = planInfoService.getListByCondition(planCondition, null);
-
-		map.put("phases", phases);
-		map.put("infoList", infoList);
-		return map;
-	}
-
-	/**
-	 * 全琛 2018年3月26日 审核界面
-	 */
-	@At("/audit/?")
-	@Ok("jsp:/czsp/plan/audit_plan")
-	public Map<String, Object> audit(String planId) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
-		PlanApp planApp = planInfoService.getPlanAppByAppId(planInfo.getAppId());
-
-		map.put("dicUtil", DicUtil.getInstance());
-		map.put("planInfo", planInfo);
-		map.put("planApp", planApp);
-		return map;
-	}
 }

@@ -78,7 +78,7 @@ public class UserModule {
 	}
 
 	/**
-	 * 全琛 2018年3月23日 用户选择界面
+	 * 全琛 2018年3月23日 用户选择页面
 	 */
 	@At("/change")
 	@Ok("jsp:/czsp/user/select_user")

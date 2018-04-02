@@ -52,33 +52,10 @@ public class UserInfoDao {
 
 		if (user.getDepartmentId() != null && StringUtils.isNotEmpty(user.getDepartmentId()))
 			cri.where().andEquals("departmentId", user.getDepartmentId());
-		
+
 		if (user.getQxId() != null && StringUtils.isNotEmpty(user.getQxId()))
 			cri.where().andEquals("qxId", user.getQxId());
 
-		return dao.query(UserInfo.class, cri);
-	}
-
-	/**
-	 * 全琛 2018年2月28日 根据角色获取用户列表
-	 */
-	public List getListByRoleId(String[] roleArr) {
-		Criteria cri = Cnd.cri();
-		for (String role : roleArr) {
-			cri.where().orLike("roleId", role);
-		}
-		return dao.query(UserInfo.class, cri);
-	}
-
-	/**
-	 * 全琛 2018年3月1日 根据角色获取和排除条件筛选人员
-	 */
-	public List getListByRoleId(String[] roleArr, String userIds) {
-		Criteria cri = Cnd.cri();
-		for (String role : roleArr) {
-			cri.where().orLike("roleId", role);
-		}
-		cri.where().andNotIn("userId", userIds);
 		return dao.query(UserInfo.class, cri);
 	}
 
@@ -94,6 +71,21 @@ public class UserInfoDao {
 	 */
 	public void updateUser(UserInfo userInfo) {
 		dao.update(userInfo);
+	}
+
+	/**
+	 * 全琛 2018年3月28日 据角色获取、区县和排除条件筛选人员
+	 */
+	public List getListByRoleId(String[] roleArr, String userIds, String qxId) {
+		Criteria cri = Cnd.cri();
+		for (String role : roleArr) {
+			cri.where().orLike("roleId", role);
+		}
+		if (userIds != null)
+			cri.where().andNotIn("userId", userIds);
+		if (qxId != null)
+			cri.where().and("qxId", "=", qxId);
+		return dao.query(UserInfo.class, cri);
 	}
 
 }

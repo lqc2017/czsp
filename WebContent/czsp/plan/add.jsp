@@ -20,19 +20,23 @@
 			<tr>
 				<td><label for="planName">规划名称</label></td>
 				<td><input type="text" id="planName" name="planName" class="required" /></td>
+				
+				<td><label for="qxId">区县</label></td>
+				<td><input type="hidden" id="qxId" name="qxId" class="required" value="<c:if test='${userInfo != null }'>${userInfo.qxId}</c:if>"/>
+				<c:if test="${userInfo != null }">${obj.dicQx[userInfo.qxId].name}</c:if></td>
 			</tr>
+			
 			<tr>
 				<td><label for="phases">规划环节</label></td>
 				<td><label id="phasesLabel"></label>
 					<input type="hidden" id="phases" name="phases" class="required" />
 					<button type="button" name="selectPhase">选择</button>
 				</td>
+				
+				<td><label for="designDepartment">设计部门</label></td>
+				<td><input type="text" id="designDepartment" name="designDepartment"/></td>
 			</tr>
-			<tr>
-				<td><label for="qxId">区县</label></td>
-				<td><input type="hidden" id="qxId" name="qxId" class="required" value="<c:if test='${userInfo != null }'>${userInfo.qxId}</c:if>"/>
-				<c:if test="${userInfo != null }">${obj.dicQx[userInfo.qxId].name}</c:if></td>
-			</tr>
+			
 			<tr>
 				<td><label for="townName">村镇</label></td>
 				<td><label id="townLabel"></label>
@@ -40,22 +44,28 @@
 					<input type="hidden" id="townName" name="townName" class="required" />
 					<button type="button" name="selectTown">选择</button>
 				</td>
-			</tr>
-			<tr>
-				<td><label for="planArea">规划面积</label></td>
-				<td><input type="text" id="planArea" name="planArea" class="required" /></td>
-			</tr>
-			<tr>
-				<td><label for="designDepartment">设计部门</label></td>
-				<td><input type="text" id="designDepartment" name="designDepartment"/></td>
-			</tr>
-			<tr>
+				
 				<td><label for="designContactName">设计部门联系人</label></td>
 				<td><input type="text" id="designContactName" name="designContactName"/></td>
 			</tr>
+			
 			<tr>
+				<td><label for="planArea">规划面积</label></td>
+				<td><input type="text" id="planArea" name="planArea" class="required" /></td>
+				
 				<td><label for="designContactWay">设计部门联系方式</label></td>
 				<td><input type="text" id="designContactWay" name="designContactWay" /></td>
+			</tr>
+			
+			<tr>
+				<td><label for="finishDate">预计办结日期</label></td>
+				<td><input type="text" id="finishDate" name="finishDate" /></td>
+				<td colspan="2"></td>
+			</tr>
+			
+			<tr>
+				<td><label for="note">备注</label></td>
+				<td colspan="3"><textarea id="note" name="note" style="width:95%;"></textarea></td>
 			</tr>
 		</table>
 		

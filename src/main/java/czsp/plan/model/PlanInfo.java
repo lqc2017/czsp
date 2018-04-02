@@ -5,8 +5,11 @@ import java.util.Date;
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.EL;
 import org.nutz.dao.entity.annotation.Name;
+import org.nutz.dao.entity.annotation.One;
 import org.nutz.dao.entity.annotation.Prev;
 import org.nutz.dao.entity.annotation.Table;
+
+import czsp.workflow.model.WfCurInstance;
 
 @Table("PLAN_INFO")
 public class PlanInfo {
@@ -19,11 +22,17 @@ public class PlanInfo {
 	@Column(value = "APP_ID")
 	private String appId;
 
+	@One(field = "appId")
+	private PlanApp planApp;
+
 	@Column(value = "PLAN_NAME")
 	private String planName;
 
 	@Column(value = "INSTANCE_ID")
 	private String instanceId;
+
+	@One(field = "instanceId")
+	private WfCurInstance curInstance;
 
 	@Column(value = "CREATE_TIME")
 	private Date createTime;
@@ -51,6 +60,15 @@ public class PlanInfo {
 
 	@Column(value = "DESIGN_CONTACT_WAY")
 	private String designContactWay;
+
+	@Column(value = "EXPECTED_FINISH_DATE")
+	private Date expectedFinishDate;
+
+	@Column(value = "FINISH_DATE")
+	private Date finishDate;
+
+	@Column(value = "NOTE")
+	private String note;
 
 	@Column(value = "QX_ID")
 	private String qxId;
@@ -165,6 +183,46 @@ public class PlanInfo {
 
 	public void setQxId(String qxId) {
 		this.qxId = qxId;
+	}
+
+	public Date getExpectedFinishDate() {
+		return expectedFinishDate;
+	}
+
+	public void setExpectedFinishDate(Date expectedFinishDate) {
+		this.expectedFinishDate = expectedFinishDate;
+	}
+
+	public Date getFinishDate() {
+		return finishDate;
+	}
+
+	public void setFinishDate(Date finishDate) {
+		this.finishDate = finishDate;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public PlanApp getPlanApp() {
+		return planApp;
+	}
+
+	public void setPlanApp(PlanApp planApp) {
+		this.planApp = planApp;
+	}
+
+	public WfCurInstance getCurInstance() {
+		return curInstance;
+	}
+
+	public void setCurInstance(WfCurInstance curInstance) {
+		this.curInstance = curInstance;
 	}
 
 }

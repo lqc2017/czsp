@@ -27,6 +27,12 @@ public class VwfNodeDetail {
 	@Column(hump = true)
 	@Readonly
 	private String wfCode;
+	@Column(value = "IS_START")
+	@Readonly
+	private String isStart;
+	@Column(value = "IS_END")
+	@Readonly
+	private String isEnd;
 
 	public String getNodeId() {
 		return nodeId;
@@ -74,6 +80,14 @@ public class VwfNodeDetail {
 
 	public void setWfCode(String wfCode) {
 		this.wfCode = wfCode;
+	}
+
+	public String getIsStart() {
+		return isStart;
+	}
+
+	public String getIsEnd() {
+		return isEnd;
 	}
 
 }

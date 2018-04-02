@@ -22,6 +22,8 @@ public class WfNode {
 	private String isEnd;
 	@Column(value = "ROLE_ID")
 	private String roleId;
+	@Column(value = "IS_QX_OP")
+	private String isQxOp;
 
 	public String getNodeId() {
 		return nodeId;
@@ -77,6 +79,14 @@ public class WfNode {
 
 	public void setRoleId(String roleId) {
 		this.roleId = roleId;
+	}
+
+	public String getIsQxOp() {
+		return isQxOp;
+	}
+
+	public void setIsQxOp(String isQxOp) {
+		this.isQxOp = isQxOp;
 	}
 
 }

@@ -29,14 +29,14 @@ public class DicUtil {
 	}
 	
 	public static String getItemName(String dicId, String id) {
-		if(dicId == null || StringUtils.isEmpty(dicId) || id == null || StringUtils.isEmpty(id))
+		if(dicId == null || StringUtils.isBlank(dicId) || id == null || StringUtils.isBlank(id))
 			return null;
 		Map<String,Record> map = (HashMap<String,Record>)dicMap.get(dicId);
 		return map.get(id).get("name").toString();
 	}
 	
 	public static String getItemCode(String dicId, String id) {
-		if(dicId == null || StringUtils.isEmpty(dicId) || id == null || StringUtils.isEmpty(id))
+		if(dicId == null || StringUtils.isBlank(dicId) || id == null || StringUtils.isBlank(id))
 			return null;
 		Map<String,Record> map = (HashMap<String,Record>)dicMap.get(dicId);
 		return map.get(id).get("code").toString();

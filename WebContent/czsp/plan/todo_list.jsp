@@ -8,7 +8,7 @@
 <%@ page import="czsp.common.util.DicUtil"%>
 <%@ page import="czsp.common.Constants"%>
 <%@ page import="czsp.workflow.model.WfPhase"%>
-<%@ page import="czsp.plan.model.view.VplanInfoDetail"%>
+<%@ page import="czsp.plan.model.view.VplanWfDetail"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -38,7 +38,7 @@
 			
 			<tbody>
 				<%
-					List<VplanInfoDetail> infoList = (List<VplanInfoDetail>) map.get("infoList");
+					List<VplanWfDetail> infoList = (List<VplanWfDetail>) map.get("infoList");
 					for (int i = 0; i < infoList.size(); i++) {
 				%>
 					<tr>

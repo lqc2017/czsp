@@ -89,8 +89,7 @@ public class WFOperation extends WfInstanceDao {
 		WfNode newNextNode = generateNextNode(nextNode, curPhaseId, phases);
 
 		if (!"1".equals(newNextNode.getIsEnd()) && (todoUserId == null || todoUserId.trim().isEmpty())) {
-			todoUserId = generateTodoUserId(newNextNode.getNodeId());
-			log.debug("用户未选择办理人，初始化办理人列表 : " + todoUserId);
+			throw new Exception("submit failed,can not find any user.");
 		}
 
 		WfCurInstance newInstance = new WfCurInstance(null, null, newNextNode.getNodeId(), "1", "0", "1", new Date(),
@@ -154,12 +153,12 @@ public class WFOperation extends WfInstanceDao {
 	 */
 	public void circltWF(WfCurInstance curInstance, String opType, String todoUserId) throws Exception {
 		if (todoUserId == null || todoUserId.trim().isEmpty()) {
-			throw new Exception("circulate failed,can not find this user");
+			throw new Exception("circulate failed,can not find any user");
 		}
 		Trans.exec(new Atom() {
 			public void run() {
 				String appId = planAppDao.getAppByInstanceNo(curInstance.getInstanceNo()).getAppId();
-				
+
 				curInstance.setTodoUserId(todoUserId);
 				curInstance.setSignUserId(null);
 				curInstance.setIfSign("0");
@@ -256,7 +255,11 @@ public class WFOperation extends WfInstanceDao {
 		instance.setIfRetrieve("0");
 		instance.setSignUserId(userId);
 		dao.update(instance);
-		// ...
+
+		// 保存记录到user_op
+		UserOperation operation = new UserOperation("签收", new Date(), userId, instance.getNodeId(),
+				instance.getInstanceId(), instance.getInstanceId());
+		userOperationDao.addOperation(operation);
 	}
 
 	/**
@@ -297,20 +300,4 @@ public class WFOperation extends WfInstanceDao {
 		return dao.fetch(WfNode.class, nextNodeId);
 	}
 
-	/**
-	 * 全琛 2018年2月28日 生成todoUserId
-	 * 
-	 * 如果下一节点办理人为null,则选中该角色下所有的办理人
-	 */
-	private String generateTodoUserId(String nextNodeId) {
-		WfNode node = wfNodeDao.getNodeByNodeId(nextNodeId);
-		List<String> ids = new ArrayList<String>();
-		String[] roleArr = node.getRoleId().split(",");
-		List<UserInfo> users = userInfoDao.getListByRoleId(roleArr);
-		for (UserInfo user : users) {
-			ids.add(user.getUserId());
-		}
-		String todoUserId = StringUtils.join(ids, ",");
-		return todoUserId;
-	}
 }

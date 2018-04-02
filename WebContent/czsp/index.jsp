@@ -11,6 +11,7 @@
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <body>
+	<jsp:include page="/czsp/common/base/cur_user_message.jsp" flush="true"/>
 	<jsp:include page="/czsp/common/menu.jsp" flush="true" />
 	<iframe id="main-frame" width="100%" frameborder="0" src=""></iframe>
 

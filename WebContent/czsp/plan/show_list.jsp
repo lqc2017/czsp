@@ -39,7 +39,7 @@
 					<td><c:if test="${info.status eq '0'}"><button name="edit">修改</button>
 					
 					</c:if>
-					<c:if test="${info.status eq '0'}"> <button name="launch">启动计划</button></c:if>
+					<c:if test="${info.status eq '0'}"> <button name="launch">启动</button></c:if>
 					<button name="del">删除</button>
 					</td>
 				</tr>
@@ -58,8 +58,22 @@
 		
 		//添加键绑定
 		$("button[name='add']").bind("click", function() {
-
 			location.href= PlanURLPrefix+'/add';
+		})
+		
+		//启动键绑定
+		$("button[name='launch']").bind("click", function() {
+			var tr = $(this).parents("tr");
+			var planId = tr.children("td:eq(1)").attr("title");
+			
+			$.ajax({
+				url : '/czsp/plan/launch?planId='+planId,
+				dataType : 'json',
+				type : 'GET',
+				success : function(re) {
+					resultPrompt(re);
+				}
+			});
 		})
 		
 		//删除案件键绑定

@@ -13,6 +13,7 @@ import czsp.plan.dao.PlanInfoDao;
 import czsp.plan.model.PlanApp;
 import czsp.plan.model.PlanInfo;
 import czsp.plan.model.view.VplanInfoDetail;
+import czsp.plan.model.view.VplanWfDetail;
 import czsp.workflow.WFOperation;
 import czsp.workflow.dao.WfRouteDao;
 import czsp.workflow.model.WfCurInstance;
@@ -130,10 +131,31 @@ public class PlanInfoService {
 	}
 
 	/**
-	 * 全琛 2018年3月24日 根据删选条件获取计划列表
+	 * 全琛 2018年3月24日 根据筛选条件获取计划列表（获取信息用）
 	 */
 	public List getListByCondition(VplanInfoDetail planCondition, String orderBy) {
 		return planInfoDao.getListByCondition(planCondition, orderBy);
+	}
+
+	/**
+	 * 全琛 2018年3月27日 根据筛选条件获取计划列表（加载待办列表用）
+	 */
+	public List getListByCondition(VplanWfDetail planCondition, String orderBy) {
+		return planInfoDao.getListByCondition(planCondition, orderBy);
+	}
+
+	/**
+	 * 全琛 2018年4月2日 根据筛选条件获取计划列表（查询列表用）
+	 */
+	public List getListByCondition(VplanWfDetail planCondition) {
+		return planInfoDao.getListByCondition(planCondition);
+	}
+
+	/**
+	 * 全琛 2018年3月28日 根据流程id获得planInfo
+	 */
+	public PlanInfo getPlanInfoByInstanceId(String curInstanceId) {
+		return planInfoDao.getPlanInfoByInstanceId(curInstanceId);
 	}
 
 }

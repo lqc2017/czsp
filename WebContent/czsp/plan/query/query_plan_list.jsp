@@ -14,14 +14,14 @@
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.HashMap"%>
 <%@ page import="czsp.user.model.UserInfo"%>
-<%@ page import="czsp.plan.model.view.VplanInfoDetail"%>
+<%@ page import="czsp.plan.model.view.VplanWfDetail"%>
 <%@ page import="czsp.common.Constants"%>
 <%@ page import="org.nutz.dao.entity.Record"%>
 <%
 	Map map = (HashMap) request.getAttribute("obj");
-	VplanInfoDetail planCondition = (VplanInfoDetail) map.get("planCondition");
+	VplanWfDetail planCondition = (VplanWfDetail) map.get("planCondition");
 	if (planCondition == null)
-		planCondition = new VplanInfoDetail();
+		planCondition = new VplanWfDetail();
 %>
 <body>
 	<form id="searchFrom" action="/czsp/plan/query">
@@ -77,6 +77,7 @@
 			<th>村镇</th>
 			<th>当前环节</th>
 			<th>当前节点</th>
+			<th>当前办理人</th>
 			<th>创建日期</th>
 			<th>是否办结</th>
 			<th>操作</th>
@@ -90,6 +91,9 @@
 				<td>${info.townName}</td>
 				<td>${dicUtil.getItemName(Constants.DIC_WF_PHASE_NO,info.curPhase)}</td>
 				<td>${dicUtil.getItemName(Constants.DIC_WF_NODE_NO,info.curNode)}</td>
+				<td><c:if test="${info.signUserName eq null}">暂无</c:if>
+				<c:if test="${info.signUserName ne null}">${info.signUserName}</c:if>
+				</td>
 				<td><fmt:formatDate value="${info.createTime}" type="date" /></td>
 				<td><c:if test="${info.status eq '0'}">未流转</c:if>
 				<c:if test="${info.status eq '1'}">流转中</c:if>

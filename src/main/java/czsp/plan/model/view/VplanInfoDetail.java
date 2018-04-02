@@ -61,7 +61,7 @@ public class VplanInfoDetail {
 	@Readonly
 	private String planArea;
 
-	/* 以下字段查询用 */
+	/* 以下字段只用于查询，不负责映射 */
 	private String createYear;
 
 	public String getPlanId() {

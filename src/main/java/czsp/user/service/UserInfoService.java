@@ -44,8 +44,21 @@ public class UserInfoService {
 	 */
 	public List getListByRoleId(String roleIds) {
 		String[] roleArr = roleIds.split(",");
+		return userInfoDao.getListByRoleId(roleArr, null, null);
+	}
 
-		return userInfoDao.getListByRoleId(roleArr);
+	/**
+	 * 全琛 2018年3月28日
+	 * 
+	 * @param roleIds
+	 *            角色id集合
+	 * @param qxId
+	 *            区县id
+	 * @return
+	 */
+	public List getListByRoleId(String roleIds, String qxId) {
+		String[] roleArr = roleIds.split(",");
+		return userInfoDao.getListByRoleId(roleArr, null, qxId);
 	}
 
 	/**
@@ -60,8 +73,24 @@ public class UserInfoService {
 	public List getListByRoleId(String roleIds, List<String> notInUserIds) {
 		String[] roleArr = roleIds.split(",");
 		String userIds = StringWrapUtil.getSQLParamList(notInUserIds, null, null);
+		return userInfoDao.getListByRoleId(roleArr, userIds, null);
+	}
 
-		return userInfoDao.getListByRoleId(roleArr, userIds);
+	/**
+	 * 全琛 2018年3月28日
+	 * 
+	 * @param roleIds
+	 *            角色id集合
+	 * @param notInUserIds
+	 *            用户id集合
+	 * @param qxId
+	 *            区县id
+	 * @return
+	 */
+	public List getListByRoleId(String roleIds, List<String> notInUserIds, String qxId) {
+		String[] roleArr = roleIds.split(",");
+		String userIds = StringWrapUtil.getSQLParamList(notInUserIds, null, null);
+		return userInfoDao.getListByRoleId(roleArr, userIds, qxId);
 	}
 
 	public UserInfo getUserInfoByUserId(String userId) {

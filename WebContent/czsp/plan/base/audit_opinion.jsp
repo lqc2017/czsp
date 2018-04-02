@@ -5,7 +5,7 @@
 <html>
 <body>
 	<form>
-		<textarea style="width:100%;"></textarea>
+		<textarea style="width:60%;height:100px;"></textarea>
 	</form>
 </body>
 </html>

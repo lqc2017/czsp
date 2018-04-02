@@ -33,6 +33,7 @@ function initResetBtn(){
 	})
 }
 
+/*ajax返回信息提示*/
 function resultPrompt(re,withAlert=true,reloadPage=true) {
 	console.log(re.result);
 	if (re.result == 'success'){

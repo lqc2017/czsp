@@ -23,18 +23,19 @@
 				<tr>
 					<td><label for="planName">规划名称</label></td>
 					<td><input type="text" id="planName" name="planName" class="required" value="${plan.planName}"/></td>
-				</tr>
-				<%-- <tr>
-					<td><label for="phases">规划环节</label></td>
-					<td><label id="phasesLabel"></label>
-						<input type="hidden" id="phases" name="phases" class="required" value="${plan.phases}"/>
-						<button type="button" name="selectPhase">选择</button>
-					</td>
-				</tr>
-				<tr>
+					
 					<td><label for="qxId">区县</label></td>
-					<td><c:if test="${userInfo != null }">${obj.dicQx[userInfo.qxId].name}</c:if></td>
-				</tr> --%>
+					<td>${obj.dicQx[plan.qxId].name}</td>
+				</tr>
+				
+				<tr>
+					<td><label for="phases">规划环节</label></td>
+					<td>${plan.planApp.phases}</td>
+					
+					<td><label for="designDepartment">设计部门</label></td>
+					<td><input type="text" id="designDepartment" name="designDepartment" value="${plan.designDepartment}"/></td>
+				</tr>
+				
 				<tr>
 					<td><label for="townName">村镇</label></td>
 					<td><label id="townLabel">${plan.townName}</label>
@@ -42,22 +43,28 @@
 						<input type="hidden" id="townName" name="townName" class="required" value="${plan.townName}"/>
 						<button type="button" name="selectTown">选择</button>
 					</td>
-				</tr>
-				<tr>
-					<td><label for="planArea">规划面积</label></td>
-					<td><input type="text" id="planArea" name="planArea" class="required" value="${plan.planArea}"/></td>
-				</tr>
-				<tr>
-					<td><label for="designDepartment">设计部门</label></td>
-					<td><input type="text" id="designDepartment" name="designDepartment" value="${plan.designDepartment}"/></td>
-				</tr>
-				<tr>
+					
 					<td><label for="designContactName">设计部门联系人</label></td>
 					<td><input type="text" id="designContactName" name="designContactName" value="${plan.designContactName}"/></td>
 				</tr>
+				
 				<tr>
+					<td><label for="planArea">规划面积</label></td>
+					<td><input type="text" id="planArea" name="planArea" class="required" value="${plan.planArea}"/></td>
+					
 					<td><label for="designContactWay">设计部门联系方式</label></td>
 					<td><input type="text" id="designContactWay" name="designContactWay" value="${plan.designContactWay}"/></td>
+				</tr>
+
+				<tr>
+					<td><label for="finishDate">预计办结日期</label></td>
+					<td><input type="text" id="finishDate" name="finishDate" value='<fmt:formatDate value="${plan.finishDate}" type="date" />'/></td>
+					<td colspan="2"></td>
+				</tr>
+
+				<tr>
+					<td><label for="note">备注</label></td>
+					<td colspan="3"><textarea id="note" name="note" style="width: 95%;">${plan.note}</textarea></td>
 				</tr>
 			</table>
 		</form>

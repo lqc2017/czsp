@@ -41,7 +41,7 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 			for (WfRoute route : routes) {
 				String nextNodeId = route.getRouteId().substring(0, 4) + route.getNextNode();
 		%>
-		<option value="<%=route.getRouteId()%>">
+		<option name="normal" value="<%=route.getRouteId()%>">
 			<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, nextNodeId)%>
 			<%
 				if ("1".equals(route.getIsTesong())) {
@@ -55,18 +55,18 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 			}
 			if (hisInstance != null && !hisInstance.getNodeId().endsWith("00") && hisInstance.getInstanceNo().equals(curInstance.getInstanceNo())) {
 		%>
-		<option id="retreat" value="<%=hisInstance.getInstanceId() %>"><%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, hisInstance.getNodeId())%>(回退)
+		<option name="retreat" value="<%=hisInstance.getInstanceId() %>"><%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, hisInstance.getNodeId())%>(回退)
 		</option>
 		<%
 			}
-			if(nodeDetail != null && !nodeDetail.getNodeId().endsWith("00")){
+			if(nodeDetail != null && nodeDetail.getIsStart() == null){
 		%>
-		<option id="circulate" value="<%=nodeDetail.getNodeId() %>"><%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, nodeDetail.getNodeId())%>(流转)
+		<option name="circulate" value="<%=nodeDetail.getNodeId() %>"><%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, nodeDetail.getNodeId())%>(流转)
 		<%
 			}
 		%>
 	</select> <label for="nextUser">办理人员：</label>
-	<select id="nextUser" name="nextUser"><option value=''>请选择</option></select>
+	<select name="nextUser" name="nextUser"><option value=''>请选择</option></select>
 	<br />
 	<button name="confirm">确定</button>
 	<button name="cancel">取消</button>
@@ -79,27 +79,56 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 
 			var param = $("select[name='nextNode']").val();
 			var curInstanceId = $("#curInstanceId").val();
-			var nextUserId = $("select[name='nextUser']").val();
+			var nextUser = $("select[name='nextUser']");
 			var target = "";
+			var jsonStrData = "";
+			var userIdArray = new Array();
 			
-			var opType = $("select[name='nextNode']").find("option:selected").attr("id");
+			//初始化操作类型
+			var opType = $("select[name='nextNode']").find("option:selected").attr("name");
 			
+			//初始化待签收用户(如果等于空加入所有该角色的用户)
+			if(nextUser.val() == ''){
+				nextUser.find("option[value!='']").each(function(){
+					userIdArray.push($(this).val());
+				});
+			}else{
+				userIdArray.push(nextUser.val());
+			}
+			
+			//初始化参数和地址
 			var moduleMappingUrl = WfURLPrefix;
-			if(opType=="retreat")
-				target = moduleMappingUrl + "/retreat?hisInstanceId=" + param + "&curInstanceId=" + curInstanceId + "&todoUserId=" + nextUserId;
-			else if(opType=="circulate")
-				target = moduleMappingUrl + "/circulate?curInstanceId=" + curInstanceId + "&todoUserId=" + nextUserId;
-			else
-				target = moduleMappingUrl + "/submit?routeId=" + param + "&curInstanceId=" + curInstanceId + "&todoUserId=" + nextUserId;
-
+			if(opType=="retreat"){
+				target = moduleMappingUrl + "/retreat";
+				jsonStrData = {
+							hisInstanceId : param,
+							curInstanceId : curInstanceId
+						};
+			}else if(opType=="circulate"){
+				target = moduleMappingUrl + "/circulate";
+				jsonStrData = {
+						curInstanceId : curInstanceId,
+						todoUserId : userIdArray.toString()
+					};
+			}else{
+				target = moduleMappingUrl + "/submit";
+				jsonStrData = {
+							routeId : param,
+							curInstanceId : curInstanceId,
+							todoUserId : userIdArray.toString()
+						};
+			}
+			
+			//alert(target+" "+JSON.stringify(jsonStrData));
 			$.ajax({
 				url : target,
 				dataType : 'json',
-				type : 'GET',
+				data : JSON.stringify(jsonStrData),
+				type : 'POST',
 				success : function(re) {
 					console.log(re.result);
 					if (re.result == 'success')
-						window.opener.location.reload();
+						window.opener.location = PlanURLPrefix+"/todoList";
 					else
 						alert("message : " + re.message);
 					window.close();
@@ -118,18 +147,23 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 		$("select[name='nextNode']").bind("change",function() {
 			$("select[name='nextUser']").children().remove();
 			
-			var opType = $("select[name='nextNode']").find("option:selected").attr("id");
+			var opType = $("select[name='nextNode']").find("option:selected").attr("name");
+			var nextUser = $("select[name='nextUser']");
 			
 			var moduleMappingUrl = WfURLPrefix;
 			if(opType=="retreat")
 				target = moduleMappingUrl + "/getNextUserList?hisInstanceId=" + $("select[name='nextNode']").val();
 			else if(opType=="circulate"){
-				target = moduleMappingUrl + "/getNextUserList?curInstanceId=" + $("#curInstanceId").val();;
+				target = moduleMappingUrl + "/getNextUserList?curInstanceId=" + $("#curInstanceId").val();
+				nextUser.append("<option value=''>请选择</option>");
 			}else{
-				target = moduleMappingUrl + "/getNextUserList?routeId=" + $("select[name='nextNode']").val();
-				$("select[name='nextUser']").append("<option value=''>请选择</option>");
+				target = moduleMappingUrl + "/getNextUserList?routeId=" + $("select[name='nextNode']").val() 
+						+ "&curInstanceId=" + $("#curInstanceId").val();
+				nextUser.append("<option value=''>请选择</option>");
 			}
+			target += "&opType=" + opType;
 			
+			//alert(target);
 			$.ajax({
 				url : target,
 				dataType : 'json',
@@ -139,7 +173,7 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 					if (re.result == 'success'){
 						var userInfoList = re.userInfos;
 						for(var i=0;i<userInfoList.length;i++){
-							$("select[name='nextUser']").append("<option value='"+userInfoList[i].userId+"'>"
+							nextUser.append("<option value='"+userInfoList[i].userId+"'>"
 									+userInfoList[i].name+"</option>");
 						}
 					}

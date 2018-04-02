@@ -5,14 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.mvc.adaptor.JsonAdaptor;
+import org.nutz.mvc.annotation.AdaptBy;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Ok;
+import org.nutz.mvc.annotation.Param;
 
 import czsp.MainSetup;
 import czsp.common.Constants;
@@ -37,7 +39,7 @@ public class WFModule {
 
 	@Inject
 	private WFOperation wfOperation;
-	
+
 	@Inject
 	private WfDefineService wfDefineService;
 
@@ -83,7 +85,7 @@ public class WFModule {
 			}
 		} catch (Exception e) {
 			map.put("result", "fail");
-			map.put("message",MessageUtil.getStackTraceInfo(e));
+			map.put("message", MessageUtil.getStackTraceInfo(e));
 		}
 		return map;
 	}
@@ -113,10 +115,6 @@ public class WFModule {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 获得实例
 		WfCurInstance instance = wfOperation.getInstanceByInstanceId(instanceId);
-		// 检查签收状态(service)
-		if (instance != null && "0".equals(instance.getIfSign()) && SessionUtil.getCurrenUserId() != null) {
-			wfOperation.signWf(SessionUtil.getCurrenUserId(), instance);
-		}
 		// 查询节点信息
 		VwfNodeDetail nodeDetail = wfDefineService.getNodeDetailByNodeId(instance.getNodeId());
 		// 查询路本节点路由
@@ -139,9 +137,13 @@ public class WFModule {
 	 * 全琛 2018年2月25日 提交操作
 	 */
 	@At("/submit")
+	@AdaptBy(type = JsonAdaptor.class)
 	@Ok("json")
-	public Map<String, Object> submit(String routeId, String curInstanceId, String todoUserId) {
-		log.debug("todoUserId" + todoUserId);
+	public Map<String, Object> submit(@Param("routeId") String routeId, @Param("curInstanceId") String curInstanceId,
+			@Param("todoUserId") String todoUserId) {
+		log.debug("routeId:" + routeId);
+		log.debug("curInstanceId:" + curInstanceId);
+		log.debug("todoUserId:" + todoUserId);
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String curUserId = SessionUtil.loginAuth(map);
@@ -166,8 +168,12 @@ public class WFModule {
 	 * 全琛 2018年2月25日 回退操作
 	 */
 	@At("/retreat")
+	@AdaptBy(type = JsonAdaptor.class)
 	@Ok("json")
-	public Map<String, Object> retreat(String hisInstanceId, String curInstanceId) {
+	public Map<String, Object> retreat(@Param("hisInstanceId") String hisInstanceId,
+			@Param("curInstanceId") String curInstanceId) {
+		log.debug("hisInstanceId:" + hisInstanceId);
+		log.debug("curInstanceId:" + curInstanceId);
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String curUserId = SessionUtil.loginAuth(map);
@@ -188,8 +194,10 @@ public class WFModule {
 	 * 全琛 2018年2月25日 流转操作
 	 */
 	@At("/circulate")
+	@AdaptBy(type = JsonAdaptor.class)
 	@Ok("json")
-	public Map<String, Object> circulate(String curInstanceId, String todoUserId) {
+	public Map<String, Object> circulate(@Param("curInstanceId") String curInstanceId,
+			@Param("todoUserId") String todoUserId) {
 		log.debug("todoUserId" + todoUserId);
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
@@ -206,9 +214,40 @@ public class WFModule {
 		return map;
 	}
 
+	/**
+	 * 全琛 2018年4月2日 签收操作
+	 */
+	@At("/sign")
+	@Ok("json")
+	public Map<String, Object> sign(String instanceId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			// 获得实例
+			WfCurInstance instance = wfOperation.getInstanceByInstanceId(instanceId);
+			// 检查签收状态(service)
+			if (instance != null && "0".equals(instance.getIfSign()) && SessionUtil.getCurrenUserId() != null) {
+				wfOperation.signWf(SessionUtil.getCurrenUserId(), instance);
+				map.put("result", "success");
+			} else
+				map.put("result", "fail");
+
+			if (instance == null)
+				map.put("message", "未找到对应的流程实例。");
+			if (SessionUtil.getCurrenUserId() == null)
+				map.put("message", "未找到当前用户id。");
+			if (!"0".equals(instance.getIfSign()))
+				map.put("message", "案件已被签收。");
+		} catch (Exception e) {
+			map.put("result", "fail");
+			map.put("message", MessageUtil.getStackTraceInfo(e));
+		}
+		return map;
+	}
+
 	@At("/getNextUserList")
 	@Ok("json")
-	public Map<String, Object> getNextUserList(String routeId, String hisInstanceId, String curInstanceId) {
+	public Map<String, Object> getNextUserList(String routeId, String hisInstanceId, String curInstanceId,
+			String opType) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			List<UserInfo> userInfos = new ArrayList<UserInfo>();
@@ -216,31 +255,52 @@ public class WFModule {
 			log.debug("routeId:" + routeId);
 			log.debug("hisInstanceId:" + hisInstanceId);
 			log.debug("curInstanceId:" + curInstanceId);
-			if (routeId != null && StringUtils.isNotEmpty(routeId)) {
+			if (opType.equals("normal")) {
 				// 根据路由获得下一节点名称
 				WfRoute route = wfDefineService.getRouteByRouteId(routeId);
 				String nodeId = route.getPhaseId() + route.getNextNode();
 
 				// 根据节点查询该节点的操作人员
 				WfNode node = wfDefineService.getNodeByNodeId(nodeId);
-				userInfos.addAll(userInfoService.getListByRoleId(node.getRoleId()));
+
+				// 初始化区县
+				String qxId = "";
+				qxId = planInfoService.getPlanInfoByInstanceId(curInstanceId).getQxId();
+				log.debug("qxId:" + qxId);
+				if (node.getIsQxOp() == null) {
+					userInfos.addAll(userInfoService.getListByRoleId(node.getRoleId()));
+				} else if (node.getIsQxOp().equals("1")) {
+					userInfos.addAll(userInfoService.getListByRoleId(node.getRoleId(), qxId));
+				} else {
+					userInfos.addAll(userInfoService.getListByRoleId(node.getRoleId()));
+				}
 			}
 			// 回退人员
-			if (hisInstanceId != null && StringUtils.isNotEmpty(routeId)) {
+			else if (opType.equals("retreat")) {
 				WfHisInstance hisInstance = wfOperation.getHisInstanceByInstanceId(hisInstanceId);
 				userInfos.add(userInfoService.getUserInfoByUserId(hisInstance.getSignUserId()));
 			}
 			// 流转人员列表
-			if (curInstanceId != null && StringUtils.isNotEmpty(curInstanceId)) {
+			else if (opType.equals("circulate")) {
 				WfCurInstance curInstence = wfOperation.getInstanceByInstanceId(curInstanceId);
 				// 根据节点查询该节点的操作人员
 				WfNode node = wfDefineService.getNodeByNodeId(curInstence.getNodeId());
+
+				// 初始化区县
+				String qxId = "";
+				qxId = planInfoService.getPlanInfoByInstanceId(curInstanceId).getQxId();
 				List<String> userIds = new ArrayList<String>() {
 					{
 						add(curInstence.getSignUserId());
 					}
 				};
-				userInfos.addAll(userInfoService.getListByRoleId(node.getRoleId(), userIds));
+				if (node.getIsQxOp() == null) {
+					userInfos.addAll(userInfoService.getListByRoleId(node.getRoleId(), userIds));
+				} else if (node.getIsQxOp().equals("1")) {
+					userInfos.addAll(userInfoService.getListByRoleId(node.getRoleId(), userIds, qxId));
+				} else {
+					userInfos.addAll(userInfoService.getListByRoleId(node.getRoleId(), userIds));
+				}
 
 			}
 			map.put("userInfos", userInfos);
@@ -248,7 +308,7 @@ public class WFModule {
 
 		} catch (Exception e) {
 			map.put("result", "fail");
-			map.put("message",MessageUtil.getStackTraceInfo(e));
+			map.put("message", MessageUtil.getStackTraceInfo(e));
 		}
 		return map;
 	}
