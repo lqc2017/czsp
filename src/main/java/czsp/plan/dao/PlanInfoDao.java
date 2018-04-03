@@ -171,6 +171,11 @@ public class PlanInfoDao {
 		// 回收状态
 		if (StringUtils.isNotBlank(planCondition.getIfRetrieve()))
 			cri.where().andEquals("ifRetrieve", planCondition.getIfRetrieve());
+		
+		// 待办人
+		if (StringUtils.isNotBlank(planCondition.getTodoUserId())){
+			cri.where().andLike("todoUserId", planCondition.getTodoUserId());
+		}
 
 		cri.getOrderBy().desc("create_time");
 

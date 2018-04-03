@@ -83,11 +83,42 @@ public class PlanModule {
 			throw new Exception("用户未设置区县");
 		}
 
-		//根据条件加载列表(下一用户未签收，当前用户是最后一个操作用户)
+		// 根据条件加载列表(下一用户未签收，当前用户是最后一个操作用户)
 		VplanWfDetail planCondition = new VplanWfDetail();
 		planCondition.setIfRetrieve("1");
+		planCondition.setStatus("1");
 		planCondition.setIfSign("0");
 		planCondition.setLastOpUser(userInfo.getUserId());
+		List infoList = planInfoService.getListByCondition(planCondition);
+
+		map.put("infoList", infoList);
+		map.put("planCondition", planCondition);
+		map.put("dicUtil", DicUtil.getInstance());
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年4月3日 待签收列表页面
+	 */
+	@At("/toSignList")
+	@Ok("jsp:/czsp/plan/query/to_sign_list")
+	@Fail("jsp:/czsp/common/fail")
+	public Map<String, Object> toSignList() throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		// 加载案件
+		UserInfo userInfo = SessionUtil.getCurrenUser();
+		if (userInfo == null || StringUtils.isBlank(userInfo.getUserId())) {
+			throw new Exception("用户未登录");
+		}
+		if (userInfo == null || StringUtils.isBlank(userInfo.getQxId())) {
+			throw new Exception("用户未设置区县");
+		}
+
+		// 根据条件加载列表(下一用户未签收，当前用户是最后一个操作用户)
+		VplanWfDetail planCondition = new VplanWfDetail();
+		planCondition.setIfSign("0");
+		planCondition.setStatus("1");
+		planCondition.setTodoUserId(userInfo.getUserId());
 		List infoList = planInfoService.getListByCondition(planCondition);
 
 		map.put("infoList", infoList);
@@ -148,7 +179,7 @@ public class PlanModule {
 	 * 全琛 2018年3月24日 案件详细信息页面
 	 */
 	@At("/detail/?")
-	@Ok("jsp:/czsp/plan/query/show_plan_detail")
+	@Ok("jsp:/czsp/plan/show_plan_detail")
 	public Map<String, Object> showDetail(String planId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
@@ -200,7 +231,7 @@ public class PlanModule {
 		Map<String, Object> map = new HashMap<String, Object>();
 		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
 		PlanOpinion planOpinion = planOpinionService.getLatestOpinion(planInfo.getInstanceId(),
-				planInfo.getPlanApp().getCurNode());
+				planInfo.getPlanApp().getCurNode(),SessionUtil.getCurrenUserId(), "暂存");
 
 		map.put("dicUtil", DicUtil.getInstance());
 		map.put("planInfo", planInfo);

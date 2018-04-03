@@ -32,13 +32,9 @@ public class PlanOpinionService {
 
 	/**
 	 * 全琛 2018年4月2日 根据当前实例id和当前节点id筛选已填办理意见
-	 * 
-	 * @param instanceId
-	 * @param curNode
-	 * @return
 	 */
-	public PlanOpinion getLatestOpinion(String instanceId, String curNode) {
-		return planOpinionDao.getLatestOpinion(instanceId, curNode);
+	public PlanOpinion getLatestOpinion(String instanceId, String curNode, String curUserId, String opType) {
+		return planOpinionDao.getLatestOpinion(instanceId, curNode,curUserId, opType);
 	}
 
 	/**

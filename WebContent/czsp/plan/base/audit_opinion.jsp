@@ -25,6 +25,7 @@
 						<c:otherwise>
 							<c:set var="opinion" value="${obj.planOpinion}" />
 							<input type="hidden" name="opinionId" value="${opinion.opinionId }"/>
+							<input type="hidden" name="opType"/>
 							<textarea name="opinionContent" style="width:98%;height:100px;">${opinion.opinionContent}</textarea>
 						</c:otherwise>
 					</c:choose>
