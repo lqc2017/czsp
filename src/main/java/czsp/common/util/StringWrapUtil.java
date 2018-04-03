@@ -1,5 +1,6 @@
 package czsp.common.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,10 +22,12 @@ public class StringWrapUtil {
 		if (suffix == null)
 			suffix = "";
 		String[] strArr = str.split(",");
+		List<String> strList = new ArrayList<String>();
 		for (String s : strArr) {
 			s = "'" + prefix + s + suffix + "'";
+			strList.add(s);
 		}
-		return StringUtils.join(strArr, ",");
+		return StringUtils.join(strList, ",");
 	}
 
 	/**

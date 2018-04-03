@@ -1,6 +1,5 @@
 package czsp.plan.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +15,6 @@ import czsp.plan.model.PlanInfo;
 import czsp.plan.model.view.VplanInfoDetail;
 import czsp.plan.model.view.VplanWfDetail;
 import czsp.user.dao.UserInfoDao;
-import czsp.user.model.UserInfo;
 import czsp.workflow.WFOperation;
 import czsp.workflow.dao.WfNodeDao;
 import czsp.workflow.dao.WfRouteDao;
@@ -95,26 +93,15 @@ public class PlanInfoService {
 
 		String nodeId = route.getPhaseId() + route.getNextNode();
 
-		// 根据节点查询该节点的操作人员
+		// 初始化下一节点人员(根据节点字段判断是否根据区县筛选)
 		WfNode node = wfNodeDao.getNodeByNodeId(nodeId);
-		// 初始化下一节点人员(判断是否根据区县筛选)
-		List<UserInfo> userInfos = new ArrayList<UserInfo>();
 		String[] roleArr = node.getRoleId().split(",");
-		String qxId = "";
-		qxId = this.getPlanInfoByInstanceId(curInstance.getInstanceId()).getQxId();
-		if (node.getIsQxOp() == null) {
-			userInfos.addAll(userInfoDao.getListByRoleId(roleArr, null, null));
-		} else if (node.getIsQxOp().equals("1")) {
-			userInfos.addAll(userInfoDao.getListByRoleId(roleArr, null, qxId));
-		} else {
-			userInfos.addAll(userInfoDao.getListByRoleId(roleArr, null, null));
-		}
+		String qxId = this.getPlanInfoByInstanceId(curInstance.getInstanceId()).getQxId();
 
-		List<String> userIds = new ArrayList<String>();
-		for (UserInfo u : userInfos) {
-			userIds.add(u.getUserId());
-		}
-		String todoUserId = StringUtils.join(userIds.toArray(), ",");
+		List<String> userIds = null;
+		userIds = userInfoDao.getUserIdsByRoleId(roleArr, null, qxId, node.getIsQxOp());
+
+		String todoUserId = StringUtils.join(userIds, ",");
 
 		Trans.exec(new Atom() {
 			public void run() {

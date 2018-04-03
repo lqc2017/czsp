@@ -40,7 +40,7 @@
 			<tr>
 				<td><label for="townName">村镇</label></td>
 				<td><label id="townLabel"></label>
-					<input type="hidden" id="townId" name="townId" class="required" />
+					<input type="hidden" id="townId" name="townId"/>
 					<input type="hidden" id="townName" name="townName" class="required" />
 					<button type="button" name="selectTown">选择</button>
 				</td>

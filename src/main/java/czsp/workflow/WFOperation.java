@@ -1,6 +1,5 @@
 package czsp.workflow;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +21,6 @@ import czsp.plan.model.PlanApp;
 import czsp.plan.model.PlanInfo;
 import czsp.user.dao.UserInfoDao;
 import czsp.user.dao.UserOperationDao;
-import czsp.user.model.UserInfo;
 import czsp.user.model.UserOperation;
 import czsp.workflow.dao.WfInstanceDao;
 import czsp.workflow.dao.WfNodeDao;
@@ -90,26 +88,16 @@ public class WFOperation extends WfInstanceDao {
 		WfNode newNextNode = generateNextNode(nextNode, curPhaseId, phases);
 
 		//跨环节是选不了下一环节人员，所以要后台初始化
-		if (!"1".equals(newNextNode.getIsEnd()) && StringUtils.isBlank(todoUserId)) {
+		if (StringUtils.equals("1", nextNode.getIsEnd()) && StringUtils.equals("0", newNextNode.getIsEnd())) {
 
-			// 初始化下一节点人员(判断是否根据区县筛选)
-			List<UserInfo> userInfos = new ArrayList<UserInfo>();
+			// 初始化下一节点人员(根据节点字段判断是否根据区县筛选)
 			String[] roleArr = newNextNode.getRoleId().split(",");
-			String qxId = "";
-			qxId = planInfoDao.getPlanInfoByInstanceId(curInstance.getInstanceId()).getQxId();
-			if (newNextNode.getIsQxOp() == null) {
-				userInfos.addAll(userInfoDao.getListByRoleId(roleArr, null, null));
-			} else if (newNextNode.getIsQxOp().equals("1")) {
-				userInfos.addAll(userInfoDao.getListByRoleId(roleArr, null, qxId));
-			} else {
-				userInfos.addAll(userInfoDao.getListByRoleId(roleArr, null, null));
-			}
+			String qxId = planInfoDao.getPlanInfoByInstanceId(curInstance.getInstanceId()).getQxId();;
 
-			List<String> userIds = new ArrayList<String>();
-			for (UserInfo u : userInfos) {
-				userIds.add(u.getUserId());
-			}
-			todoUserId = StringUtils.join(userIds.toArray(), ",");
+			List<String> userIds = null;
+			userIds = userInfoDao.getUserIdsByRoleId(roleArr, null, qxId, newNextNode.getIsQxOp());
+
+			todoUserId = StringUtils.join(userIds, ",");
 		}
 
 		WfCurInstance newInstance = new WfCurInstance(null, null, newNextNode.getNodeId(), "1", "0", "1", new Date(),
