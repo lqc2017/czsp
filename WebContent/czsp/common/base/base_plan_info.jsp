@@ -11,45 +11,45 @@
 		<c:set var="dicUtil" value="${obj.dicUtil}" />
 		<c:set var="Constants" value="${obj.constants}" />
 		<tr>
-			<td width="15%"><label for="planName">规划名称</label></td>
+			<th width="15%"><label for="planName">规划名称</label></th>
 			<td>${planInfo.planName}</td>
 			
-			<td width="20%"><label for="qxId">区县</label></td>
+			<th width="20%"><label for="qxId">区县</label></th>
 			<td>${dicUtil.getItemName(Constants.DIC_QX_NO,planInfo.qxId)}</td>
 		</tr>
 		<tr>
-			<td><label for=curPhase>当前环节</label></td>
+			<th><label for=curPhase>当前环节</label></th>
 			<td>${dicUtil.getItemName(Constants.DIC_WF_PHASE_NO,planInfo.planApp.curPhase)}</td>
 			
-			<td><label for="curNode">当前节点</label></td>
+			<th><label for="curNode">当前节点</label></th>
 			<td>${dicUtil.getItemName(Constants.DIC_WF_NODE_NO,planInfo.planApp.curNode)}</td>
 		</tr>
 		<tr>
-			<td><label for="townName">村镇</label></td>
+			<th><label for="townName">村镇</label></th>
 			<td>${planInfo.townName}</td>
 			
-			<td><label for="designDepartment">设计部门</label></td>
+			<th><label for="designDepartment">设计部门</label></th>
 			<td>${planInfo.designDepartment}</td>
 		</tr>
 		
 		<tr>
-			<td><label for="planArea">规划面积</label></td>
+			<th><label for="planArea">规划面积</label></th>
 			<td>${planInfo.planArea}km²</td>
 			
-			<td><label for="designContactName">设计部门联系人</label></td>
+			<th><label for="designContactName">设计部门联系人</label></th>
 			<td>${planInfo.designContactName}</td>
 		</tr>
 		
 		<tr>
-			<td><label for="finishDate">预计办结日期</label></td>
+			<th><label for="finishDate">预计办结日期</label></th>
 			<td><fmt:formatDate value="${planInfo.finishDate}" type="date" /></td>
 			
-			<td><label for="designContactWay">设计部门联系方式</label></td>
+			<th><label for="designContactWay">设计部门联系方式</label></th>
 			<td>${planInfo.designContactWay}</td>
 		</tr>
 
 		<tr>
-			<td><label for="note">备注</label></td>
+			<th><label for="note">备注</label></th>
 			<td colspan="3">${planInfo.note}</td>
 		</tr>
 	</table>

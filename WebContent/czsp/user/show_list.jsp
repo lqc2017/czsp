@@ -53,8 +53,6 @@
 		&nbsp <input type="submit" value="新建用户">
 	</form>
 	<br />
-	<br />
-	<br />
 	<table border="1">
 		<tr>
 			<th>用户ID</th>

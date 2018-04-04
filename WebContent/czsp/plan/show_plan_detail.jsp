@@ -25,6 +25,11 @@
 	<!-- 基本信息 -->
 	<jsp:include page="/czsp/common/base/base_plan_info.jsp" flush="true" />
 	
+	<br/>
+	<!-- 办理意见 -->
+	<jsp:include page="/czsp/plan/opinion_list.jsp" flush="true" />
+	
+	<br/>
 	<!-- 流程信息 -->
 	<iframe id="process-frame" width="100%" frameborder="0" src="/czsp/wf/showInstance/<%=planInfo.getPlanId() %>"></iframe>
 

@@ -21,49 +21,49 @@
 		<input type="hidden" name="planId" value="${plan.planId}">
 		<table border="1">
 				<tr>
-					<td><label for="planName">规划名称</label></td>
+					<th><label for="planName">规划名称</label></th>
 					<td><input type="text" id="planName" name="planName" class="required" value="${plan.planName}"/></td>
 					
-					<td><label for="qxId">区县</label></td>
+					<th><label for="qxId">区县</label></th>
 					<td>${obj.dicQx[plan.qxId].name}</td>
 				</tr>
 				
 				<tr>
-					<td><label for="phases">规划环节</label></td>
+					<th><label for="phases">规划环节</label></th>
 					<td>${plan.planApp.phases}</td>
 					
-					<td><label for="designDepartment">设计部门</label></td>
+					<th><label for="designDepartment">设计部门</label></th>
 					<td><input type="text" id="designDepartment" name="designDepartment" value="${plan.designDepartment}"/></td>
 				</tr>
 				
 				<tr>
-					<td><label for="townName">村镇</label></td>
+					<th><label for="townName">村镇</label></th>
 					<td><label id="townLabel">${plan.townName}</label>
 						<input type="hidden" id="townId" name="townId" class="required"  value="${plan.townId}"/>
 						<input type="hidden" id="townName" name="townName" class="required" value="${plan.townName}"/>
 						<button type="button" name="selectTown">选择</button>
 					</td>
 					
-					<td><label for="designContactName">设计部门联系人</label></td>
+					<th><label for="designContactName">设计部门联系人</label></th>
 					<td><input type="text" id="designContactName" name="designContactName" value="${plan.designContactName}"/></td>
 				</tr>
 				
 				<tr>
-					<td><label for="planArea">规划面积</label></td>
+					<th><label for="planArea">规划面积</label></th>
 					<td><input type="text" id="planArea" name="planArea" class="required" value="${plan.planArea}"/></td>
 					
-					<td><label for="designContactWay">设计部门联系方式</label></td>
+					<th><label for="designContactWay">设计部门联系方式</label></th>
 					<td><input type="text" id="designContactWay" name="designContactWay" value="${plan.designContactWay}"/></td>
 				</tr>
 
 				<tr>
-					<td><label for="finishDate">预计办结日期</label></td>
+					<th><label for="finishDate">预计办结日期</label></th>
 					<td><input type="text" id="finishDate" name="finishDate" class="required" value='<fmt:formatDate value="${plan.finishDate}" type="date" />'/></td>
 					<td colspan="2"></td>
 				</tr>
 
 				<tr>
-					<td><label for="note">备注</label></td>
+					<th><label for="note">备注</label></th>
 					<td colspan="3"><textarea id="note" name="note" style="width: 95%;">${plan.note}</textarea></td>
 				</tr>
 			</table>
@@ -95,7 +95,8 @@
 			        console.log(re.result);
 			        if (re.result == 'success'){
 						alert("success!");
-						location.href = PlanURLPrefix + "/list";
+						window.opener.location.reload();
+						window.close();
 					}else
 						alert("message : " + re.message);
 			    }

@@ -5,15 +5,18 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>计划</title>
+<link href="/czsp/static/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+
 <script src="/czsp/static/js/jquery.js"></script>
+<script src="/czsp/static/js/bootstrap/bootstrap.min.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <body>
 	<ul class="nav nav-pills">
-		<li class="active"><a href="javascript:;" url="/czsp/plan/list">新建计划</a></li>
+		<li><a href="javascript:;" url="/czsp/plan/list">新建计划</a></li>
 		<li><a href="javascript:;" url="/czsp/plan/auditList">业务办理</a></li>
 		<li class="dropdown">
-			<a href="javascript:;" url="/czsp/plan/query">案件查询
+			<a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">案件查询
 				<span class="caret"></span>
 			</a>
 			<ul class="dropdown-menu">
@@ -32,7 +35,7 @@
 				<li><a href="javascript:;" url="/czsp/user/list">人员管理</a></li>
 				<li><a href="javascript:;" url="/czsp/wf/list">流程管理</a></li>
 				<li class="divider"></li>
-				<li><a href="#">字典管理</a></li>
+				<li><a href="javascript:;" url="/czsp/common/dicManage">字典管理</a></li>
 			</ul>
 		</li>
 	</ul>

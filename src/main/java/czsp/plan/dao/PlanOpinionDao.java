@@ -1,5 +1,7 @@
 package czsp.plan.dao;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
@@ -47,7 +49,7 @@ public class PlanOpinionDao {
 		if (StringUtils.isNotBlank(opType)) {
 			cri.where().andEquals("opType", opType);
 		}
-		
+
 		cri.getOrderBy().desc("createTime");
 		return dao.fetch(PlanOpinion.class, cri);
 	}
@@ -57,6 +59,13 @@ public class PlanOpinionDao {
 	 */
 	public void updateOpinion(PlanOpinion planOpinion) {
 		dao.updateIgnoreNull(planOpinion);
+	}
+
+	/**
+	 * 全琛 2018年4月4日 根据planId获取列表
+	 */
+	public List getListByPlanId(String planId) {
+		return dao.query(PlanOpinion.class, Cnd.where("planId","=",planId).orderBy("createTime", "asc"));
 	}
 
 }

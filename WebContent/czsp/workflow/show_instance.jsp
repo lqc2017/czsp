@@ -21,65 +21,61 @@
 	Map map = (HashMap) request.getAttribute("obj");
 %>
 <body>
-	<input id="curInstanceId" type="hidden" value="${obj.curInstance.instanceId}"/>
+	<input id="curInstanceId" type="hidden"
+		value="${obj.curInstance.instanceId}" />
 	<table border="1">
 		<tbody>
 			<tr>
-				<td>实例ID</td>
+				<th>实例ID</th>
 				<td>${obj.curInstance.instanceId}</td>
-			</tr>
-			
-			<tr>
-				<td>实例编号</td>
+
+				<th>实例编号</th>
 				<td>${obj.curInstance.instanceNo}</td>
 			</tr>
-			
+
 			<tr>
-				<td>当前节点ID</td>
+				<th>当前节点ID</th>
 				<td>${obj.curInstance.nodeId}</td>
-			</tr>
-			
-			<tr>
-				<td>当前节点名称</td>
+
+				<th>当前节点名称</th>
 				<td>${obj.dicWfNode[obj.curInstance.nodeId].name}</td>
 			</tr>
-			
+
+
 			<tr>
-				<td>是否可回收</td>
+				<th>是否可回收</th>
 				<td><c:if test="${obj.curInstance.ifRetrieve eq '0' }">不可回收</c:if>
 					<c:if test="${obj.curInstance.ifRetrieve eq '1' }">可回收</c:if></td>
+
+				<th>是否已签收</th>
+				<td><c:if test="${obj.curInstance.ifSign eq '0' }">未签收</c:if> <c:if
+						test="${obj.curInstance.ifSign eq '1' }">已签收</c:if></td>
 			</tr>
-			
+
 			<tr>
-				<td>是否已签收</td>
-				<td><c:if test="${obj.curInstance.ifSign eq '0' }">未签收</c:if>
-					<c:if test="${obj.curInstance.ifSign eq '1' }">已签收</c:if></td>
+				<th>是否有效</th>
+				<td><c:if test="${obj.curInstance.ifValid eq '0' }">无效</c:if> <c:if
+						test="${obj.curInstance.ifValid eq '1' }">有效</c:if></td>
+
+				<th>创建时间</th>
+				<td><fmt:formatDate value="${obj.curInstance.createTime}"
+						type="both" /></td>
 			</tr>
-			
+
 			<tr>
-				<td>是否有效</td>
-				<td><c:if test="${obj.curInstance.ifValid eq '0' }">无效</c:if>
-					<c:if test="${obj.curInstance.ifValid eq '1' }">有效</c:if></td>
-			</tr>
-			
-			<tr>
-				<td>创建时间</td>
-				<td><fmt:formatDate value="${obj.curInstance.createTime}" type="both" /></td>
-			</tr>
-			
-			<tr>
-				<td>待办用户ID</td>
+				<th>待办用户ID</th>
 				<td>${obj.curInstance.todoUserId}</td>
-			</tr>
-			
-			<tr>
-				<td>签收人ID</td>
+				
+				<th>签收人ID</th>
 				<td>${obj.curInstance.signUserId}</td>
 			</tr>
+
 		</tbody>
 	</table>
-	<br/><br/><br/>
-	
+	<br />
+	<br />
+	<br />
+
 	<table border="1">
 		<tr>
 			<th>流程ID</th>
@@ -100,8 +96,7 @@
 				<td>${instance.signUserId}</td>
 				<td><fmt:formatDate value="${instance.createTime}" type="both" /></td>
 				<td><fmt:formatDate value="${instance.finishTime}" type="both" /></td>
-				<td>
-				</td>
+				<td></td>
 			</tr>
 		</c:forEach>
 	</table>

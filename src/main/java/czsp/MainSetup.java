@@ -1,8 +1,8 @@
 package czsp;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.nutz.dao.Dao;
 import org.nutz.dao.entity.Record;
@@ -29,7 +29,7 @@ public class MainSetup implements Setup{
 			String tableName = record.get("TABLE_NAME").toString();
 			//加载字典表记录
 			List<Record> dicTable = dao.query(tableName, null);
-			Map dicMap = new HashMap();
+			Map dicMap = new TreeMap();
 			for(Record dicItem : dicTable){
 				dicMap.put(dicItem.get("ID"), dicItem);
 			}

@@ -1,6 +1,7 @@
 package czsp.plan.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
@@ -23,6 +24,7 @@ public class PlanOpinionService {
 	 */
 	public void addOpinion(PlanOpinion planOpinion) {
 		planOpinion.setCreateTime(new Date());
+		planOpinion.setUpdateTime(new Date());
 		planOpinionDao.addOpinion(planOpinion);
 
 		UserOperation operation = new UserOperation("签收", new Date(), planOpinion.getCreateBy(),
@@ -34,7 +36,7 @@ public class PlanOpinionService {
 	 * 全琛 2018年4月2日 根据当前实例id和当前节点id筛选已填办理意见
 	 */
 	public PlanOpinion getLatestOpinion(String instanceId, String curNode, String curUserId, String opType) {
-		return planOpinionDao.getLatestOpinion(instanceId, curNode,curUserId, opType);
+		return planOpinionDao.getLatestOpinion(instanceId, curNode, curUserId, opType);
 	}
 
 	/**
@@ -43,6 +45,13 @@ public class PlanOpinionService {
 	public void updateOpinion(PlanOpinion planOpinion) {
 		planOpinion.setUpdateTime(new Date());
 		planOpinionDao.updateOpinion(planOpinion);
+	}
+
+	/**
+	 * 全琛 2018年4月4日 根据planId获取办理意见列表
+	 */
+	public List getListByPlanId(String planId) {
+		return planOpinionDao.getListByPlanId(planId);
 	}
 
 }

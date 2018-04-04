@@ -183,8 +183,10 @@ public class PlanModule {
 	public Map<String, Object> showDetail(String planId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
+		List opinionList = planOpinionService.getListByPlanId(planId);
 
 		map.put("dicUtil", DicUtil.getInstance());
+		map.put("opinionList", opinionList);
 		map.put("planInfo", planInfo);
 		return map;
 	}

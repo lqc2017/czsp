@@ -69,7 +69,13 @@
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {
-					resultPrompt(re,true,true);
+					console.log(re.result);
+			        if (re.result == 'success'){
+						alert("success!");
+						window.opener.location.reload();
+						window.location.reload();
+					}else
+						alert("message : " + re.message);
 				}
 			});
 		})
@@ -85,7 +91,13 @@
 				dataType : 'json',
 				type : 'GET',
 				success : function(re) {
-					resultPrompt(re,true,true);
+					console.log(re.result);
+			        if (re.result == 'success'){
+						alert("success!");
+						window.opener.location.reload();
+						window.location.reload();
+					}else
+						alert("message : " + re.message);
 				}
 			});
 		})
