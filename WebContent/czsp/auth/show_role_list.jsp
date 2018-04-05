@@ -5,16 +5,21 @@
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.HashMap"%>
+<%@ page import="java.util.TreeMap"%>
 <%@ page import="czsp.common.util.DicUtil"%>
 <%@ page import="czsp.common.Constants"%>
 <%@ page import="czsp.user.model.UserInfo"%>
 <%@ page import="org.nutz.dao.entity.Record"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>角色列表</title>
+<link href="/czsp/static/css/bootstrap/bootstrap.min.css"
+	rel="stylesheet">
+
 <script src="/czsp/static/js/jquery.js"></script>
+<script src="/czsp/static/js/bootstrap/bootstrap.min.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <%
@@ -23,7 +28,7 @@
 %>
 <body>
 	<input id="userId" type="hidden"  value="<%=userInfo.getUserId() %>"/>
-	<table border="1">
+	<table class="table table-bordered">
 		<thead>
 			<tr>
 				<th>角色名</th>
@@ -32,7 +37,7 @@
 		</thead>
 		<tbody>
 			<%
-				Map<String, Record> map = (HashMap<String, Record>) DicUtil.getInstance().getDicMap()
+				Map<String, Record> map = (TreeMap<String, Record>) DicUtil.getInstance().getDicMap()
 						.get(Constants.DIC_AHTU_ROLE_NO);
 				for (String key : map.keySet()) {
 					String roleId = map.get(key).get("id").toString();

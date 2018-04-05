@@ -1,10 +1,15 @@
 package czsp.user.service;
 
+import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
 
+import czsp.authority.dao.PermissionRoleDao;
+import czsp.authority.model.PermissionObject;
+import czsp.common.bean.Pagination;
 import czsp.common.util.StringWrapUtil;
 import czsp.user.dao.UserInfoDao;
 import czsp.user.model.UserInfo;
@@ -13,6 +18,9 @@ import czsp.user.model.UserInfo;
 public class UserInfoService {
 	@Inject
 	private UserInfoDao userInfoDao;
+
+	@Inject
+	private PermissionRoleDao permissionRoleDao;
 
 	/**
 	 * 全琛 2018年3月17日
@@ -93,8 +101,26 @@ public class UserInfoService {
 		return userInfoDao.getListByRoleId(roleArr, userIds, qxId);
 	}
 
+	/**
+	 * 全琛 2018年4月5日
+	 * 
+	 * @param userId
+	 * @return
+	 */
 	public UserInfo getUserInfoByUserId(String userId) {
-		return userInfoDao.getUserInfoByUserId(userId);
+		UserInfo userInfo = userInfoDao.getUserInfoByUserId(userId);
+
+		HashMap<String, PermissionObject> map = new HashMap<String, PermissionObject>();
+		// 加载对应权限
+		if (StringUtils.isNotBlank(userInfo.getRoleId())) {
+			String[] roleArr = userInfo.getRoleId().split(",");
+			for (String roleId : roleArr) {
+				permissionRoleDao.getPermissionByRoleId(roleId, map);
+			}
+		}
+
+		userInfo.setPermission(map);
+		return userInfo;
 	}
 
 	public void deleteUser(String userId) {
@@ -103,5 +129,17 @@ public class UserInfoService {
 
 	public void updateUser(UserInfo userInfo) {
 		userInfoDao.updateUser(userInfo);
+	}
+
+	/**
+	 * 全琛
+	 * 2018年4月5日 分页查询
+	 * @param userCondition
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Pagination<UserInfo> getListByCondition(UserInfo userCondition, int pageNumber, int pageSize) {
+		return userInfoDao.getListByCondition(userCondition,pageNumber,pageSize);
 	}
 }

@@ -50,14 +50,24 @@ public class CommonModule {
 	}
 
 	/**
+	 * 全琛 2018年4月5日 人员管理
+	 */
+	@At("/humanManage")
+	@Ok("jsp:/czsp/common/manage/human_manage")
+	public Map<String, Object> humanManage() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		return map;
+	}
+
+	/**
 	 * 全琛 2018年4月4日 字典列表
 	 */
 	@At("/dicList/?")
 	@Ok("jsp:/czsp/common/manage/dic_list")
 	public Map<String, Object> dicList(String dicId) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		Map dicMap = (TreeMap)DicUtil.getInstance().getDicMap().get(dicId);
-		
+		Map dicMap = (TreeMap) DicUtil.getInstance().getDicMap().get(dicId);
+
 		map.put("dicList", new ArrayList(dicMap.values()));
 		return map;
 	}

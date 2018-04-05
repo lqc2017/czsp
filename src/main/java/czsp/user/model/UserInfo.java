@@ -1,8 +1,12 @@
 package czsp.user.model;
 
+import java.util.HashMap;
+
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.entity.annotation.Table;
+
+import czsp.authority.model.PermissionObject;
 
 @Table("USER_INFO")
 public class UserInfo {
@@ -24,6 +28,8 @@ public class UserInfo {
 
 	@Column(value = "PHONE_NUMBER")
 	private String phoneNumber;
+	
+	private HashMap<String,PermissionObject> permission;
 
 	public String getUserId() {
 		return userId;
@@ -71,6 +77,14 @@ public class UserInfo {
 
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	public HashMap<String,PermissionObject> getPermission() {
+		return permission;
+	}
+
+	public void setPermission(HashMap<String,PermissionObject> permission) {
+		this.permission = permission;
 	}
 
 }

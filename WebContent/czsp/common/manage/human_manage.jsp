@@ -60,32 +60,14 @@ ul.nav-tabs.affix {
 <body>
 	<div class="col-xs-2" id="leftMenu">
 		<ul class="nav nav-tabs nav-stacked">
-			<li>
-				<a href="javascript:;" data-toggle="collapse" data-target="#auth">权限字典</a>
-				<div id="auth" class="collapse">
-					<ul class="nav sub">
-						<li><a href="javascript:;" dicId="<%=Constants.DIC_AHTU_ROLE_NO %>">&nbsp&nbsp角色</a></li>
-						<li><a href="javascript:;" dicId="<%=Constants.DIC_AHTU_DEPT_NO %>">&nbsp&nbsp部门</a></li>
-					</ul>
-				</div>
+			<li style="active">
+				<a href="javascript:;">人员管理</a>
 			</li>
 			<li>
-				<a href="javascript:;" data-toggle="collapse" data-target="#wf">流程字典</a>
-				<div id="wf" class="collapse">
-					<ul class="nav sub">
-						<li><a href="javascript:;" dicId="<%=Constants.DIC_WF_PHASE_NO %>">&nbsp&nbsp环节</a></li>
-						<li><a href="javascript:;" dicId="<%=Constants.DIC_WF_NODE_NO %>">&nbsp&nbsp节点</a></li>
-					</ul>
-				</div>
+				<a href="javascript:;">角色管理</a>
 			</li>
 			<li>
-				<a href="javascript:;" data-toggle="collapse" data-target="#qx">区县字典</a>
-				<div id="qx" class="collapse">
-					<ul class="nav sub">
-						<li><a href="javascript:;" dicId="<%=Constants.DIC_QX_NO %>">&nbsp&nbsp区县</a></li>
-						<li><a href="javascript:;" dicId="<%=Constants.DIC_QX_CZ_NO %>">&nbsp&nbsp村镇</a></li>
-					</ul>
-				</div>
+				<a href="javascript:;">权限管理</a>
 			</li>
 		</ul>
 	</div>
@@ -93,25 +75,25 @@ ul.nav-tabs.affix {
 	<div class="col-xs-8" style="margin-top: 20px">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">字典管理</h3>
+				<h3 class="panel-title">人员管理</h3>
 			</div>
 			<div class="panel-body">
-				<iframe id="list-frame" width="100%" frameborder="0" style="height:460px;"></iframe>
+				<iframe id="list-frame" width="100%" frameborder="0" style="height:460px;" src="/czsp/user/list"></iframe>
 			</div>
 		</div>
 	</div>
 	
 	<script type="text/javascript">
-		$("div.collapse li a").bind("click", function() {
-			$("#leftMenu").find("li").removeClass("active");
+		$("ul li a").bind("click", function() {
+			//$("#leftMenu").find("li").removeClass("active");
 			
-			$(this).closest("li").addClass("active");
-			var dicId = $(this).attr("dicId");
+			//$(this).closest("li").addClass("active");
+			var url = $(this).attr("url");
 			
 			$(".panel-title").empty();
-			$(".panel-title").append("字典管理("+$(this).text().trim()+")");
+			$(".panel-title").append($(this).text());
 			
-			$("#list-frame").attr("src",CommURLPrefix+"/dicList/"+dicId);
+			//$("#list-frame").attr("src",url);
 		})
 	</script>
 </body>

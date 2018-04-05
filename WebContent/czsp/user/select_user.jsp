@@ -9,7 +9,7 @@
 <%@ page import="czsp.common.Constants"%>
 <%@ page import="czsp.user.model.UserInfo"%>
 <%@ page import="org.nutz.dao.entity.Record"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -79,8 +79,7 @@
 			}
 		%>
 	</table>
-
-
+	
 	<script type="text/javascript">
 		//选择人员键绑定
 		$("button[name='select']").bind("click", function() {

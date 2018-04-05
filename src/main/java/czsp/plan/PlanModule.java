@@ -1,6 +1,7 @@
 package czsp.plan;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class PlanModule {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<VplanInfoDetail> infoList = planInfoService.getList();
 
-		Map dicQx = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+		Map dicQx = (TreeMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
 
 		map.put("infoList", infoList);
 		map.put("dicQx", dicQx);
@@ -147,7 +148,7 @@ public class PlanModule {
 	public Map<String, Object> edit(String planId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
-		Map dicQx = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+		Map dicQx = (TreeMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
 
 		map.put("planInfo", planInfo);
 		map.put("dicQx", dicQx);
@@ -164,7 +165,7 @@ public class PlanModule {
 		List infoList = planInfoService.getListByCondition(planCondition);
 
 		// 添加区县选项
-		Map qxMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+		Map qxMap = (TreeMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
 		List qxList = new ArrayList(qxMap.values());
 
 		map.put("infoList", infoList);

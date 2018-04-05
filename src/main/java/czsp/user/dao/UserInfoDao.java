@@ -10,12 +10,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.mvc.Mvcs;
+
+import czsp.common.bean.Pagination;
 import czsp.user.model.UserInfo;
 
 @IocBean
@@ -62,6 +65,7 @@ public class UserInfoDao {
 		if (StringUtils.isNotBlank(user.getQxId()))
 			cri.where().andEquals("qxId", user.getQxId());
 
+		cri.getOrderBy().asc("userId");
 		return dao.query(UserInfo.class, cri);
 	}
 
@@ -136,6 +140,32 @@ public class UserInfoDao {
 		dao.execute(sql);
 		return sql.getList(String.class);
 
+	}
+
+	/**
+	 * 全琛 2018年4月5日 分页查询
+	 */
+	public Pagination<UserInfo> getListByCondition(UserInfo userCondition, int pageNumber, int pageSize) {
+		Criteria cri = Cnd.cri();
+		Pager pager = dao.createPager(pageNumber, pageSize);
+		Pagination<UserInfo> pagination = new Pagination<UserInfo>();
+
+		if (userCondition.getName() != null)
+			cri.where().andLike("name", userCondition.getName());
+
+		if (StringUtils.isNotBlank(userCondition.getDepartmentId()))
+			cri.where().andEquals("departmentId", userCondition.getDepartmentId());
+
+		if (StringUtils.isNotBlank(userCondition.getQxId()))
+			cri.where().andEquals("qxId", userCondition.getQxId());
+
+		cri.getOrderBy().asc("userId");
+		
+		pager.setRecordCount(dao.count(UserInfo.class, cri));
+		
+		pagination.setList(dao.query(UserInfo.class, cri, pager));
+		pagination.setPager(pager);
+		return pagination;
 	}
 
 }

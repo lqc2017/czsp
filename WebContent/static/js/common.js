@@ -10,7 +10,7 @@ var PlanURLPrefix = "/czsp/plan";
 
 function initPage(){
 	initRequired();
-	initResetBtn();
+	initSerchFormBtn();
 }
 
 /*表单必填初始化*/
@@ -23,11 +23,18 @@ function initRequired(){
 }
 
 /*重置按钮初始化*/
-function initResetBtn(){
+function initSerchFormBtn(){
 	$("button[name='reset']").bind("click",function(){
 		var form = $(this).parents("#searchFrom");
 		form.find("input[type!='submit']").val("");
 		form.find("select").children().removeAttr("selected");
+		
+		form.submit();
+	})
+	
+	$("button[name='search']").bind("click",function(){
+		var form = $(this).parents("#searchFrom");
+		form.find("input[name='pageNumber']").val("1");
 		
 		form.submit();
 	})

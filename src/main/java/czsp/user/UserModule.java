@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
@@ -16,6 +17,7 @@ import org.nutz.mvc.annotation.Param;
 
 import czsp.MainSetup;
 import czsp.common.Constants;
+import czsp.common.bean.Pagination;
 import czsp.common.util.DicUtil;
 import czsp.common.util.MessageUtil;
 import czsp.user.model.UserInfo;
@@ -32,19 +34,26 @@ public class UserModule {
 
 	@At("/list")
 	@Ok("jsp:/czsp/user/show_list")
-	public Map<String, Object> showList() {
+	public Map<String, Object> showList(@Param("..") UserInfo userCondition, int pageNumber, int pageSize) {
+		if (userCondition == null)
+			userCondition = new UserInfo();
+		System.out.println(pageNumber + " " + pageSize);
+		pageNumber = pageNumber == 0 ? 1 : pageNumber;
+		pageSize = pageSize == 0 ? 2 : pageSize;
 		Map<String, Object> map = new HashMap<String, Object>();
-		List users = userInfoService.getList();
+		Pagination<UserInfo> pagination = userInfoService.getListByCondition(userCondition, pageNumber, pageSize);
 		// 添加部门选项
-		Map deptsMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_AHTU_DEPT_NO));
+		Map deptsMap = (TreeMap) (DicUtil.getDicMap().get(Constants.DIC_AHTU_DEPT_NO));
 		List departments = new ArrayList(deptsMap.values());
 		// 添加区县选项
-		Map qxMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+		Map qxMap = (TreeMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
 		List qxList = new ArrayList(qxMap.values());
 
-		map.put("users", users);
+		map.put("pagination", pagination);
 		map.put("departments", departments);
 		map.put("qxList", qxList);
+		map.put("dicUtil", DicUtil.getInstance());
+		map.put("userCondition", userCondition);
 		return map;
 	}
 
@@ -88,10 +97,10 @@ public class UserModule {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List users = userInfoService.getListByCondition(userCondition);
 		// 添加部门选项
-		Map deptsMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_AHTU_DEPT_NO));
+		Map deptsMap = (TreeMap) (DicUtil.getDicMap().get(Constants.DIC_AHTU_DEPT_NO));
 		List departments = new ArrayList(deptsMap.values());
 		// 添加区县选项
-		Map qxMap = (HashMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+		Map qxMap = (TreeMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
 		List qxList = new ArrayList(qxMap.values());
 
 		map.put("userCondition", userCondition);
