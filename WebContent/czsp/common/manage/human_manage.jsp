@@ -61,13 +61,13 @@ ul.nav-tabs.affix {
 	<div class="col-xs-2" id="leftMenu">
 		<ul class="nav nav-tabs nav-stacked">
 			<li style="active">
-				<a href="javascript:;">人员管理</a>
+				<a href="javascript:;" url="/czsp/user/list">人员管理</a>
 			</li>
 			<li>
-				<a href="javascript:;">角色管理</a>
+				<a href="javascript:;" url="/czsp/common/dicList/19110">角色管理</a>
 			</li>
 			<li>
-				<a href="javascript:;">权限管理</a>
+				<a href="javascript:;" url="/czsp/auth/permissionList">权限管理</a>
 			</li>
 		</ul>
 	</div>
@@ -78,22 +78,19 @@ ul.nav-tabs.affix {
 				<h3 class="panel-title">人员管理</h3>
 			</div>
 			<div class="panel-body">
-				<iframe id="list-frame" width="100%" frameborder="0" style="height:460px;" src="/czsp/user/list"></iframe>
+				<iframe id="list-frame" width="100%" frameborder="0" style="height:470px;" src="/czsp/user/list"></iframe>
 			</div>
 		</div>
 	</div>
 	
 	<script type="text/javascript">
 		$("ul li a").bind("click", function() {
-			//$("#leftMenu").find("li").removeClass("active");
-			
-			//$(this).closest("li").addClass("active");
 			var url = $(this).attr("url");
 			
 			$(".panel-title").empty();
 			$(".panel-title").append($(this).text());
 			
-			//$("#list-frame").attr("src",url);
+			$("#list-frame").attr("src",url);
 		})
 	</script>
 </body>

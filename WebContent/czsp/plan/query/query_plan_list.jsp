@@ -24,83 +24,109 @@
 		planCondition = new VplanWfDetail();
 %>
 <body>
-	<form id="searchFrom" action="/czsp/plan/query">
-		<label for="createYear">年份</label>： <select id="createYear" name="createYear">
-			<option id="default" value="">请选择</option>
-			<%
-				List<String> yearList = (List<String>) map.get("yearList");
-				for (String year : yearList) {
-			%>
-			<option value="<%=year%>"
-				<%if (planCondition.getCreateYear() != null && year.equals(planCondition.getCreateYear())) {%>
-				selected="selected" <%}%>><%=year%>年</option>
-			<%
-				}
-			%>
-		</select> &nbsp <label for="name">规划名称</label>： 
+		<div style="padding-left:10%; padding-right:20%;">
+			<form id="searchFrom" class="form-inline" action="/czsp/plan/query">
+				<div class="form-group">
+					<label for="createYear" class="control-label">年份</label>： 
+					<select id="createYear" name="createYear" class="form-control">
+						<option id="default" value="">请选择</option>
+						<%
+							List<String> yearList = (List<String>) map.get("yearList");
+							for (String year : yearList) {
+						%>
+						<option value="<%=year%>"
+							<%if (planCondition.getCreateYear() != null && year.equals(planCondition.getCreateYear())) {%>
+							selected="selected" <%}%>><%=year%>年</option>
+						<%
+							}
+						%>
+					</select>
+				</div>
+				
+				<div class="form-group">
+					<label for="name" class="control-label">规划名称</label>： 
+					
+					<input type="text" id="planName" class="form-control" name="planName" size="5" value="${obj.planCondition.planName}" />
+				</div> 
+				
+				<div class="form-group">
+					<label for="qxId" class="control-label">区县</label>： 
+					<select id="qxId" name="qxId" class="form-control">
+						<option id="default" value="">请选择</option>
+						<%
+							List<Record> qxList = (List<Record>) map.get("qxList");
+							for (Record qx : qxList) {
+						%>
+						<option value="<%=qx.get("id")%>"
+							<%if (planCondition.getQxId() != null && qx.get("id").equals(planCondition.getQxId())) {%>
+							selected="selected" <%}%>><%=qx.get("name")%></option>
+						<%
+							}
+						%>
+					</select> 
+				</div>
+				
+				<div class="form-group">
+					<label for="status" class="control-label">状态</label>： 
+					<select id="status" name="status" class="form-control">
+						<option id="default" value="">请选择</option>
+						<option value="0"
+							<%if (planCondition.getStatus() != null && "0".equals(planCondition.getStatus())) {%>
+							selected="selected" <%}%>>未流转</option>
+						<option value="1"
+							<%if (planCondition.getStatus() != null && "1".equals(planCondition.getStatus())) {%>
+							selected="selected" <%}%>>流转中</option>
+						<option value="2"
+							<%if (planCondition.getStatus() != null && "2".equals(planCondition.getStatus())) {%>
+							selected="selected" <%}%>>已办结</option>
+					</select>
+				</div>
+				
+				<input name="pageNumber" type="hidden" value="${obj.pagination.pager.pageNumber}"/>
+				
+				&nbsp <button name="search" type="button">查询</button>
+				&nbsp <button name="reset" type="button">重置</button>
+			</form>
+			<br/>
+			
+			<table class="table table-bordered">
+				<tr>
+					<th>区县</th>
+					<th>规划名称</th>
+					<th>村镇</th>
+					<th>当前环节</th>
+					<th>当前节点</th>
+					<th>当前办理人</th>
+					<th>创建日期</th>
+					<th>是否办结</th>
+					<th>操作</th>
+				</tr>
+				<c:set var="dicUtil" value="${obj.dicUtil}" />
+				<c:set var="pagination" value="${obj.pagination}" />
+				<c:forEach var="info" items="${pagination.list}">
+					<tr>
+						<td>${dicUtil.getItemName(Constants.DIC_QX_NO,info.qxId)}</td>
+						<td title="${info.planId}">${info.planName}</td>
+						<td>${info.townName}</td>
+						<td>${dicUtil.getItemName(Constants.DIC_WF_PHASE_NO,info.curPhase)}</td>
+						<td>${dicUtil.getItemName(Constants.DIC_WF_NODE_NO,info.curNode)}</td>
+						<td><c:if test="${info.signUserName eq null}">暂无</c:if>
+						<c:if test="${info.signUserName ne null}">${info.signUserName}</c:if>
+						</td>
+						<td><fmt:formatDate value="${info.createTime}" type="date" /></td>
+						<td><c:if test="${info.status eq '0'}">未流转</c:if>
+						<c:if test="${info.status eq '1'}">流转中</c:if>
+						<c:if test="${info.status eq '2'}">办结</c:if></td>
+						<td><button name="detail">查看</button></td>
+					</tr>
+				</c:forEach>
+			</table>
+		</div>
 		
-		<input type="text" id="planName" name="planName" size="5" value="${obj.planCondition.planName}" /> 
-		
-		&nbsp<label for="qxId">区县</label>： <select id="qxId" name="qxId">
-			<option id="default" value="">请选择</option>
-			<%
-				List<Record> qxList = (List<Record>) map.get("qxList");
-				for (Record qx : qxList) {
-			%>
-			<option value="<%=qx.get("id")%>"
-				<%if (planCondition.getQxId() != null && qx.get("id").equals(planCondition.getQxId())) {%>
-				selected="selected" <%}%>><%=qx.get("name")%></option>
-			<%
-				}
-			%>
-		</select> &nbsp<label for="status">状态</label>： <select id="status"
-			name="status">
-			<option id="default" value="">请选择</option>
-			<option value="0"
-				<%if (planCondition.getStatus() != null && "0".equals(planCondition.getStatus())) {%>
-				selected="selected" <%}%>>未流转</option>
-			<option value="1"
-				<%if (planCondition.getStatus() != null && "1".equals(planCondition.getStatus())) {%>
-				selected="selected" <%}%>>流转中</option>
-			<option value="2"
-				<%if (planCondition.getStatus() != null && "2".equals(planCondition.getStatus())) {%>
-				selected="selected" <%}%>>已办结</option>
-		</select> 
-		&nbsp <input type="submit" value="查询">
-		&nbsp <button name="reset" type="button">重置</button>
-	</form>
-
-	<table border="1">
-		<tr>
-			<th>区县</th>
-			<th>规划名称</th>
-			<th>村镇</th>
-			<th>当前环节</th>
-			<th>当前节点</th>
-			<th>当前办理人</th>
-			<th>创建日期</th>
-			<th>是否办结</th>
-			<th>操作</th>
-		</tr>
-		<c:set var="dicUtil" value="${obj.dicUtil}" />
-		<c:forEach var="info" items="${obj.infoList}">
-			<tr>
-				<td>${dicUtil.getItemName(Constants.DIC_QX_NO,info.qxId)}</td>
-				<td title="${info.planId}">${info.planName}</td>
-				<td>${info.townName}</td>
-				<td>${dicUtil.getItemName(Constants.DIC_WF_PHASE_NO,info.curPhase)}</td>
-				<td>${dicUtil.getItemName(Constants.DIC_WF_NODE_NO,info.curNode)}</td>
-				<td><c:if test="${info.signUserName eq null}">暂无</c:if>
-				<c:if test="${info.signUserName ne null}">${info.signUserName}</c:if>
-				</td>
-				<td><fmt:formatDate value="${info.createTime}" type="date" /></td>
-				<td><c:if test="${info.status eq '0'}">未流转</c:if>
-				<c:if test="${info.status eq '1'}">流转中</c:if>
-				<c:if test="${info.status eq '2'}">办结</c:if></td>
-				<td><button name="detail">查看</button></td>
-			</tr>
-		</c:forEach>
-	</table>
+		<!-- 分页 -->
+		<jsp:include page="/czsp/common/pagination.jsp" flush="true"/>
+	
+	
 
 	<script type="text/javascript">
 		initPage();

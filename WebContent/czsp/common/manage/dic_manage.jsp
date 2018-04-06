@@ -14,7 +14,6 @@
 <script src="/czsp/static/js/bootstrap/bootstrap.min.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 <style type="text/css">
-/* Custom Styles */
 ul.nav-tabs {
 	width: 140px;
 	margin-top: 20px;

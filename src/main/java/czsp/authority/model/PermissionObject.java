@@ -13,6 +13,9 @@ public class PermissionObject {
 	@Column(value = "OBJECT_TYPE")
 	private String objectType;
 
+	@Column(value = "OBJECT_NAME")
+	private String objectName;
+
 	public String getObjectId() {
 		return objectId;
 	}
@@ -27,6 +30,14 @@ public class PermissionObject {
 
 	public void setObjectType(String objectType) {
 		this.objectType = objectType;
+	}
+
+	public String getObjectName() {
+		return objectName;
+	}
+
+	public void setObjectName(String objectName) {
+		this.objectName = objectName;
 	}
 
 }

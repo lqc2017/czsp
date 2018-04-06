@@ -20,22 +20,22 @@ public class DicUtil {
         return dicUtil;
     }
 
-	public static Map getDicMap() {
+	public Map getDicMap() {
 		return dicMap;
 	}
 
-	public static void addDic(String name, Object obj) {
+	public void addDic(String name, Object obj) {
 		dicMap.put(name, obj);
 	}
 	
-	public static String getItemName(String dicId, String id) {
+	public String getItemName(String dicId, String id) {
 		if(dicId == null || StringUtils.isBlank(dicId) || id == null || StringUtils.isBlank(id))
 			return null;
 		Map<String,Record> map = (TreeMap<String,Record>)dicMap.get(dicId);
 		return map.get(id).get("name").toString();
 	}
 	
-	public static String getItemCode(String dicId, String id) {
+	public String getItemCode(String dicId, String id) {
 		if(dicId == null || StringUtils.isBlank(dicId) || id == null || StringUtils.isBlank(id))
 			return null;
 		Map<String,Record> map = (TreeMap<String,Record>)dicMap.get(dicId);

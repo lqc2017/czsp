@@ -8,6 +8,7 @@ import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
 
+import czsp.common.bean.Pagination;
 import czsp.plan.dao.PlanAppDao;
 import czsp.plan.dao.PlanInfoDao;
 import czsp.plan.model.PlanApp;
@@ -190,6 +191,18 @@ public class PlanInfoService {
 	 */
 	public PlanInfo getPlanInfoByInstanceId(String curInstanceId) {
 		return planInfoDao.getPlanInfoByInstanceId(curInstanceId);
+	}
+
+	/**
+	 * 全琛 2018年4月6日 分页查询
+	 * 
+	 * @param planCondition
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Pagination<VplanWfDetail> getListByCondition(VplanWfDetail planCondition, int pageNumber, int pageSize) {
+		return planInfoDao.getListByCondition(planCondition, pageNumber, pageSize);
 	}
 
 }

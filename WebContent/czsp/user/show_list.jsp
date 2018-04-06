@@ -10,7 +10,7 @@
 <%@ page import="czsp.user.model.UserInfo"%>
 <%@ page import="org.nutz.dao.entity.Record"%>
 <!DOCTYPE html>
-<html>
+<html style="height:100%;">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>人员列表</title>
@@ -26,7 +26,7 @@
 	if (userCondition == null)
 		userCondition = new UserInfo();
 %>
-<body>
+<body style="height:100%;">
 	<div>
 	<%-- <form action="/czsp/user/create">
 		<label for="departmentId">部门</label>：

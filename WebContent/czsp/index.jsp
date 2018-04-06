@@ -13,13 +13,13 @@
 <body>
 	<jsp:include page="/czsp/common/base/cur_user_message.jsp" flush="true"/>
 	<jsp:include page="/czsp/common/menu.jsp" flush="true" />
-	<iframe id="main-frame" width="100%" frameborder="0" src=""></iframe>
+	<iframe id="main-frame" width="100%" frameborder="0" src="" height="625px"></iframe>
 
 	<script type="text/javascript">
-		$(function() {
+		/* $(function() {
 			var ifm = document.getElementById("main-frame");
 			ifm.height = document.documentElement.clientHeight;
-		})
+		}) */
 	</script>
 </body>
 </html>

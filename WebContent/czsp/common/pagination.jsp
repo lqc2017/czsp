@@ -12,9 +12,16 @@
 <script src="/czsp/static/js/jquery.js"></script>
 <script src="/czsp/static/js/bootstrap/bootstrap.min.js"></script>
 <script src="/czsp/static/js/common.js"></script>
+
+<style type="text/css">
+.foot {
+    position:fixed;
+    bottom:0;
+}
+</style>
 </head>
 <body>
-	<div>
+	<div style="padding-left:36%; padding-right:36%;" class="foot">
 		<c:set var="pager" value="${obj.pagination.pager}" />
 		<ul class="pagination">
 			<li><a href="javascript:;">&laquo;</a></li>

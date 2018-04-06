@@ -13,5 +13,7 @@ public class Constants {
 	public static final String DIC_QX_NO = "20000";//区县
 	
 	public static final String DIC_QX_CZ_NO = "20010";//村镇
+	
+	public static final String DIC_PERMISSION_TYPE = "30000";//村镇
 	/*字典编号结束*/
 }

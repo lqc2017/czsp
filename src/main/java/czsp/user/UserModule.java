@@ -37,16 +37,16 @@ public class UserModule {
 	public Map<String, Object> showList(@Param("..") UserInfo userCondition, int pageNumber, int pageSize) {
 		if (userCondition == null)
 			userCondition = new UserInfo();
-		System.out.println(pageNumber + " " + pageSize);
 		pageNumber = pageNumber == 0 ? 1 : pageNumber;
-		pageSize = pageSize == 0 ? 2 : pageSize;
+		pageSize = pageSize == 0 ? 6 : pageSize;
+		
 		Map<String, Object> map = new HashMap<String, Object>();
 		Pagination<UserInfo> pagination = userInfoService.getListByCondition(userCondition, pageNumber, pageSize);
 		// 添加部门选项
-		Map deptsMap = (TreeMap) (DicUtil.getDicMap().get(Constants.DIC_AHTU_DEPT_NO));
+		Map deptsMap = (TreeMap) (DicUtil.getInstance().getDicMap().get(Constants.DIC_AHTU_DEPT_NO));
 		List departments = new ArrayList(deptsMap.values());
 		// 添加区县选项
-		Map qxMap = (TreeMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+		Map qxMap = (TreeMap) (DicUtil.getInstance().getDicMap().get(Constants.DIC_QX_NO));
 		List qxList = new ArrayList(qxMap.values());
 
 		map.put("pagination", pagination);
@@ -97,10 +97,10 @@ public class UserModule {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List users = userInfoService.getListByCondition(userCondition);
 		// 添加部门选项
-		Map deptsMap = (TreeMap) (DicUtil.getDicMap().get(Constants.DIC_AHTU_DEPT_NO));
+		Map deptsMap = (TreeMap) (DicUtil.getInstance().getDicMap().get(Constants.DIC_AHTU_DEPT_NO));
 		List departments = new ArrayList(deptsMap.values());
 		// 添加区县选项
-		Map qxMap = (TreeMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+		Map qxMap = (TreeMap) (DicUtil.getInstance().getDicMap().get(Constants.DIC_QX_NO));
 		List qxList = new ArrayList(qxMap.values());
 
 		map.put("userCondition", userCondition);

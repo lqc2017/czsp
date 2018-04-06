@@ -12,6 +12,7 @@ import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Ok;
 
 import czsp.common.util.DicUtil;
+import czsp.common.util.MessageUtil;
 import czsp.common.util.SessionUtil;
 import czsp.user.model.UserInfo;
 
@@ -69,6 +70,25 @@ public class CommonModule {
 		Map dicMap = (TreeMap) DicUtil.getInstance().getDicMap().get(dicId);
 
 		map.put("dicList", new ArrayList(dicMap.values()));
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年4月6日 获得权限类型字典列表
+	 */
+	@At("/getPermissionType")
+	@Ok("json")
+	public Map<String, Object> getPermissionType() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			Map dicPT = (TreeMap) (DicUtil.getInstance().getDicMap().get(Constants.DIC_PERMISSION_TYPE));
+			
+			map.put("ptList", new ArrayList(dicPT.values()));
+			map.put("result", "success");
+		} catch (Exception e) {
+			map.put("result", "fail");
+			map.put("message", MessageUtil.getStackTraceInfo(e));
+		}
 		return map;
 	}
 }

@@ -6,15 +6,18 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.util.cri.SqlExpressionGroup;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.mvc.Mvcs;
 
+import czsp.common.bean.Pagination;
 import czsp.plan.model.PlanInfo;
 import czsp.plan.model.view.VplanInfoDetail;
 import czsp.plan.model.view.VplanWfDetail;
+import czsp.user.model.UserInfo;
 
 @IocBean
 public class PlanInfoDao {
@@ -171,15 +174,66 @@ public class PlanInfoDao {
 		// 回收状态
 		if (StringUtils.isNotBlank(planCondition.getIfRetrieve()))
 			cri.where().andEquals("ifRetrieve", planCondition.getIfRetrieve());
-		
+
 		// 待办人
-		if (StringUtils.isNotBlank(planCondition.getTodoUserId())){
+		if (StringUtils.isNotBlank(planCondition.getTodoUserId())) {
 			cri.where().andLike("todoUserId", planCondition.getTodoUserId());
 		}
 
 		cri.getOrderBy().desc("create_time");
 
 		return dao.query(VplanWfDetail.class, cri);
+	}
+
+	/**
+	 * 全琛 2018年4月6日 分页查询
+	 */
+	public Pagination<VplanWfDetail> getListByCondition(VplanWfDetail planCondition, int pageNumber, int pageSize) {
+		Criteria cri = Cnd.cri();
+		Pager pager = dao.createPager(pageNumber, pageSize);
+		Pagination<VplanWfDetail> pagination = new Pagination<VplanWfDetail>();
+
+		// 计划名称模糊
+		if (planCondition.getPlanName() != null)
+			cri.where().andLike("planName", planCondition.getPlanName());
+
+		// 年份
+		if (StringUtils.isNotBlank(planCondition.getCreateYear()))
+			cri.where().and("to_char(CREATE_TIME,'YYYY')", "=", planCondition.getCreateYear());
+
+		// 区县
+		if (StringUtils.isNotBlank(planCondition.getQxId()))
+			cri.where().andEquals("qxId", planCondition.getQxId());
+
+		// 状态
+		if (StringUtils.isNotBlank(planCondition.getStatus()))
+			cri.where().andEquals("status", planCondition.getStatus());
+
+		// 最后操作人
+		if (StringUtils.isNotBlank(planCondition.getLastOpUser()))
+			cri.where().andEquals("lastOpUser", planCondition.getLastOpUser());
+
+		// 签收状态
+		if (StringUtils.isNotBlank(planCondition.getIfSign()))
+			cri.where().andEquals("ifSign", planCondition.getIfSign());
+
+		// 回收状态
+		if (StringUtils.isNotBlank(planCondition.getIfRetrieve()))
+			cri.where().andEquals("ifRetrieve", planCondition.getIfRetrieve());
+
+		// 待办人
+		if (StringUtils.isNotBlank(planCondition.getTodoUserId())) {
+			cri.where().andLike("todoUserId", planCondition.getTodoUserId());
+		}
+
+		cri.getOrderBy().desc("create_time");
+		
+		pager.setRecordCount(dao.count(VplanWfDetail.class, cri));
+		
+		pagination.setList(dao.query(VplanWfDetail.class, cri, pager));
+		pagination.setPager(pager);
+
+		return pagination;
 	}
 
 }

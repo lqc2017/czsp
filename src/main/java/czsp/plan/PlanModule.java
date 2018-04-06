@@ -20,6 +20,7 @@ import org.nutz.mvc.annotation.Param;
 
 import czsp.MainSetup;
 import czsp.common.Constants;
+import czsp.common.bean.Pagination;
 import czsp.common.util.DateUtil;
 import czsp.common.util.DicUtil;
 import czsp.common.util.MessageUtil;
@@ -58,7 +59,7 @@ public class PlanModule {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<VplanInfoDetail> infoList = planInfoService.getList();
 
-		Map dicQx = (TreeMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+		Map dicQx = (TreeMap) (DicUtil.getInstance().getDicMap().get(Constants.DIC_QX_NO));
 
 		map.put("infoList", infoList);
 		map.put("dicQx", dicQx);
@@ -148,7 +149,7 @@ public class PlanModule {
 	public Map<String, Object> edit(String planId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
-		Map dicQx = (TreeMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+		Map dicQx = (TreeMap) (DicUtil.getInstance().getDicMap().get(Constants.DIC_QX_NO));
 
 		map.put("planInfo", planInfo);
 		map.put("dicQx", dicQx);
@@ -160,15 +161,18 @@ public class PlanModule {
 	 */
 	@At("/query")
 	@Ok("jsp:/czsp/plan/query/query_plan_list")
-	public Map<String, Object> queryPlan(@Param("..") VplanWfDetail planCondition) {
+	public Map<String, Object> queryPlan(@Param("..") VplanWfDetail planCondition, int pageNumber, int pageSize) {
+		pageNumber = pageNumber == 0 ? 1 : pageNumber;
+		pageSize = pageSize == 0 ? 10 : pageSize;
+		
 		Map<String, Object> map = new HashMap<String, Object>();
-		List infoList = planInfoService.getListByCondition(planCondition);
+		Pagination<VplanWfDetail> pagination = planInfoService.getListByCondition(planCondition, pageNumber, pageSize);
 
 		// 添加区县选项
-		Map qxMap = (TreeMap) (DicUtil.getDicMap().get(Constants.DIC_QX_NO));
+		Map qxMap = (TreeMap) (DicUtil.getInstance().getDicMap().get(Constants.DIC_QX_NO));
 		List qxList = new ArrayList(qxMap.values());
 
-		map.put("infoList", infoList);
+		map.put("pagination", pagination);
 		map.put("yearList", DateUtil.getYearList(5));
 		map.put("planCondition", planCondition);
 		map.put("qxList", qxList);
