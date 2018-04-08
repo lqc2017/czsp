@@ -2,14 +2,6 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ page import="java.util.List"%>
-<%@ page import="java.util.Map"%>
-<%@ page import="java.util.HashMap"%>
-<%@ page import="java.util.TreeMap"%>
-<%@ page import="czsp.common.util.DicUtil"%>
-<%@ page import="czsp.common.Constants"%>
-<%@ page import="czsp.user.model.UserInfo"%>
-<%@ page import="org.nutz.dao.entity.Record"%>
 <!DOCTYPE html>
 <html>
 <head>

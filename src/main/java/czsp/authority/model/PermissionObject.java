@@ -1,5 +1,7 @@
 package czsp.authority.model;
 
+import java.util.Date;
+
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.entity.annotation.Table;
@@ -15,6 +17,9 @@ public class PermissionObject {
 
 	@Column(value = "OBJECT_NAME")
 	private String objectName;
+
+	@Column(value = "CREATE_TIME")
+	private Date createTime;
 
 	public String getObjectId() {
 		return objectId;
@@ -38,6 +43,14 @@ public class PermissionObject {
 
 	public void setObjectName(String objectName) {
 		this.objectName = objectName;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 }

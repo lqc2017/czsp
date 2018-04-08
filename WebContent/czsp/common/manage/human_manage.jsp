@@ -64,7 +64,7 @@ ul.nav-tabs.affix {
 				<a href="javascript:;" url="/czsp/user/list">人员管理</a>
 			</li>
 			<li>
-				<a href="javascript:;" url="/czsp/common/dicList/19110">角色管理</a>
+				<a href="javascript:;" url="/czsp/auth/roleList">角色管理</a>
 			</li>
 			<li>
 				<a href="javascript:;" url="/czsp/auth/permissionList">权限管理</a>

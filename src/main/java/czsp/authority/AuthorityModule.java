@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
+import org.nutz.mvc.ViewModel;
 import org.nutz.mvc.adaptor.JsonAdaptor;
 import org.nutz.mvc.annotation.AdaptBy;
 import org.nutz.mvc.annotation.At;
@@ -37,12 +38,15 @@ public class AuthorityModule {
 	 * 全琛 2018年3月17日 角色列表
 	 */
 	@At("/roleList")
-	@Ok("jsp:/czsp/auth/show_role_list")
-	public Map<String, Object> roleList(String userId) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		UserInfo userInfo = userInfoService.getUserInfoByUserId(userId);
-		map.put("userInfo", userInfo);
-		return map;
+	@Ok("re:jsp:/czsp/auth/show_role_list")
+	public String roleList(String userId, ViewModel model) {
+		if (userId != null) {
+			UserInfo userInfo = userInfoService.getUserInfoByUserId(userId);
+			model.addv("userInfo", userInfo);
+			return null;
+		} else {
+			return "jsp:/czsp/auth/show_role_list2";
+		}
 	}
 
 	/**
@@ -140,6 +144,78 @@ public class AuthorityModule {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			permissionService.add(po);
+			map.put("result", "success");
+
+		} catch (Exception e) {
+			map.put("result", "fail");
+			map.put("message", MessageUtil.getStackTraceInfo(e));
+		}
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年4月8日 查看角色对应的所有权限
+	 */
+	@At("/pmsDetail/?")
+	@Ok("jsp:/czsp/auth/permission/show_permission_detail")
+	public Map<String, Object> permissionDetail(String roleId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map permissionRoleList = permissionService.getListByRoleId(roleId);
+		String roleName = DicUtil.getInstance().getItemName(Constants.DIC_AHTU_ROLE_NO, roleId);
+
+		map.put("permissionRoleList", permissionRoleList);
+		map.put("roleName", roleName);
+		map.put("roleId", roleId);
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年4月8日 删除角色权限关联
+	 */
+	@At("/deletPmsRole")
+	@Ok("json")
+	public Map<String, Object> deletPmsRole(String roleId, String objectId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			permissionService.deltePmsRole(roleId, objectId);
+			map.put("result", "success");
+
+		} catch (Exception e) {
+			map.put("result", "fail");
+			map.put("message", MessageUtil.getStackTraceInfo(e));
+		}
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年4月8日 获取角色未绑定的其他权限
+	 */
+	@At("/getOtherPermissions/?")
+	@Ok("json")
+	public Map<String, Object> getOtherPermissions(String roleId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			List poList = permissionService.getOtherPermissions(roleId);
+			System.out.println(poList.size());
+			map.put("poList", poList);
+			map.put("result", "success");
+
+		} catch (Exception e) {
+			map.put("result", "fail");
+			map.put("message", MessageUtil.getStackTraceInfo(e));
+		}
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年4月8日 添加角色权限关联
+	 */
+	@At("/addPmsRole")
+	@Ok("json")
+	public Map<String, Object> addPmsRole(String roleId, String objectId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			permissionService.addPmsRole(roleId, objectId);
 			map.put("result", "success");
 
 		} catch (Exception e) {

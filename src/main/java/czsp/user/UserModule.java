@@ -35,11 +35,10 @@ public class UserModule {
 	@At("/list")
 	@Ok("jsp:/czsp/user/show_list")
 	public Map<String, Object> showList(@Param("..") UserInfo userCondition, int pageNumber, int pageSize) {
-		if (userCondition == null)
-			userCondition = new UserInfo();
+		System.out.println(userCondition.getQxId());
 		pageNumber = pageNumber == 0 ? 1 : pageNumber;
 		pageSize = pageSize == 0 ? 6 : pageSize;
-		
+
 		Map<String, Object> map = new HashMap<String, Object>();
 		Pagination<UserInfo> pagination = userInfoService.getListByCondition(userCondition, pageNumber, pageSize);
 		// 添加部门选项
@@ -52,6 +51,31 @@ public class UserModule {
 		map.put("pagination", pagination);
 		map.put("departments", departments);
 		map.put("qxList", qxList);
+		map.put("dicUtil", DicUtil.getInstance());
+		map.put("userCondition", userCondition);
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年4月8日 人员列表（权限）
+	 */
+	@At("/userList")
+	@Ok("jsp:/czsp/user/user_list")
+	public Map<String, Object> userList(@Param("..") UserInfo userCondition, int pageNumber, int pageSize) {
+		pageNumber = pageNumber == 0 ? 1 : pageNumber;
+		pageSize = pageSize == 0 ? 6 : pageSize;
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		Pagination<UserInfo> pagination = userInfoService.getListByCondition(userCondition, pageNumber, pageSize);
+		// 添加区县选项
+		Map qxMap = (TreeMap) (DicUtil.getInstance().getDicMap().get(Constants.DIC_QX_NO));
+		List qxList = new ArrayList(qxMap.values());
+		// 角色名选项
+		String roleName = DicUtil.getInstance().getItemName(Constants.DIC_AHTU_ROLE_NO, userCondition.getRoleId());
+
+		map.put("pagination", pagination);
+		map.put("qxList", qxList);
+		map.put("roleName", roleName);
 		map.put("dicUtil", DicUtil.getInstance());
 		map.put("userCondition", userCondition);
 		return map;

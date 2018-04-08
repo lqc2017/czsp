@@ -23,8 +23,8 @@
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <%
-	Map objMap = (HashMap) request.getAttribute("obj");
-	UserInfo userInfo = (UserInfo) objMap.get("userInfo");
+	//Map objMap = (HashMap) request.getAttribute("obj");
+	UserInfo userInfo = (UserInfo) request.getAttribute("userInfo");
 	if(userInfo == null)
 		userInfo = new UserInfo();
 %>
@@ -45,17 +45,10 @@
 					String roleId = map.get(key).get("id").toString();
 			%>
 			<tr>
-				<td title="<%=roleId%>"><a href="javascript:;"><%=map.get(key).get("name")%></a></td>
+				<td title="<%=roleId%>"><a href="/czsp/auth/pmsDetail/<%=roleId%>"><%=map.get(key).get("name")%></a></td>
 				<td>
-				<%
-					if (userInfo.getRoleId() != null && userInfo.getRoleId().contains(roleId)) {
-				%>
-				<button name="remove">取消关联</button> <%
-				 	} else {
-				 %>
-					<button name="associate">关联</button> <%
-				 	}
-				 %></td>
+					<button name="userList">查看</button>
+				</td>
 			</tr>
 			<%
 				}
@@ -65,49 +58,14 @@
 
 
 	<script type="text/javascript">
-		//关联键绑定
-		$("button[name='associate']").bind("click", function() {
+		//人员按钮绑定
+		$("button[name='userList']").bind("click", function() {
 			var tr = $(this).parents("tr");
 			var roleId = tr.children("td:first").attr("title");
-			var userId = $("#userId").val();
-	
-			$.ajax({
-				url : AuthURLPrefix + '/associate?roleId=' + roleId + "&userId=" + userId,
-				dataType : 'json',
-				type : 'GET',
-				success : function(re) {
-					console.log(re.result);
-			        if (re.result == 'success'){
-						alert("success!");
-						window.opener.location.reload();
-						window.location.reload();
-					}else
-						alert("message : " + re.message);
-				}
-			});
+			
+			window.location.href = UserURLPrefix + '/userList?roleId=' + roleId;
 		})
 		
-		//取消关联键绑定
-		$("button[name='remove']").bind("click", function() {
-			var tr = $(this).parents("tr");
-			var roleId = tr.children("td:first").attr("title");
-			var userId = $("#userId").val();
-	
-			$.ajax({
-				url : AuthURLPrefix + '/remove?roleId=' + roleId + "&userId=" + userId,
-				dataType : 'json',
-				type : 'GET',
-				success : function(re) {
-					console.log(re.result);
-			        if (re.result == 'success'){
-						alert("success!");
-						window.opener.location.reload();
-						window.location.reload();
-					}else
-						alert("message : " + re.message);
-				}
-			});
-		})
 	</script>
 </body>
 </html>

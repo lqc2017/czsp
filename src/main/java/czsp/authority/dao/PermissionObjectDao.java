@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
@@ -17,10 +16,10 @@ import org.nutz.ioc.Ioc;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.mvc.Mvcs;
 
-import czsp.authority.model.PermissionRole;
+import czsp.authority.model.PermissionObject;
 
 @IocBean
-public class PermissionRoleDao {
+public class PermissionObjectDao {
 	Ioc ioc = Mvcs.getIoc();
 	Dao dao = ioc.get(Dao.class, "dao");
 
@@ -44,30 +43,42 @@ public class PermissionRoleDao {
 	}
 
 	/**
-	 * 全琛 2018年4月8日 获得对应角色的所有权限
+	 * 全琛 2018年4月6日 获得所有权限对象
 	 */
-	public List getListByRoleId(String roleId) {
+	public List getList() {
 		Criteria cri = Cnd.cri();
-		if (StringUtils.isNotBlank(roleId))
-			cri.where().andEquals("roleId", roleId);
 		cri.getOrderBy().asc("objectId");
-
-		List list = dao.query(PermissionRole.class, cri);
+		List list = dao.query(PermissionObject.class, cri);
 		return list;
 	}
 
 	/**
-	 * 全琛 2018年4月8日 删除角色权限关联
+	 * 全琛 2018年4月6日 更新权限对象
 	 */
-	public void deltePmsRole(String roleId, String objectId) {
-		dao.deletex(PermissionRole.class, roleId, objectId);
+	public void update(PermissionObject po) {
+		dao.updateIgnoreNull(po);
 	}
 
 	/**
-	 * 全琛 2018年4月8日 添加角色权限关联
+	 * 全琛 2018年4月6日 新增权限对象
 	 */
-	public void addPmsRole(PermissionRole permissionRole) {
-		dao.insert(permissionRole);
+	public void add(PermissionObject po) {
+		dao.insert(po);
+	}
+
+	/**
+	 * 全琛 2018年4月8日 根据主键获取权限对象
+	 */
+	public PermissionObject getPermissionObjectByObjectId(String objectId) {
+		return dao.fetch(PermissionObject.class, objectId);
+	}
+
+	/**
+	 * 全琛 2018年4月8日 获取角色未绑定的其他权限
+	 */
+	public List getList(List<String> poIds) {
+		Criteria cri = Cnd.cri();
+		return dao.query(PermissionObject.class, Cnd.where("objectId", "not in", poIds));
 	}
 
 }

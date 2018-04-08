@@ -1,7 +1,5 @@
 package czsp.authority.model;
 
-import java.util.Date;
-
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.PK;
 import org.nutz.dao.entity.annotation.Table;
@@ -15,11 +13,13 @@ public class PermissionRole {
 	@Column(value = "OBJECT_ID")
 	private String objectId;
 
-	@Column(value = "URL")
-	private String url;
+	public PermissionRole(String roleId, String objectId) {
+		this.setObjectId(objectId);
+		this.setRoleId(roleId);
+	}
 
-	@Column(value = "CREATE_TIME")
-	private Date createTime;
+	public PermissionRole() {
+	}
 
 	public String getRoleId() {
 		return roleId;
@@ -35,22 +35,6 @@ public class PermissionRole {
 
 	public void setObjectId(String objectId) {
 		this.objectId = objectId;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public Date getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
 	}
 
 }

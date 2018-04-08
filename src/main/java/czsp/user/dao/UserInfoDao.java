@@ -158,6 +158,9 @@ public class UserInfoDao {
 
 		if (StringUtils.isNotBlank(userCondition.getQxId()))
 			cri.where().andEquals("qxId", userCondition.getQxId());
+		
+		if (StringUtils.isNotBlank(userCondition.getRoleId()))
+			cri.where().andLike("roleId", userCondition.getRoleId());
 
 		cri.getOrderBy().asc("userId");
 		
