@@ -63,7 +63,7 @@
 			var tr = $(this).parents("tr");
 			var roleId = tr.children("td:first").attr("title");
 			
-			window.location.href = UserURLPrefix + '/userList?roleId=' + roleId;
+			window.location.href = UserURLPrefix + '/selectByRole?roleId=' + roleId;
 		})
 		
 	</script>

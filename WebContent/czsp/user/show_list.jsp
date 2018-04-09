@@ -28,37 +28,6 @@
 %>
 <body style="height:100%;">
 	<div>
-	<%-- <form action="/czsp/user/create">
-		<label for="departmentId">部门</label>：
-		 <select id="departmentId" name="departmentId">
-		 	<option value="">请选择</option>
-			<%
-				List<Record> departments = (List<Record>) map.get("departments");
-				for (Record department : departments) {
-			%>
-			<option value="<%=department.get("id")%>"><%=department.get("name")%></option>
-			<%
-				}
-			%>
-		</select> 
-		
-		&nbsp <label for="name">姓名</label>： <input type="text" id="name" name="name" class="required"/> 
-			
-		&nbsp<label for="qxId">区县</label>：
-		 <select id="qxId" name="qxId" class="required">
-		 	<option value="">请选择</option>
-			<%
-				List<Record> qxList = (List<Record>) map.get("qxList");
-				for (Record qx : qxList) {
-			%>
-			<option value="<%=qx.get("id")%>"><%=qx.get("name")%></option>
-			<%
-				}
-			%>
-		</select>
-		
-		&nbsp <input type="submit" value="新建用户">
-	</form> --%>
 	<br />
 	<form id="searchFrom" class="form-inline" action="/czsp/user/list">
 		<div class="form-group">
@@ -105,7 +74,7 @@
 			&nbsp <button name="search" type="button">查询</button>
 			&nbsp <button name="reset" type="button">重置</button>
 	</form>
-	<br />
+	<br /><button style="float:right" name="add" type="button">新增</button>
 	<table class="table table-hover">
 		<tr>
 			<th>用户ID</th>
@@ -165,11 +134,9 @@
 			});
 		})
 		
-		//添加人员事件绑定
-		$("form").submit(function(e) {
-			if (!validate()) {
-				e.preventDefault();
-			}
+		//添加人员按钮绑定
+		$("button[name='add']").bind("click",function(e) {
+			location.href = UserURLPrefix + "/add";
 		});
 	</script>
 </body>

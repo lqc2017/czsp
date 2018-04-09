@@ -128,4 +128,8 @@ public class VplanInfoDetail {
 		this.createYear = createYear;
 	}
 
+	public void setQxId(String qxId) {
+		this.qxId = qxId;
+	}
+
 }

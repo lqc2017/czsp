@@ -55,13 +55,21 @@ public class PlanModule {
 	 */
 	@At("/list")
 	@Ok("jsp:/czsp/plan/show_list")
-	public Map<String, Object> showList() {
+	public Map<String, Object> showList(@Param("..") VplanInfoDetail planCondition, int pageNumber, int pageSize) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<VplanInfoDetail> infoList = planInfoService.getList();
+		pageNumber = pageNumber == 0 ? 1 : pageNumber;
+		pageSize = pageSize == 0 ? 10 : pageSize;
+		// 如果是市局人员查询所有区县案件
+		if (planCondition.getQxId() == null || planCondition.getQxId().equals("00")) {
+			planCondition.setQxId(null);
+		}
+		Pagination<VplanInfoDetail> pagination = planInfoService.getListByCondition(planCondition, pageNumber, pageSize);
 
 		Map dicQx = (TreeMap) (DicUtil.getInstance().getDicMap().get(Constants.DIC_QX_NO));
-
-		map.put("infoList", infoList);
+		
+		map.put("yearList", DateUtil.getYearList(5));
+		map.put("planCondition", planCondition);
+		map.put("pagination", pagination);
 		map.put("dicQx", dicQx);
 		return map;
 	}
@@ -157,14 +165,14 @@ public class PlanModule {
 	}
 
 	/**
-	 * 全琛 2018年3月24日 查询页面
+	 * 全琛 2018年3月24日 案件查询页面
 	 */
 	@At("/query")
 	@Ok("jsp:/czsp/plan/query/query_plan_list")
 	public Map<String, Object> queryPlan(@Param("..") VplanWfDetail planCondition, int pageNumber, int pageSize) {
 		pageNumber = pageNumber == 0 ? 1 : pageNumber;
 		pageSize = pageSize == 0 ? 10 : pageSize;
-		
+
 		Map<String, Object> map = new HashMap<String, Object>();
 		Pagination<VplanWfDetail> pagination = planInfoService.getListByCondition(planCondition, pageNumber, pageSize);
 
@@ -238,7 +246,7 @@ public class PlanModule {
 		Map<String, Object> map = new HashMap<String, Object>();
 		PlanInfo planInfo = planInfoService.getPlanInfoByPlanId(planId);
 		PlanOpinion planOpinion = planOpinionService.getLatestOpinion(planInfo.getInstanceId(),
-				planInfo.getPlanApp().getCurNode(),SessionUtil.getCurrenUserId(), "暂存");
+				planInfo.getPlanApp().getCurNode(), SessionUtil.getCurrenUserId(), "暂存");
 
 		map.put("dicUtil", DicUtil.getInstance());
 		map.put("planInfo", planInfo);
@@ -303,7 +311,6 @@ public class PlanModule {
 	public Map<String, Object> update(@Param("..") PlanInfo planInfo) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			System.out.println(planInfo.getPlanId() + " " + planInfo.getPlanName());
 			planInfoService.update(planInfo);
 			map.put("result", "success");
 

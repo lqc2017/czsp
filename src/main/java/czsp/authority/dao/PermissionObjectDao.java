@@ -78,6 +78,9 @@ public class PermissionObjectDao {
 	 */
 	public List getList(List<String> poIds) {
 		Criteria cri = Cnd.cri();
+		if(poIds.size() == 0){
+			return this.getList();
+		}
 		return dao.query(PermissionObject.class, Cnd.where("objectId", "not in", poIds));
 	}
 

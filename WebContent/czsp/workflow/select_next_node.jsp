@@ -17,7 +17,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>选节点</title>
+<link href="/czsp/static/css/bootstrap/bootstrap.min.css"
+	rel="stylesheet">
+
 <script src="/czsp/static/js/jquery.js"></script>
+<script src="/czsp/static/js/bootstrap/bootstrap.min.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 </head>
 
@@ -29,47 +33,61 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 %>
 <body>
 	<input id="curInstanceId" type="hidden" value="${obj.instance.instanceId}"/>
-	<jsp:include page="/czsp/common/base/cur_user_message.jsp" flush="true"/>
+	<div class="well well-sm">
+		当前环节：<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_PHASE_NO,nodeDetail.getPhaseId())%>&nbsp&nbsp
+		当前节点：<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO,nodeDetail.getNodeId())%>
+	</div>	
 	
-	当前环节：<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_PHASE_NO,nodeDetail.getPhaseId())%>&nbsp&nbsp
-	当前节点：<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO,nodeDetail.getNodeId())%>
-	<br /> <label for="nextNode">下一节点</label>：
-	<select id="nextNode" name="nextNode" class="required">
-		<option value="">请选择</option>
-		<%
-			List<WfRoute> routes = (List<WfRoute>) map.get("routes");
-			for (WfRoute route : routes) {
-				String nextNodeId = route.getRouteId().substring(0, 4) + route.getNextNode();
-		%>
-		<option name="normal" value="<%=route.getRouteId()%>">
-			<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, nextNodeId)%>
-			<%
-				if ("1".equals(route.getIsTesong())) {
-			%>(特送)
-			<%
-				} else {
-			%>(默认)
-		</option>
-		<%
-			}
-			}
-			if (hisInstance != null && !hisInstance.getNodeId().endsWith("00") && hisInstance.getInstanceNo().equals(curInstance.getInstanceNo())) {
-		%>
-		<option name="retreat" value="<%=hisInstance.getInstanceId() %>"><%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, hisInstance.getNodeId())%>(回退)
-		</option>
-		<%
-			}
-			if(nodeDetail != null && nodeDetail.getIsStart() == null){
-		%>
-		<option name="circulate" value="<%=nodeDetail.getNodeId() %>"><%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, nodeDetail.getNodeId())%>(流转)
-		<%
-			}
-		%>
-	</select> <label for="nextUser">办理人员：</label>
-	<select name="nextUser" name="nextUser"><option value=''>请选择</option></select>
+	<br /> 
+	<form style="padding:0 30px;" class="form-inline">
+		<div class="form-group">
+			<label for="nextNode" class="control-label">下一节点</label>：
+			<select id="nextNode" name="nextNode" class="form-control required">
+				<option value="">请选择</option>
+				<%
+					List<WfRoute> routes = (List<WfRoute>) map.get("routes");
+					for (WfRoute route : routes) {
+						String nextNodeId = route.getRouteId().substring(0, 4) + route.getNextNode();
+				%>
+				<option name="normal" value="<%=route.getRouteId()%>">
+					<%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, nextNodeId)%>
+					<%
+						if ("1".equals(route.getIsTesong())) {
+					%>(特送)
+					<%
+						} else {
+					%>(默认)
+				</option>
+				<%
+					}
+					}
+					if (hisInstance != null && !hisInstance.getNodeId().endsWith("00") && hisInstance.getInstanceNo().equals(curInstance.getInstanceNo())) {
+				%>
+				<option name="retreat" value="<%=hisInstance.getInstanceId() %>"><%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, hisInstance.getNodeId())%>(回退)
+				</option>
+				<%
+					}
+					if(nodeDetail != null && nodeDetail.getIsStart() == null){
+				%>
+				<option name="circulate" value="<%=nodeDetail.getNodeId() %>"><%=DicUtil.getInstance().getItemName(Constants.DIC_WF_NODE_NO, nodeDetail.getNodeId())%>(流转)
+				<%
+					}
+				%>
+			</select>
+		</div>
+		
+		<div class="form-group">
+			<label for="nextUser" class="control-label">办理人员：</label>
+			<select name="nextUser" name="nextUser" class="form-control">
+				<option value=''>请选择</option>
+			</select>
+		</div>
+	</form>
 	<br />
-	<button name="confirm">确定</button>
-	<button name="cancel">取消</button>
+	<div style="padding:0 115px;">
+		<button name="confirm">确定</button>
+		<button name="cancel">取消</button>
+	</div>
 
 	<script type="text/javascript">
 		//确认键绑定

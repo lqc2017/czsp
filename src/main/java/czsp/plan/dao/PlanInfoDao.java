@@ -26,16 +26,6 @@ public class PlanInfoDao {
 	Dao dao = ioc.get(Dao.class, "dao");
 
 	/**
-	 * 全琛 2018年3月3日 获取计划列表
-	 */
-	public List getList() {
-		Criteria cri = Cnd.cri();
-		cri.getOrderBy().desc("CREATE_TIME");
-		List list = dao.query(VplanInfoDetail.class, cri);
-		return list;
-	}
-
-	/**
 	 * 全琛 2018年3月3日 新增计划
 	 */
 	public PlanInfo add(PlanInfo planInfo) {
@@ -84,12 +74,10 @@ public class PlanInfoDao {
 	/**
 	 * 全琛 2018年3月24日 根据筛选条件获取列表 （获取信息用）
 	 */
-	public List getListByCondition(VplanInfoDetail planCondition, String orderBy) {
+	public Pagination<VplanInfoDetail> getListByCondition(VplanInfoDetail planCondition, int pageNumber, int pageSize) {
 		Criteria cri = Cnd.cri();
-
-		// 计划名称模糊
-		if (planCondition.getPlanName() != null)
-			cri.where().andLike("planName", planCondition.getPlanName());
+		Pager pager = dao.createPager(pageNumber, pageSize);
+		Pagination<VplanInfoDetail> pagination = new Pagination<VplanInfoDetail>();
 
 		// 年份
 		if (StringUtils.isNotBlank(planCondition.getCreateYear()))
@@ -99,14 +87,14 @@ public class PlanInfoDao {
 		if (StringUtils.isNotBlank(planCondition.getQxId()))
 			cri.where().andEquals("qxId", planCondition.getQxId());
 
-		// 状态
-		if (StringUtils.isNotBlank(planCondition.getQxId()))
-			cri.where().andEquals("status", planCondition.getStatus());
+		cri.getOrderBy().desc("create_time");
 
-		if (orderBy == null)
-			cri.getOrderBy().desc("create_time");
+		pager.setRecordCount(dao.count(VplanInfoDetail.class, cri));
 
-		return dao.query(VplanInfoDetail.class, cri);
+		pagination.setList(dao.query(VplanInfoDetail.class, cri, pager));
+		pagination.setPager(pager);
+
+		return pagination;
 	}
 
 	/**
@@ -227,9 +215,9 @@ public class PlanInfoDao {
 		}
 
 		cri.getOrderBy().desc("create_time");
-		
+
 		pager.setRecordCount(dao.count(VplanWfDetail.class, cri));
-		
+
 		pagination.setList(dao.query(VplanWfDetail.class, cri, pager));
 		pagination.setPager(pager);
 

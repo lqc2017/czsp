@@ -14,7 +14,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>环节列表</title>
+<link href="/czsp/static/css/bootstrap/bootstrap.min.css"
+	rel="stylesheet">
+
 <script src="/czsp/static/js/jquery.js"></script>
+<script src="/czsp/static/js/bootstrap/bootstrap.min.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <%
@@ -25,7 +29,7 @@
 	System.out.println(phaseIds);
 %>
 <body>
-	<table border="1">
+	<table class="table table-bordered">
 		<tr>
 			<th></th>
 			<th>序号</th>
@@ -46,7 +50,7 @@
 			}
 		%>
 	</table>
-	<button name="confirm">确认</button>
+	<button style="float:right;" name="confirm">确认</button>
 
 
 	<script type="text/javascript">
@@ -71,15 +75,6 @@
 			window.close();
 		}
 		
-		/* $.ajax({
-			url : WfURLPrefix+'/test',
-			dataType : 'json',
-			data : {"phaseIds" : idArray.toString()},
-			type : 'POST',
-			success : function(re) {
-				window.opener.
-			}
-		}); */
 	})
 	</script>
 </body>

@@ -20,6 +20,9 @@ public class UserInfo {
 	@Column(value = "NAME")
 	private String name;
 
+	@Column(value = "SEX")
+	private char sex;
+
 	@Column(value = "ROLE_ID")
 	private String roleId;
 
@@ -28,8 +31,8 @@ public class UserInfo {
 
 	@Column(value = "PHONE_NUMBER")
 	private String phoneNumber;
-	
-	private HashMap<String,PermissionObject> permission;
+
+	private HashMap<String, PermissionObject> permission;
 
 	public String getUserId() {
 		return userId;
@@ -79,12 +82,20 @@ public class UserInfo {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public HashMap<String,PermissionObject> getPermission() {
+	public HashMap<String, PermissionObject> getPermission() {
 		return permission;
 	}
 
-	public void setPermission(HashMap<String,PermissionObject> permission) {
+	public void setPermission(HashMap<String, PermissionObject> permission) {
 		this.permission = permission;
+	}
+
+	public char getSex() {
+		return sex;
+	}
+
+	public void setSex(char sex) {
+		this.sex = sex;
 	}
 
 }

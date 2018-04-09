@@ -7,19 +7,22 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>计划</title>
+<link href="/czsp/static/css/bootstrap/bootstrap.min.css"
+	rel="stylesheet">
+
 <script src="/czsp/static/js/jquery.js"></script>
+<script src="/czsp/static/js/bootstrap/bootstrap.min.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <%@ page import="czsp.user.model.UserInfo"%>
 <body>
-	<div>
-		<jsp:include page="/czsp/common/base/cur_user_message.jsp" flush="true"/>
-		
-		<input type="hidden" id="curUserId" name="curUserId" value="${userInfo.userId}" /> 
+	<div style="padding-left:10%; padding-right:20%;">
+		<input type="hidden" id="curUserId" name="curUserId" value="${userInfo.userId}" />
+		<input type="hidden" id="qxId" name="qxId" value="${userInfo.qxId}" /> 
 		<form id="updateForm">
 		<c:set var="plan" value="${obj.planInfo}"/>
 		<input type="hidden" name="planId" value="${plan.planId}">
-		<table border="1">
+		<table class="table table-bordered">
 				<tr>
 					<th><label for="planName">规划名称</label></th>
 					<td><input type="text" id="planName" name="planName" class="required" value="${plan.planName}"/></td>
@@ -68,7 +71,9 @@
 				</tr>
 			</table>
 		</form>
-		<button name="save">保存</button>
+		
+		<button style="float:right;" type="button" name="cancel" onclick="history.go(-1)">取消</button>
+		<button name="save" style="float:right;;margin-right:10px;">保存</button>
 	</div>
 
 	<script type="text/javascript">
@@ -84,6 +89,7 @@
 				return;
 			}
 			
+			var qxId = $("#qxId").val();
 			var data = $("form#updateForm").serializeObject();
 			console.log(JSON.stringify(data));
 			$.ajax({
@@ -92,13 +98,7 @@
 			    dataType:'json',
 			    type : 'POST',
 			    success:function(re){
-			        console.log(re.result);
-			        if (re.result == 'success'){
-						alert("success!");
-						window.opener.location.reload();
-						window.close();
-					}else
-						alert("message : " + re.message);
+			    	resultPrompt(re,true,false,"修改成功！",PlanURLPrefix+"/list?qxId="+qxId);
 			    }
 			});
 		})

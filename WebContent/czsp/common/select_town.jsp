@@ -14,7 +14,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>环节列表</title>
+<link href="/czsp/static/css/bootstrap/bootstrap.min.css"
+	rel="stylesheet">
+
 <script src="/czsp/static/js/jquery.js"></script>
+<script src="/czsp/static/js/bootstrap/bootstrap.min.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <%
@@ -24,9 +28,9 @@
 		userInfo = new UserInfo();
 %>
 <body>
-	当前区县:<%=DicUtil.getInstance().getItemName(Constants.DIC_QX_NO, userInfo.getQxId())%>
-	<br/>
-	<table border="1">
+	<div class="well well-sm">当前区县:<%=DicUtil.getInstance().getItemName(Constants.DIC_QX_NO, userInfo.getQxId())%></div>
+	
+	<table class="table table-bordered">
 		<tr>
 			<th>序号</th>
 			<th>村镇名称</th>

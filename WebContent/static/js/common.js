@@ -41,13 +41,16 @@ function initSerchFormBtn(){
 }
 
 /*ajax返回信息提示*/
-function resultPrompt(re,withAlert=true,reloadPage=true,content="success!") {
+function resultPrompt(re,withAlert=true,reloadPage=true,content="success!",redirectUrl="") {
 	console.log(re.result);
 	if (re.result == 'success'){
 		if(withAlert)
 			alert(content);
 		if(reloadPage)
 			location.reload();
+		else if(redirectUrl != ""){
+			location.href = redirectUrl;
+		}
 	}
 	else
 		alert("message : " + re.message);
@@ -59,7 +62,8 @@ function validate() {
 	var flag = true;
 	elements.each(function(){
 		if ($(this).val() == ""){
-			alert("请选择" + $("label[for='"+$(this).attr("id")+"']").text());
+			var content = $("label[for='"+$(this).attr("id")+"']").text();
+			alert("请选择" + content.replace("(*)",""));
 			flag = false;
 		}
 	});

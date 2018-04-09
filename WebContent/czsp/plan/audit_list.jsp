@@ -14,16 +14,19 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>待办列表</title>
+<link href="/czsp/static/css/bootstrap/bootstrap.min.css"
+	rel="stylesheet">
+
 <script src="/czsp/static/js/jquery.js"></script>
+<script src="/czsp/static/js/bootstrap/bootstrap.min.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <%
 	Map map = (HashMap) request.getAttribute("obj");
 %>
 <body>
-	<div style="width:1000px">
-		<jsp:include page="/czsp/common/base/cur_user_message.jsp" flush="true" />
-		<table border='1' style="width:1000px;">
+	<div style="padding-left:10%; padding-right:20%;">
+		<table class="table table-striped">
 			<thead>
 				<tr>
 					<th>案件名称</th>

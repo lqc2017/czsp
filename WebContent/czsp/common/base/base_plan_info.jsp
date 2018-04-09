@@ -6,7 +6,7 @@
 <html>
 <%@ page import="czsp.common.Constants"%>
 <body>
-	<table border="1" style="width:60%;">
+	<table class="table table-bordered">
 		<c:set var="planInfo" value="${obj.planInfo}" />
 		<c:set var="dicUtil" value="${obj.dicUtil}" />
 		<c:set var="Constants" value="${obj.constants}" />

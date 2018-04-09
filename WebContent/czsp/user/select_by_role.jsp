@@ -29,7 +29,7 @@
 <body style="height:100%;">
 	<div class="well well-sm"><a href="javascript:;" onclick="history.go(-1)">角色</a>->${obj.roleName}</div>
 	<div>
-	<form id="searchFrom" class="form-inline" action="/czsp/user/userList">
+	<form id="searchFrom" class="form-inline" action="/czsp/user/selectByRole">
 		<input name="roleId" type="hidden" value="${obj.userCondition.roleId}"/>
 		<input name="pageNumber" type="hidden" value="${obj.pagination.pager.pageNumber}"/>
 	</form>

@@ -14,7 +14,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>实例信息</title>
+<link href="/czsp/static/css/bootstrap/bootstrap.min.css"
+	rel="stylesheet">
+
 <script src="/czsp/static/js/jquery.js"></script>
+<script src="/czsp/static/js/bootstrap/bootstrap.min.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <%
@@ -23,7 +27,7 @@
 <body>
 	<input id="curInstanceId" type="hidden"
 		value="${obj.curInstance.instanceId}" />
-	<table border="1">
+	<table class="table table-bordered">
 		<tbody>
 			<tr>
 				<th>实例ID</th>
@@ -73,10 +77,8 @@
 		</tbody>
 	</table>
 	<br />
-	<br />
-	<br />
 
-	<table border="1">
+	<table class="table table-bordered">
 		<tr>
 			<th>流程ID</th>
 			<th>流程编号</th>

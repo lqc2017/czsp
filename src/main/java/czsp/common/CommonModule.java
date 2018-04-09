@@ -27,7 +27,7 @@ public class CommonModule {
 		List<Record> czList = new ArrayList<Record>();
 
 		if (userInfo != null) {
-			Map<String, Record> czMap = (HashMap<String, Record>) DicUtil.getInstance().getDicMap()
+			Map<String, Record> czMap = (TreeMap<String, Record>) DicUtil.getInstance().getDicMap()
 					.get(Constants.DIC_QX_CZ_NO);
 			for (String key : czMap.keySet()) {
 				if (userInfo.getQxId().equals(czMap.get(key).get("qx_id"))) {

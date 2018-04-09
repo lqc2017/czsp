@@ -6,10 +6,9 @@
 <body>
 	<br/>
 	<form id="opinionForm">
-		
-		<table border="1" style="width:60%;">
+		<table class="table table-bordered">
 			<tr>
-				<td width="15%">办理意见</td>
+				<th width="15%" style="text-align:center;vertical-align:middle;">办理意见</th>
 				<td>
 					<c:choose>
 						<c:when test="${obj.planOpinion == null}" >

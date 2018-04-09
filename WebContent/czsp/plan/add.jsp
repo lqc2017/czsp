@@ -7,70 +7,75 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>计划</title>
+<link href="/czsp/static/css/bootstrap/bootstrap.min.css"
+	rel="stylesheet">
+
 <script src="/czsp/static/js/jquery.js"></script>
+<script src="/czsp/static/js/bootstrap/bootstrap.min.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <%@ page import="czsp.user.model.UserInfo"%>
 <body>
-	<jsp:include page="/czsp/common/base/cur_user_message.jsp" flush="true"/>
-	
-	<form action="/czsp/plan/create" method="post">
-	<input type="hidden" id="createUserId" name="createUserId" value="${userInfo.userId}" /> 
-	<table border="1">
-			<tr>
-				<th><label for="planName">规划名称</label></th>
-				<td><input type="text" id="planName" name="planName" class="required" /></td>
+	<div style="padding-left:10%; padding-right:20%;">
+		<form action="/czsp/plan/create" method="post">
+		<input type="hidden" id="createUserId" name="createUserId" value="${userInfo.userId}" /> 
+		<table class="table table-bordered">
+				<tr>
+					<th><label for="planName">规划名称</label></th>
+					<td><input type="text" id="planName" name="planName" class="required" /></td>
+					
+					<th><label for="qxId">区县</label></th>
+					<td><input type="hidden" id="qxId" name="qxId" class="required" value="<c:if test='${userInfo != null }'>${userInfo.qxId}</c:if>"/>
+					<c:if test="${userInfo != null }">${obj.dicQx[userInfo.qxId].name}</c:if></td>
+				</tr>
 				
-				<th><label for="qxId">区县</label></th>
-				<td><input type="hidden" id="qxId" name="qxId" class="required" value="<c:if test='${userInfo != null }'>${userInfo.qxId}</c:if>"/>
-				<c:if test="${userInfo != null }">${obj.dicQx[userInfo.qxId].name}</c:if></td>
-			</tr>
-			
-			<tr>
-				<th><label for="phases">规划环节</label></th>
-				<td><label id="phasesLabel"></label>
-					<input type="hidden" id="phases" name="phases" class="required" />
-					<button type="button" name="selectPhase">选择</button>
-				</td>
+				<tr>
+					<th><label for="phases">规划环节</label></th>
+					<td><label id="phasesLabel"></label>
+						<input type="hidden" id="phases" name="phases" class="required" />
+						<button type="button" name="selectPhase">选择</button>
+					</td>
+					
+					<th><label for="designDepartment">设计部门</label></th>
+					<td><input type="text" id="designDepartment" name="designDepartment"/></td>
+				</tr>
 				
-				<th><label for="designDepartment">设计部门</label></th>
-				<td><input type="text" id="designDepartment" name="designDepartment"/></td>
-			</tr>
-			
-			<tr>
-				<th><label for="townName">村镇</label></th>
-				<td><label id="townLabel"></label>
-					<input type="hidden" id="townId" name="townId"/>
-					<input type="hidden" id="townName" name="townName" class="required" />
-					<button type="button" name="selectTown">选择</button>
-				</td>
+				<tr>
+					<th><label for="townName">村镇</label></th>
+					<td><label id="townLabel"></label>
+						<input type="hidden" id="townId" name="townId"/>
+						<input type="hidden" id="townName" name="townName" class="required" />
+						<button type="button" name="selectTown">选择</button>
+					</td>
+					
+					<th><label for="designContactName">设计部门联系人</label></th>
+					<td><input type="text" id="designContactName" name="designContactName"/></td>
+				</tr>
 				
-				<th><label for="designContactName">设计部门联系人</label></th>
-				<td><input type="text" id="designContactName" name="designContactName"/></td>
-			</tr>
-			
-			<tr>
-				<th><label for="planArea">规划面积</label></th>
-				<td><input type="text" id="planArea" name="planArea" class="required" /></td>
+				<tr>
+					<th><label for="planArea">规划面积</label></th>
+					<td><input type="text" id="planArea" name="planArea" class="required" /></td>
+					
+					<th><label for="designContactWay">设计部门联系方式</label></th>
+					<td><input type="text" id="designContactWay" name="designContactWay" /></td>
+				</tr>
 				
-				<th><label for="designContactWay">设计部门联系方式</label></th>
-				<td><input type="text" id="designContactWay" name="designContactWay" /></td>
-			</tr>
+				<tr>
+					<th><label for="finishDate">预计办结日期</label></th>
+					<td><input type="text" id="finishDate" name="finishDate" class="required"/></td>
+					<td colspan="2"></td>
+				</tr>
+				
+				<tr>
+					<th><label for="note">备注</label></th>
+					<td colspan="3"><textarea id="note" name="note" style="width:95%;"></textarea></td>
+				</tr>
+			</table>
 			
-			<tr>
-				<th><label for="finishDate">预计办结日期</label></th>
-				<td><input type="text" id="finishDate" name="finishDate" class="required"/></td>
-				<td colspan="2"></td>
-			</tr>
-			
-			<tr>
-				<th><label for="note">备注</label></th>
-				<td colspan="3"><textarea id="note" name="note" style="width:95%;"></textarea></td>
-			</tr>
-		</table>
-		
-		<input type="submit" value="新建计划">
-	</form>
+			<button style="float:right;" type="button" name="cancel" onclick="history.go(-1)">取消</button>
+			<input style="float:right;margin-right:10px;" type="submit" value="新建计划">
+		</form>
+	</div>
 
 	<script type="text/javascript">
 		//初始化必填框

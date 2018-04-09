@@ -17,31 +17,29 @@
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <body>
-	<div style="width: 1000px">
-		<table border='1' style="width: 1000px;">
+	<table class="table table-hover">
 		<c:set var="dicUtil" value="${obj.dicUtil}" />
-			<thead>
+		<thead>
+			<tr>
+				<th width="10%">节点</th>
+				<th width="10%">办理人</th>
+				<th width="65%">意见</th>
+				<th width="15%">提交时间</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<c:forEach var="opinion" items="${obj.opinionList}">
 				<tr>
-					<th width="10%">节点</th>
-					<th width="10%">办理人</th>
-					<th width="65%">意见</th>
-					<th width="15%">提交时间</th>
+					<td>${dicUtil.getItemName(Constants.DIC_WF_NODE_NO,opinion.nodeId)}</td>
+					<td>${opinion.createBy}</td>
+					<td>${opinion.opinionContent}</td>
+					<td><fmt:formatDate value="${opinion.updateTime}" type="both" /></td>
 				</tr>
-			</thead>
 
-			<tbody>
-				<c:forEach var="opinion" items="${obj.opinionList}">
-					<tr>
-						<td>${dicUtil.getItemName(Constants.DIC_WF_NODE_NO,opinion.nodeId)}</td>
-						<td>${opinion.createBy}</td>
-						<td>${opinion.opinionContent}</td>
-						<td><fmt:formatDate value="${opinion.updateTime}" type="both" /></td>
-					</tr>
-
-				</c:forEach>
-			</tbody>
-		</table>
-	</div>
+			</c:forEach>
+		</tbody>
+	</table>
 
 	<script type="text/javascript">
 		

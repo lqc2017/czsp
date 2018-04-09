@@ -11,6 +11,8 @@ import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.Mvcs;
+import org.nutz.mvc.adaptor.JsonAdaptor;
+import org.nutz.mvc.annotation.AdaptBy;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.Param;
@@ -57,10 +59,10 @@ public class UserModule {
 	}
 
 	/**
-	 * 全琛 2018年4月8日 人员列表（权限）
+	 * 全琛 2018年4月8日 人员列表（角色）
 	 */
-	@At("/userList")
-	@Ok("jsp:/czsp/user/user_list")
+	@At("/selectByRole")
+	@Ok("jsp:/czsp/user/select_by_role")
 	public Map<String, Object> userList(@Param("..") UserInfo userCondition, int pageNumber, int pageSize) {
 		pageNumber = pageNumber == 0 ? 1 : pageNumber;
 		pageSize = pageSize == 0 ? 6 : pageSize;
@@ -81,14 +83,40 @@ public class UserModule {
 		return map;
 	}
 
+	/**
+	 * 全琛 2018年4月9日 添加用户界面
+	 */
+	@At("/add")
+	@Ok("jsp:/czsp/user/add")
+	public Map<String, Object> add() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		// 添加区县选项
+		Map qxMap = (TreeMap) (DicUtil.getInstance().getDicMap().get(Constants.DIC_QX_NO));
+		List qxList = new ArrayList(qxMap.values());
+		// 添加部门选项
+		Map deptsMap = (TreeMap) (DicUtil.getInstance().getDicMap().get(Constants.DIC_AHTU_DEPT_NO));
+		List departments = new ArrayList(deptsMap.values());
+
+		map.put("qxList", qxList);
+		map.put("departments", departments);
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年4月9日 添加用户
+	 */
 	@At("/create")
-	@Ok(">>:/user/list")
+	@AdaptBy(type = JsonAdaptor.class)
+	@Ok("json")
 	public Map<String, Object> create(@Param("..") UserInfo user) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			log.debug("new userId:" + userInfoService.addUser(user));
+			userInfoService.addUser(user);
+			map.put("result", "success");
+
 		} catch (Exception e) {
-			log.error(MessageUtil.getStackTraceInfo(e));
+			map.put("result", "fail");
+			map.put("message", MessageUtil.getStackTraceInfo(e));
 		}
 		return map;
 	}

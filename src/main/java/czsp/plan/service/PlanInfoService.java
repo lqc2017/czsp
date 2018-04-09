@@ -43,10 +43,6 @@ public class PlanInfoService {
 	@Inject
 	private WfNodeDao wfNodeDao;
 
-	public List<VplanInfoDetail> getList() {
-		return planInfoDao.getList();
-	}
-
 	public void add(PlanInfo newPlan, PlanApp newPlanApp) {
 
 		Trans.exec(new Atom() {
@@ -168,8 +164,8 @@ public class PlanInfoService {
 	/**
 	 * 全琛 2018年3月24日 根据筛选条件获取计划列表（获取信息用）
 	 */
-	public List getListByCondition(VplanInfoDetail planCondition, String orderBy) {
-		return planInfoDao.getListByCondition(planCondition, orderBy);
+	public Pagination<VplanInfoDetail> getListByCondition(VplanInfoDetail planCondition, int pageNumber, int pageSize) {
+		return planInfoDao.getListByCondition(planCondition, pageNumber,pageSize);
 	}
 
 	/**
