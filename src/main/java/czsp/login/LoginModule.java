@@ -110,7 +110,7 @@ public class LoginModule {
 				return "jsp:/czsp/login";
 			}
 			// 查询相关用户信息(绑定的默认用户)
-			AccountUser au = accountService.getAccountUserByUsername(accountInfo.getUserName());
+			AccountUser au = accountService.getAccountUserByUserName(accountInfo.getUserName());
 			UserInfo userInfo = userInfoService.getUserInfoByUserId(au.getUserId());
 			if (userInfo == null) {
 				model.addv("info", "未查询到用该账号绑定的用户信息！");

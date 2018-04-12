@@ -12,15 +12,21 @@ import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.Param;
 
 import czsp.account.model.AccountInfo;
+import czsp.account.model.AccountUser;
 import czsp.account.service.AccountService;
 import czsp.common.bean.Pagination;
 import czsp.common.util.MessageUtil;
+import czsp.user.model.UserInfo;
+import czsp.user.service.UserInfoService;
 
 @At("/account")
 @IocBean
 public class AccountModule {
 	@Inject
 	AccountService accountService;
+	
+	@Inject
+	UserInfoService userInfoService;
 
 	/**
 	 * 全琛 2018年4月12日 账号列表
@@ -64,6 +70,28 @@ public class AccountModule {
 			accountService.update(accountInfo);
 			map.put("result", "success");
 
+		} catch (Exception e) {
+			map.put("result", "fail");
+			map.put("message", MessageUtil.getStackTraceInfo(e));
+		}
+		return map;
+	}
+
+	@At("/create/?")
+	@Ok("json")
+	public Map<String, Object> create(String userId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			// 查询是否已有帮绑定的账号
+			AccountUser au = accountService.getAccountUserByUserId(userId);
+			if (au != null) {
+				map.put("result", "fail");
+				map.put("message", "已存在与用户相关联的账号");
+			}else{
+				UserInfo userInfo = userInfoService.getUserInfoByUserId(userId);
+				accountService.create(userInfo);
+				map.put("result", "success");
+			}
 		} catch (Exception e) {
 			map.put("result", "fail");
 			map.put("message", MessageUtil.getStackTraceInfo(e));

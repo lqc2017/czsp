@@ -7,11 +7,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>计划</title>
-<link href="/czsp/static/css/bootstrap/bootstrap.min.css"
-	rel="stylesheet">
+<link href="/czsp/static/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+<link href="/czsp/static/css/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
 
 <script src="/czsp/static/js/jquery.js"></script>
 <script src="/czsp/static/js/bootstrap/bootstrap.min.js"></script>
+<script src="/czsp/static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/czsp/static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.zh-CN.js"></script>
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <%@ page import="czsp.user.model.UserInfo"%>
@@ -61,7 +63,13 @@
 
 				<tr>
 					<th><label for="finishDate">预计办结日期</label></th>
-					<td><input type="text" id="finishDate" name="finishDate" class="required" value='<fmt:formatDate value="${plan.finishDate}" type="date" />'/></td>
+					<td>
+						<div class="input-group col-md-7">
+							<input type="text" readonly class="form-control form_date" id="finishDate" name="finishDate" 
+							value='<fmt:formatDate value="${plan.finishDate}" type="date" />'>
+							<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						</div>
+					</td>
 					<td colspan="2"></td>
 				</tr>
 
@@ -78,6 +86,24 @@
 
 	<script type="text/javascript">
 		initPage();
+		
+		//初始化日期控件
+		$('.form_date').datetimepicker({
+			language : 'zh-CN',
+			weekStart : 1,
+			todayBtn : 1,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 2,
+			minView : 2,
+			forceParse : 0,
+			format : 'yyyy-mm-dd'
+		});
+		
+		//清空日期按钮绑定
+		$(".glyphicon-remove").closest(".input-group-addon").bind("click",function(){
+			$("#finishDate").val("");
+		})
 		
 		//保存键绑定
 		$("button[name='save']").bind("click",function(){

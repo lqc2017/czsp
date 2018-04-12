@@ -96,6 +96,7 @@
 			<td>${dicUtil.getItemName(Constants.DIC_QX_NO,user.qxId)}</td>
 			<td>${user.roleId}</td>
 			<td><button name="grant">授予角色</button>
+				<button name="newAccount">创建对应账号</button>
 				<button name="del">删除</button></td>
 		</tr>
 		</c:forEach>
@@ -130,6 +131,21 @@
 					console.log(re.result);
 					if (re.result == 'success')
 						location.reload();
+				}
+			});
+		})
+		
+		//创建账号键绑定
+		$("button[name='newAccount']").bind("click", function() {
+			var tr = $(this).parents("tr");
+			var userId = tr.children("td:first").text();
+
+			$.ajax({
+				url : AcctURLPrefix + '/create/' + userId,
+				dataType : 'json',
+				type : 'GET',
+				success : function(re) {
+					resultPrompt(re,true,true,"创建账号成功!");
 				}
 			});
 		})

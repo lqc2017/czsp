@@ -61,4 +61,11 @@ public class AccountInfoDao {
 	public void update(AccountInfo accountInfo) {
 		dao.updateIgnoreNull(accountInfo);
 	}
+
+	/**
+	 * 全琛 2018年4月13日 添加账号
+	 */
+	public void add(AccountInfo accountInfo) {
+		dao.insert(accountInfo);
+	}
 }
