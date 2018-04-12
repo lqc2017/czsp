@@ -1,3 +1,7 @@
 # czsp
 2018 graduate_design
-* burdenLu的傻逼毕设
+* create by lqc
+* used frames：nutz
+* used database：oracle
+* used server：tomcat
+* a simple audit system which complete task through workflow：）
