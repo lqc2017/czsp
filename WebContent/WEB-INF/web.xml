@@ -26,6 +26,6 @@
 
 
 	<welcome-file-list>
-		<welcome-file>/czsp/index.jsp</welcome-file>
+		<welcome-file>/czsp/login.jsp</welcome-file>
 	</welcome-file-list>
 </web-app>

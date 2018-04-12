@@ -49,6 +49,10 @@
 					<span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu">
+					<c:if test="${userInfo.permission.containsKey('4400')}">
+						<li><a href="javascript:;" url="/czsp/account/list">用户管理</a></li>
+						<li class="divider"></li>
+					</c:if>
 					<c:if test="${userInfo.permission.containsKey('4100')}">
 						<li><a href="javascript:;" url="/czsp/common/humanManage">人员管理</a></li>
 					</c:if>

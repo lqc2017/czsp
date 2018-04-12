@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <%@ page import="czsp.user.model.UserInfo"%>
@@ -15,12 +16,16 @@
 		}
 	%>
 	<input name="userId" id="userId" type="hidden" value="<%=userInfo.getUserId()%>"/>
-	<button name="change">切换</button>&nbsp<button name="logout">退出</button><br />
+	<c:if test="${userInfo.permission.containsKey('100')}">
+		<button name="change">切换</button>&nbsp
+	</c:if>
+	<button name="logout">退出</button><br />
 	<script type="text/javascript">
 		$(function(){
-			if($("#userId").val()=="null")
-				alert("我要跳转了");
-			location.href = "/czsp/login";
+			if($("#userId").val()=="null"){
+				//alert("我要跳转了");
+				location.href = "/czsp/login";
+			}
 		});
 		//切换键绑定
 		$("button[name='change']").bind("click", function() {
@@ -29,14 +34,7 @@
 		})
 		//登出键绑定
 		$("button[name='logout']").bind("click", function() {
-			$.ajax({
-				url : UserURLPrefix + '/clear',
-				dataType : 'json',
-				type : 'GET',
-				success : function(re) {
-					resultPrompt(re,true,true,"登出成功");
-				}
-			});
+			location.href =  "/czsp/logout";
 		})
 	</script>
 </body>

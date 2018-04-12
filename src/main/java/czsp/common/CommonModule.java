@@ -19,6 +19,16 @@ import czsp.user.model.UserInfo;
 @IocBean
 @At("/common")
 public class CommonModule {
+	/**
+	 * 全琛 2018年4月12日 首页
+	 */
+	@At("/index")
+	@Ok("jsp:/czsp/index")
+	public Map<String, Object> login() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		return map;
+	}
+
 	@At("/selectTown")
 	@Ok("jsp:/czsp/common/select_town")
 	public Map<String, Object> selectTown() {
@@ -82,7 +92,7 @@ public class CommonModule {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			Map dicPT = (TreeMap) (DicUtil.getInstance().getDicMap().get(Constants.DIC_PERMISSION_TYPE));
-			
+
 			map.put("ptList", new ArrayList(dicPT.values()));
 			map.put("result", "success");
 		} catch (Exception e) {

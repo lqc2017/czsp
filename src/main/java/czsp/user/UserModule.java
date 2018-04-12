@@ -37,7 +37,6 @@ public class UserModule {
 	@At("/list")
 	@Ok("jsp:/czsp/user/show_list")
 	public Map<String, Object> showList(@Param("..") UserInfo userCondition, int pageNumber, int pageSize) {
-		System.out.println(userCondition.getQxId());
 		pageNumber = pageNumber == 0 ? 1 : pageNumber;
 		pageSize = pageSize == 0 ? 6 : pageSize;
 
@@ -114,23 +113,6 @@ public class UserModule {
 			userInfoService.addUser(user);
 			map.put("result", "success");
 
-		} catch (Exception e) {
-			map.put("result", "fail");
-			map.put("message", MessageUtil.getStackTraceInfo(e));
-		}
-		return map;
-	}
-
-	/**
-	 * 全琛 2018年3月23日 清空session中的用户信息
-	 */
-	@At("/clear")
-	@Ok("json")
-	public Map<String, Object> clear() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		try {
-			Mvcs.getHttpSession().removeAttribute("userInfo");
-			map.put("result", "success");
 		} catch (Exception e) {
 			map.put("result", "fail");
 			map.put("message", MessageUtil.getStackTraceInfo(e));

@@ -21,7 +21,7 @@ public class UserInfo {
 	private String name;
 
 	@Column(value = "SEX")
-	private char sex;
+	private String sex;
 
 	@Column(value = "ROLE_ID")
 	private String roleId;
@@ -90,11 +90,11 @@ public class UserInfo {
 		this.permission = permission;
 	}
 
-	public char getSex() {
+	public String getSex() {
 		return sex;
 	}
 
-	public void setSex(char sex) {
+	public void setSex(String sex) {
 		this.sex = sex;
 	}
 

@@ -26,8 +26,6 @@
 	<button name="new">新建流程</button>
 	&nbsp
 	<button name="clear">清除(session)</button>
-	&nbsp
-	<button name="change">变更用户</button>
 
 	<table border="1">
 		<tr>
@@ -129,21 +127,6 @@
 
 			window.open(WfURLPrefix+"/selectNextNode?instanceId=" + instanceId,
 						"提交页面", "top=100,left=100,width=500,height=200,resizable=no");
-		})
-
-		//删除流程键绑定
-		$("button[name='del']").bind("click", function() {
-			var tr = $(this).parents("tr");
-			var instanceId = tr.children("td:first").text();
-
-			$.ajax({
-				url : WfURLPrefix+'/deleteInstance/' + instanceId,
-				dataType : 'json',
-				type : 'GET',
-				success : function(re) {
-					resultPrompt(re,false);
-				}
-			});
 		})
 	</script>
 </body>
