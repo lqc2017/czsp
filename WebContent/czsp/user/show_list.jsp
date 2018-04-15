@@ -71,10 +71,10 @@
 		
 		<input name="pageNumber" type="hidden" value="${obj.pagination.pager.pageNumber}"/>
 		
-			&nbsp <button name="search" type="button">查询</button>
-			&nbsp <button name="reset" type="button">重置</button>
+			&nbsp <button class="btn btn-default btn-sm" name="search" type="button">查询</button>
+			&nbsp <button class="btn btn-default btn-sm" name="reset" type="button">重置</button>
 	</form>
-	<br /><button style="float:right" name="add" type="button">新增</button>
+	<br /><button class="btn btn-success btn-sm" style="float:right" name="add" type="button">新增</button>
 	<table class="table table-hover">
 		<tr>
 			<th>用户ID</th>
@@ -95,9 +95,9 @@
 			<td>${dicUtil.getItemName(Constants.DIC_AHTU_DEPT_NO,user.departmentId)}</td>
 			<td>${dicUtil.getItemName(Constants.DIC_QX_NO,user.qxId)}</td>
 			<td>${user.roleId}</td>
-			<td><button name="grant">授予角色</button>
-				<button name="newAccount">创建对应账号</button>
-				<button name="del">删除</button></td>
+			<td><button class="btn btn-default btn-xs" name="grant">授予角色</button>
+				<button class="btn btn-success btn-xs" name="newAccount">创建对应账号</button>
+				<button class="btn btn-danger btn-xs" name="del">删除</button></td>
 		</tr>
 		</c:forEach>
 	</table>

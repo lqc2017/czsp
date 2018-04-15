@@ -84,9 +84,9 @@ WfCurInstance curInstance = (WfCurInstance)map.get("instance");
 		</div>
 	</form>
 	<br />
-	<div style="padding:0 115px;">
-		<button name="confirm">确定</button>
-		<button name="cancel">取消</button>
+	<div style="padding:0 190px;">
+		<button class="btn btn-success btn-sm" name="confirm">确定</button>
+		<button class="btn btn-default btn-sm" style="float:right;" name="cancel">取消</button>
 	</div>
 
 	<script type="text/javascript">

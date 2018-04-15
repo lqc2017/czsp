@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.nutz.ioc.loader.annotation.Inject;
@@ -30,6 +31,7 @@ import czsp.user.service.UserOperationService;
 import czsp.workflow.model.WfCurInstance;
 import czsp.workflow.model.WfHisInstance;
 import czsp.workflow.model.WfNode;
+import czsp.workflow.model.WfPhase;
 import czsp.workflow.model.WfRoute;
 import czsp.workflow.model.view.VwfNodeDetail;
 import czsp.workflow.service.WfDefineService;
@@ -382,7 +384,7 @@ public class WFModule {
 			if (StringUtils.isBlank(instanceId)) {
 				throw new Exception("找不到流程实例。");
 			}
-			
+
 			// 查询最近一条历史提交操作记录
 			UserOperation operation = userOperationService.getLatestOperation(instanceId, "'提交','特送'");
 			WfHisInstance hisInstance = null;
@@ -400,6 +402,63 @@ public class WFModule {
 			map.put("result", "fail");
 			map.put("message", MessageUtil.getStackTraceInfo(e));
 		}
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年4月14日 显示节点列表
+	 */
+	@At("/showWf")
+	@Ok("jsp:/czsp/workflow/show_workflow")
+	public Map<String, Object> showWf(String instanceId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<WfPhase> wfPhases = wfDefineService.loadAllPhasesWithNodes();
+		Map dicRole = (TreeMap) (DicUtil.getInstance().getDicMap().get(Constants.DIC_AHTU_ROLE_NO));
+
+		map.put("wfPhases", wfPhases);
+		map.put("dicRole", dicRole);
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年4月14日 在办流程页面
+	 */
+	@At("/curList")
+	@Ok("jsp:/czsp/workflow/show_cur_list")
+	public Map<String, Object> curList(String instanceId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<WfCurInstance> wfCurInstances = new ArrayList<WfCurInstance>();
+		if (StringUtils.isBlank(instanceId))
+			wfCurInstances = wfOperation.getCurInstanceList();
+		else {
+			WfCurInstance wfCurInstance = wfOperation.getInstanceByInstanceId(instanceId);
+			if (wfCurInstance != null)
+				wfCurInstances.add(wfOperation.getInstanceByInstanceId(instanceId));
+		}
+
+		map.put("dicWfNode", DicUtil.getInstance().getDicMap().get(Constants.DIC_WF_NODE_NO));
+		map.put("wfCurInstances", wfCurInstances);
+		return map;
+	}
+
+	/**
+	 * 全琛 2018年4月15日 历史流程页面
+	 */
+	@At("/hisList")
+	@Ok("jsp:/czsp/workflow/show_his_list")
+	public Map<String, Object> hisList(String instanceNo) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<WfHisInstance> wfHisInstances = new ArrayList<WfHisInstance>();
+		if (StringUtils.isBlank(instanceNo))
+			wfHisInstances = wfOperation.getHisInstanceList();
+		else {
+			List<WfHisInstance> wfHisInstanceList = wfOperation.getHisInstanceByInstanceNo(instanceNo);
+			if (wfHisInstanceList != null && wfHisInstanceList.size() > 0)
+				wfHisInstances.addAll(wfHisInstanceList);
+		}
+
+		map.put("dicWfNode", DicUtil.getInstance().getDicMap().get(Constants.DIC_WF_NODE_NO));
+		map.put("wfHisInstances", wfHisInstances);
 		return map;
 	}
 }

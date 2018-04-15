@@ -36,14 +36,14 @@
 			</c:if>
 			<input name="pageNumber" type="hidden" value="${obj.pagination.pager.pageNumber}"/>
 			
-			&nbsp <button name="search" type="button">查询</button>
-			&nbsp <button name="reset" type="button">重置</button>
+			&nbsp <button class="btn btn-default btn-sm" name="search" type="button">查询</button>
+			&nbsp <button class="btn btn-default btn-sm" name="reset" type="button">重置</button>
 		</form>
 	</div>
 	
 	<div style="padding-left:10%; padding-right:20%;">
 		<c:if test="${userInfo.permission.containsKey('411001')}">
-			<button name="add" style="float: right;">新增计划</button>
+			<button class="btn btn-success btn-sm" name="add" style="float: right;">新增计划</button>
 		</c:if>
 		<table class="table table-bordered">
 			<tr>
@@ -70,7 +70,7 @@
 					<c:if test="${info.status eq '2'}">办结</c:if></td>
 					<td>
 					<c:if test="${userInfo.permission.containsKey('411003')}">
-						<c:if test="${info.status eq '0'}"><button name="edit">修改</button>
+						<c:if test="${info.status eq '0'}"><button class="btn btn-default btn-xs" name="edit">修改</button>
 					</c:if>
 					
 					</c:if>
@@ -78,7 +78,7 @@
 						<c:if test="${info.status eq '0'}"> <button name="launch">启动</button></c:if>
 					</c:if>
 					<c:if test="${userInfo.permission.containsKey('411004')}">
-						<button name="del">删除</button>
+						<button class="btn btn-danger btn-xs" name="del">删除</button>
 					</c:if>
 					</td>
 				</tr>

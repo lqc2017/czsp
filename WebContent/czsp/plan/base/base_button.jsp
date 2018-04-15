@@ -8,13 +8,13 @@
 		<c:set var="planInfo" value="${obj.planInfo}" />
 		<input id="planId" type="hidden" value="${planInfo.planId}"/>
 		<input id="curInstanceId" type="hidden" value="${planInfo.instanceId}"/>
-		<button name="detail">流程信息</button>
-		<c:if test="${planInfo.curInstance.ifSign eq '0'}"><button name="sign">签收</button></c:if>
+		<button class="btn btn-default btn-sm" name="detail">流程信息</button>
+		<c:if test="${planInfo.curInstance.ifSign eq '0'}"><button class="btn btn-warning btn-sm" name="sign">签收</button></c:if>
 		<c:if test="${planInfo.curInstance.ifSign eq '1' && userInfo.userId == planInfo.curInstance.signUserId}">
-			<button name="submit">提交</button>
-			<button name="save">保存</button>
+			<button class="btn btn-default btn-sm" name="submit">提交</button>
+			<button class="btn btn-default btn-sm" name="save">保存</button>
 		</c:if>
-		<button name="back" type="button" onclick="history.go(-1)">返回</button>
+		<button class="btn btn-default btn-sm" name="back" type="button" onclick="history.go(-1)">返回</button>
 	</div>
 	<script type="text/javascript">
 		//流程提交键绑定

@@ -47,7 +47,7 @@
 			<tr>
 				<td title="<%=roleId%>"><a href="/czsp/auth/pmsDetail/<%=roleId%>"><%=map.get(key).get("name")%></a></td>
 				<td>
-					<button name="userList">查看</button>
+					<button class="btn btn-default btn-sm" name="userList">查看</button>
 				</td>
 			</tr>
 			<%

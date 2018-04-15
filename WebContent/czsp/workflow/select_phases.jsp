@@ -50,7 +50,7 @@
 			}
 		%>
 	</table>
-	<button style="float:right;" name="confirm">确认</button>
+	<button class="btn btn-success btn-sm" style="float:right;" name="confirm">确定</button>
 
 
 	<script type="text/javascript">

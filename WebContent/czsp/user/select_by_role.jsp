@@ -50,7 +50,7 @@
 			<td>${user.userId}</td>
 			<td>${user.name}</td>
 			<td>${dicUtil.getItemName(Constants.DIC_QX_NO,user.qxId)}</td>
-			<td><button name="remove">解除关联</button></td>
+			<td><button  class="btn btn-danger btn-sm" name="remove">解除关联</button></td>
 		</tr>
 		</c:forEach>
 	</table>

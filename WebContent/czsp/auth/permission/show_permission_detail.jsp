@@ -37,7 +37,7 @@
 					<c:otherwise>
 						<c:forEach var="permissionRole" end="0" items="${obj.permissionRoleList}">
 								<td class="oId" title="${permissionRole.value.objectId}">${permissionRole.value.objectName}</td>
-								<td><button name="del">删除</button></td>
+								<td><button class="btn btn-danger btn-sm" name="del">删除</button></td>
 						</c:forEach>
 					</c:otherwise>
 				</c:choose>
@@ -46,7 +46,7 @@
 				<c:forEach var="permissionRole" begin="1" items="${obj.permissionRoleList}">
 					<tr>
 						<td class="oId" title="${permissionRole.value.objectId}">${permissionRole.value.objectName}</td>
-						<td><button name="del">删除</button></td>
+						<td><button class="btn btn-danger btn-sm" name="del">删除</button></td>
 					</tr>
 				</c:forEach>
 			</c:if>
@@ -54,7 +54,7 @@
 			<tr>
 				<td></td>
 				<td></td>
-				<td><button name="add" onclick="add(this)">添加</button></td>
+				<td><button class="btn btn-success btn-sm" name="add" onclick="add(this)">添加</button></td>
 			</tr>
 		</tbody>
 	</table>
@@ -120,8 +120,8 @@
 			}
 			
 			var opTd = td;
-			opTd.append('<button name="confirm" onclick="confirm(this)">确认</button>');
-			opTd.append('&nbsp<button name="cancel" onclick="cancel(this)">取消</button>');
+			opTd.append('<button class="btn btn-success btn-sm" name="confirm" onclick="confirm(this)">确定</button>');
+			opTd.append('&nbsp<button class="btn btn-default btn-sm" name="cancel" onclick="cancel(this)">取消</button>');
 		}
 		
 		//确认按钮点击事件
@@ -152,7 +152,7 @@
 			
 			var td = cancelBtn.closest("td");
 			td.children().remove();
-			td.append('<button name="add" onclick="add(this)">添加</button>');
+			td.append('<button class="btn btn-success btn-sm" name="add" onclick="add(this)">添加</button>');
 		}
 	</script>
 </body>

@@ -35,7 +35,7 @@
 					<th><label for="phases">规划环节</label></th>
 					<td><label id="phasesLabel"></label>
 						<input type="hidden" id="phases" name="phases" class="required" />
-						<button type="button" name="selectPhase">选择</button>
+						<button class="btn btn-default btn-sm" type="button" name="selectPhase">选择</button>
 					</td>
 					
 					<th><label for="designDepartment">设计部门</label></th>
@@ -47,7 +47,7 @@
 					<td><label id="townLabel"></label>
 						<input type="hidden" id="townId" name="townId"/>
 						<input type="hidden" id="townName" name="townName" class="required" />
-						<button type="button" name="selectTown">选择</button>
+						<button class="btn btn-default btn-sm" type="button" name="selectTown">选择</button>
 					</td>
 					
 					<th><label for="designContactName">设计部门联系人</label></th>
@@ -79,8 +79,8 @@
 				</tr>
 			</table>
 			
-			<button style="float:right;" type="button" name="cancel" onclick="history.go(-1)">取消</button>
-			<input style="float:right;margin-right:10px;" type="submit" value="新建计划">
+			<button class="btn btn-default btn-sm" style="float:right;" type="button" name="cancel" onclick="history.go(-1)">取消</button>
+			<input class="btn btn-success btn-sm" style="float:right;margin-right:10px;" type="submit" value="新建计划">
 		</form>
 	</div>
 

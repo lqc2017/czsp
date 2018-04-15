@@ -1,5 +1,7 @@
 package czsp.workflow.model;
 
+import java.util.List;
+
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.entity.annotation.Table;
@@ -27,6 +29,8 @@ public class WfPhase {
 
 	@Column(value = "WF_CODE")
 	private String wfCode;
+
+	private List<WfNode> nodeList;
 
 	public String getPhaseId() {
 		return phaseId;
@@ -82,6 +86,14 @@ public class WfPhase {
 
 	public void setWfCode(String wfCode) {
 		this.wfCode = wfCode;
+	}
+
+	public List<WfNode> getNodeList() {
+		return nodeList;
+	}
+
+	public void setNodeList(List<WfNode> nodeList) {
+		this.nodeList = nodeList;
 	}
 
 }

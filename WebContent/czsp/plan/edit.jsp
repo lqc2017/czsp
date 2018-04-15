@@ -46,7 +46,7 @@
 					<td><label id="townLabel">${plan.townName}</label>
 						<input type="hidden" id="townId" name="townId" class="required"  value="${plan.townId}"/>
 						<input type="hidden" id="townName" name="townName" class="required" value="${plan.townName}"/>
-						<button type="button" name="selectTown">选择</button>
+						<button class="btn btn-default btn-sm" type="button" name="selectTown">选择</button>
 					</td>
 					
 					<th><label for="designContactName">设计部门联系人</label></th>
@@ -80,8 +80,8 @@
 			</table>
 		</form>
 		
-		<button style="float:right;" type="button" name="cancel" onclick="history.go(-1)">取消</button>
-		<button name="save" style="float:right;;margin-right:10px;">保存</button>
+		<button class="btn btn-default btn-sm" style="float:right;" type="button" name="cancel" onclick="history.go(-1)">取消</button>
+		<button class="btn btn-default btn-sm" name="save" style="float:right;;margin-right:10px;">保存</button>
 	</div>
 
 	<script type="text/javascript">

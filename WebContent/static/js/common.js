@@ -9,6 +9,11 @@ var UserURLPrefix = "/czsp/user";
 var AuthURLPrefix = "/czsp/auth";
 var PlanURLPrefix = "/czsp/plan";
 
+/*初始化按钮*/
+$(".btn-success,.btn-danger").bind("click",function(){
+	$(this).attr("disabled","true");
+})
+
 function initPage(){
 	initRequired();
 	initSerchFormBtn();

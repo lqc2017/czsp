@@ -101,4 +101,14 @@ public class CommonModule {
 		}
 		return map;
 	}
+
+	/**
+	 * 全琛 2018年4月13日 流程管理
+	 */
+	@At("/wfManage")
+	@Ok("jsp:/czsp/common/manage/workflow_manage")
+	public Map<String, Object> wfManage() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		return map;
+	}
 }

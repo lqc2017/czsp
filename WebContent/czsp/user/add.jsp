@@ -65,8 +65,8 @@
 				
 			</table>
 			
-			<button style="float:right;" type="button" name="cancel" onclick="history.go(-1)">取消</button>
-			<button style="float:right;margin-right:10px;" name="create" type="button">新增人员</button>
+			<button class="btn btn-default btn-sm" style="float:right;" type="button" name="cancel" onclick="history.go(-1)">取消</button>
+			<button class="btn btn-success btn-sm" style="float:right;margin-right:10px;" name="create" type="button">新增人员</button>
 			
 		</form>
 	</div>

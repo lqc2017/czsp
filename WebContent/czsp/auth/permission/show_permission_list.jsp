@@ -15,7 +15,7 @@
 <script src="/czsp/static/js/common.js"></script>
 </head>
 <body>
-	<button name="add" onclick="add()">添加</button>
+	<button class="btn btn-success btn-sm" style="float:right;" name="add" onclick="add()">添加</button>
 	<table id="permissionTable" class="table table-bordered">
 		<thead>
 			<tr>
@@ -31,7 +31,7 @@
 					<td>${permission.objectId}</td>
 					<td>${permission.objectName}</td>
 					<td>${obj.dicPT[permission.objectType].name}</td>
-					<td><button name="edit" onclick="edit(this,'${permission.objectName}','${obj.dicPT[permission.objectType].name}')">编辑</button></td>
+					<td><button class="btn btn-default btn-sm" name="edit" onclick="edit(this,'${permission.objectName}','${obj.dicPT[permission.objectType].name}')">编辑</button></td>
 				</tr>
 			</c:forEach>
 		</tbody>
@@ -85,8 +85,8 @@
 			}
 			
 			var opTd = tr.children("td:last");
-			opTd.append('<button name="cancel" onclick="confirm(this)">确认</button>');
-			opTd.append('&nbsp<button name="cancel" onclick="del(this)">删除</button>');
+			opTd.append('<button class="btn btn-success btn-sm" name="confirm" onclick="confirm(this)">确定</button>');
+			opTd.append('&nbsp<button class="btn btn-danger btn-sm" name="del" onclick="del(this)">删除</button>');
 		}
 		
 		//删除按钮点击事件
@@ -120,8 +120,8 @@
 			
 			var td = editbtn.closest("td");
 			td.children().remove();
-			td.append('<button name="save" onclick="save(this)">保存</button>&nbsp'
-					+'<button name="cancel" onclick="cancel(this,\''+objectName+'\',\''+objectType+'\')">取消</button>');
+			td.append('<button class="btn btn-default btn-sm" name="save" onclick="save(this)">保存</button>&nbsp'
+					+'<button class="btn btn-default btn-sm" name="cancel" onclick="cancel(this,\''+objectName+'\',\''+objectType+'\')">取消</button>');
 		}
 		
 		//取消按钮点击事件
@@ -139,7 +139,7 @@
 			
 			var td = cancelBtn.closest("td");
 			td.children().remove();
-			td.append('<button name="edit" onclick="edit(this,\''+objectName+'\',\''+objectType+'\')">编辑</button>');
+			td.append('<button class="btn btn-default btn-sm" name="edit" onclick="edit(this,\''+objectName+'\',\''+objectType+'\')">编辑</button>');
 		}
 		
 		//保存按钮点击事件

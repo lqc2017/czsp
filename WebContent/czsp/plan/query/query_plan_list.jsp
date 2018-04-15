@@ -88,8 +88,8 @@
 				
 				<input name="pageNumber" type="hidden" value="${obj.pagination.pager.pageNumber}"/>
 				
-				&nbsp <button name="search" type="button">查询</button>
-				&nbsp <button name="reset" type="button">重置</button>
+				&nbsp <button class="btn btn-default btn-sm" name="search" type="button">查询</button>
+				&nbsp <button class="btn btn-default btn-sm" name="reset" type="button">重置</button>
 			</form>
 			<br/>
 			
@@ -121,7 +121,7 @@
 						<td><c:if test="${info.status eq '0'}">未流转</c:if>
 						<c:if test="${info.status eq '1'}">流转中</c:if>
 						<c:if test="${info.status eq '2'}">办结</c:if></td>
-						<td><button name="detail">查看</button></td>
+						<td><button class="btn btn-default btn-xs" name="detail">查看</button></td>
 					</tr>
 				</c:forEach>
 			</table>

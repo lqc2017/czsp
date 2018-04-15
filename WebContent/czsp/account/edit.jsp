@@ -58,8 +58,8 @@
 			</table>
 		</form>
 		
-		<button style="float:right;" type="button" name="cancel" onclick="history.go(-1)">取消</button>
-		<button name="save" style="float:right;;margin-right:10px;">保存</button>
+		<button class="btn btn-default btn-sm" style="float:right;" type="button" name="cancel" onclick="history.go(-1)">取消</button>
+		<button class="btn btn-default btn-sm" name="save" style="float:right;;margin-right:10px;">保存</button>
 	</div>
 
 	<script type="text/javascript">

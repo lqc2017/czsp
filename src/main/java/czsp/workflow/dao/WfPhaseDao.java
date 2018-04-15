@@ -38,4 +38,18 @@ public class WfPhaseDao {
 		return ll;
 	}
 
+	/**
+	 * 全琛 2018年4月13日 根据主键获取环节
+	 */
+	public WfPhase getWfPhaseByPhaseId(String phaseId) {
+		return dao.fetch(WfPhase.class, phaseId);
+	}
+
+	/**
+	 * 全琛 2018年4月13日 获取起始环节
+	 */
+	public WfPhase getStartPhase() {
+		return dao.fetch(WfPhase.class, Cnd.where("isStart", "=", "1"));
+	}
+
 }

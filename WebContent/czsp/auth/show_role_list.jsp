@@ -50,10 +50,10 @@
 				<%
 					if (userInfo.getRoleId() != null && userInfo.getRoleId().contains(roleId)) {
 				%>
-				<button name="remove">取消关联</button> <%
+				<button class="btn btn-danger btn-sm" name="remove">取消关联</button> <%
 				 	} else {
 				 %>
-					<button name="associate">关联</button> <%
+					<button class="btn btn-success btn-sm" name="associate">关联</button> <%
 				 	}
 				 %></td>
 			</tr>

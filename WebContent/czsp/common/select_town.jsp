@@ -45,7 +45,7 @@
 			<td title="<%=czList.get(i).get("id") %>"><%=i+1 %></td>
 			<td><%=czList.get(i).get("name") %></td>
 			<td><%=czList.get(i).get("code") %></td>
-			<td><button name="select">选择</button></td>
+			<td><button class="btn btn-default btn-sm" name="select">选择</button></td>
 		</tr>
 		<%
 			}
